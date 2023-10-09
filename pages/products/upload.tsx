@@ -8,6 +8,7 @@ import useMutation from '@/libs/client/useMutation';
 import { useEffect, useState } from 'react';
 import { Product } from '@prisma/client';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 
 interface UploadProductForm {
   name: string;
@@ -40,6 +41,11 @@ const Upload: NextPage = () => {
       const {
         data: { uploadURL },
       } = await (await fetch('/api/files')).json();
+
+      if (!uploadURL) {
+        alert('파일 업로드에 실패했습니다.');
+        return;
+      }
       const formData = new FormData();
       formData.append('file', photo[0], name);
 
@@ -59,7 +65,7 @@ const Upload: NextPage = () => {
 
   useEffect(() => {
     if (data?.result) {
-      router.push(`/products/${data.product.id}`);
+      router.replace(`/products/${data.product.id}`);
       data.product;
     }
   }, [data, router]);
@@ -79,10 +85,14 @@ const Upload: NextPage = () => {
       <form className="p-4 space-y-4" onSubmit={handleSubmit(onValid)}>
         <div>
           {photoPreview ? (
-            <img
-              src={photoPreview}
-              className="w-full object-contain h-48 rounded-md"
-            ></img>
+            <div className="relative w-full h-48 rounded-md">
+              <Image
+                alt="photo"
+                layout="fill"
+                src={photoPreview}
+                className="object-contain"
+              ></Image>
+            </div>
           ) : (
             <label className="w-full cursor-pointer text-gray-600 hover:border-blue-500 hover:text-blue-500 flex items-center justify-center border-2 border-dashed border-gray-300 h-48 rounded-md">
               <svg

@@ -7,6 +7,7 @@ import { Review, User } from '@prisma/client';
 import EvaluationItem from '@/components/EvaluationItem';
 import { withSSRSession } from '@/libs/server/withSession';
 import Image from 'next/image';
+import client from '@/libs/server/client';
 
 interface ReviewWithUser extends Review {
   createdBy: User;
