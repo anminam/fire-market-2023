@@ -25,7 +25,7 @@ export async function middleware(req: NextRequest, ev: NextFetchEvent) {
   if (!session.user && !req.url.includes('/join')) {
     req.nextUrl.searchParams.set('from', req.nextUrl.pathname);
     req.nextUrl.pathname = '/join';
-    return NextResponse.redirect(req.nextUrl);
+    return NextResponse.redirect(new URL(req.nextUrl, req.url));
   }
 }
 
