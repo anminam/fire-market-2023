@@ -31,7 +31,7 @@ export default function Layout({
       <Head>
         <title>{title}</title>
       </Head>
-      <div className="w-full h-12 max-w-xl justify-center text-lg px-10 font-medium fixed border-b top-0 flex items-center z-10">
+      <div className="w-full h-12 max-w-xl justify-center bg-base-100 fixed border-b border-b-neutral top-0 flex items-center z-10">
         {canGoBack ? (
           <button onClick={onClick} className="absolute left-4">
             <BiSolidChevronLeft />

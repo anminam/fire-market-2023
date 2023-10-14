@@ -47,11 +47,11 @@ const MyBusiness = () => {
   return (
     <PageContentsContainer title="나의거래">
       <div>
-        <ul className="space-y-5">
+        <ul className="space-y-6">
           <li>
             <Link href="/myfire/loved">
               <div className="flex items-center gap-2">
-                <BiHeart size="25" color="#555" />
+                <BiHeart size="20" />
                 <div>관심목록</div>
               </div>
             </Link>
@@ -59,7 +59,7 @@ const MyBusiness = () => {
           <li>
             <Link href="/myfire/sale">
               <div className="flex items-center gap-2">
-                <BiReceipt size="25" color="#555" />
+                <BiReceipt size="20" />
                 <div>판매내역</div>
               </div>
             </Link>
@@ -67,11 +67,23 @@ const MyBusiness = () => {
           <li>
             <Link href="/myfire/bought">
               <div className="flex items-center gap-2">
-                <BiShoppingBag size="25" color="#555" />
+                <BiShoppingBag size="20" />
                 <div>구매내역</div>
               </div>
             </Link>
           </li>
+        </ul>
+      </div>
+    </PageContentsContainer>
+  );
+};
+
+const Others = () => {
+  return (
+    <PageContentsContainer title="기타">
+      <div>
+        <ul className="space-y-6">
+          <li>딩가딩가</li>
         </ul>
       </div>
     </PageContentsContainer>
@@ -86,9 +98,9 @@ const Profile: NextPage = () => {
       <div className="px-4">
         <Link href="/myfire/edit">
           <div className="flex items-center justify-between mt-5">
-            <div className="flex items-center ">
+            <div className="flex items-center space-x-3 ">
               <MyProfileImage />
-              <div className="px-2">
+              <div className="text-xl font-bold ">
                 <span className="">{user?.name}</span>
               </div>
             </div>
@@ -103,6 +115,8 @@ const Profile: NextPage = () => {
         <MyBusiness />
         <div className="divider"></div>
         <Reviews />
+        <div className="divider"></div>
+        <Others />
       </div>
     </Layout>
   );

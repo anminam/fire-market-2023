@@ -1,14 +1,6 @@
 import useUser from '@/libs/client/useUser';
 import Image from 'next/image';
-import React from 'react';
 
-{
-  /* <div class="avatar">
-  <div class="w-16 rounded-full">
-    <img src="/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-  </div>
-</div>; */
-}
 const MyProfileImage = () => {
   const { user } = useUser();
   return (

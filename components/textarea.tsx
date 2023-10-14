@@ -16,17 +16,14 @@ export default function TextArea({
   return (
     <div>
       {label ? (
-        <label
-          htmlFor={name}
-          className="mb-1 block text-sm font-medium text-gray-700"
-        >
+        <label className="text-sm opacity-50" htmlFor={name}>
           {label}
         </label>
       ) : null}
       <textarea
         id={name}
         {...register}
-        className="mt-1 p-2 shadow-sm w-full focus:ring-blue-500 rounded-md border border-gray-300 focus:border-blue-500 focus:outline-none"
+        className="py-1 input input-bordered w-full placeholder-neutral-600"
         rows={4}
         {...rest}
       />

@@ -6,15 +6,15 @@ interface Props {}
 
 const getItemColor = (routerPath: string, path: string) => {
   if (routerPath === path) {
-    return 'text-blue-500';
+    return 'font-bold';
   }
-  return 'hover:text-gray-500 transition-colors';
+  return 'hover:text-gray-500 transition-colors opacity-70';
 };
 
 export default function GroundNavBar({}: Props) {
   const router = useRouter();
   return (
-    <nav className="bg-white max-w-xl text-gray-700 border-t fixed bottom-0 w-full px-6 pb-3 pt-3 flex justify-between text-xs">
+    <nav className="max-w-xl bg-base-100 border-t border-t-neutral fixed bottom-0 w-full px-6 pb-3 pt-3 flex justify-between text-xs">
       <Link
         href="/"
         className={cls(

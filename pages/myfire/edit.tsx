@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import FormErrorMessage from '@/components/FormErrorMessage';
 import useMutation from '@/libs/client/useMutation';
+import Image from 'next/image';
 
 interface EditProfileForm {
   email?: string;
@@ -103,17 +104,15 @@ const EditProfile: NextPage = () => {
       <form onSubmit={handleSubmit(onValid)} className="py-10 px-4 space-y-4">
         <div className="flex items-center space-x-3">
           {avatarPreview ? (
-            <img
+            <Image
+              alt={`의 프로필 사진`}
               src={avatarPreview}
               className="w-14 h-14 rounded-full bg-slate-500"
             />
           ) : (
             <div className="w-14 h-14 rounded-full bg-slate-500" />
           )}
-          <label
-            htmlFor="picture"
-            className="cursor-pointer py-2 px-3 border hover:bg-gray-50 border-gray-300 rounded-md shadow-sm text-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-gray-700"
-          >
+          <label htmlFor="picture" className="btn btn-sm btn-neutral">
             변경
             <input
               {...register('avatar')}
@@ -147,7 +146,10 @@ const EditProfile: NextPage = () => {
           kind="phone"
         />
         <FormErrorMessage message={errors.formErrors?.message || ''} />
-        <Button text={loading ? '변경 중 입니다...' : '변경하기'} />
+        <button className="btn btn-primary w-full">
+          {' '}
+          {loading ? '변경 중 입니다...' : '변경하기'}{' '}
+        </button>
       </form>
     </Layout>
   );

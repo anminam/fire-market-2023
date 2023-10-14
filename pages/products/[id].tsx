@@ -56,7 +56,11 @@ const ItemDetail: NextPage<ItemDetailResult> = ({
             />
           </div>
 
-          <div className="flex cursor-pointer py-3 border-t border-b items-center space-x-3">
+          {/* 프로필 */}
+          <Link
+            href={`/users/products/${product.user?.id}`}
+            className="flex space-x-4 items-center mt-5"
+          >
             <Image
               alt={`${product.user?.name}의 아바타`}
               width={48}
@@ -65,21 +69,26 @@ const ItemDetail: NextPage<ItemDetailResult> = ({
               className="w-12 h-12 rounded-full bg-slate-300"
             />
             <div>
-              <p className="text-sm font-medium text-gray-700">
+              <div className="text-sm font-bold   neutral">
                 {product.user?.name}
-              </p>
-              <Link href={`/users/products/${product.user?.id}`}>
-                <p className="text-xs font-medium text-gray-500">프로필 보기</p>
-              </Link>
-            </div>
-          </div>
+              </div>
 
+              <p className="text-xs">프로필 보기</p>
+            </div>
+          </Link>
+
+          <div className="divider" />
+
+          {/* 상품정보 */}
           <div className="mt-5">
-            <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
-            <span className="text-2xl block mt-3 text-gray-900">
+            {/* 타이틀 */}
+            <h1 className="text-3xl font-bold">{product.name}</h1>
+            {/* 가격 */}
+            <div className="text-2xl block mt-3">
               {product && moneyFormat(product.price)} 원
-            </span>
-            <p className=" my-6 text-gray-700">{product.description}</p>
+            </div>
+            {/* 설명 */}
+            <p className="my-6">{product.description}</p>
             <div className="flex items-center justify-between space-x-2">
               <Button large text="채팅하기" />
               <button
@@ -134,9 +143,7 @@ const ItemDetail: NextPage<ItemDetailResult> = ({
                       className="h-56 w-full mb-4 bg-slate-300"
                     />
                     <h3 className="text-gray-700 -mb-1">{_.name}</h3>
-                    <span className="text-sm font-medium text-gray-900">
-                      1,260,000 원
-                    </span>
+                    <span className="">1,260,000 원</span>
                   </Link>
                 );
               })}

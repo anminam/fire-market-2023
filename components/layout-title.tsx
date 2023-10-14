@@ -6,6 +6,8 @@ interface Props {
 }
 export default function LayoutTitle({ canGoBack, children }: Props) {
   return (
-    <span className={cls(canGoBack ? 'mx-auto' : '', '')}>{children}</span>
+    <span className={cls(canGoBack ? 'mx-auto' : '', '', 'text-xl font-bold')}>
+      {children}
+    </span>
   );
 }

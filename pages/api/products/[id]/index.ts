@@ -6,7 +6,6 @@ import { NextApiRequest, NextApiResponse } from 'next';
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;
 
-  // const productID = +(id as string);
   const product = await client.product.findUnique({
     where: {
       id: +(id as string),
