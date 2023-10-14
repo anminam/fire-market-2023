@@ -1,13 +1,13 @@
 import React from 'react';
-import Link from 'next/link';
-import { cls } from '../libs/client/utils';
+
+import { cls } from '@/libs/client/utils';
 import { useRouter } from 'next/router';
 import LayoutTitle from './layout-title';
 import GroundNavBar from './GroundNavBar';
 import Head from 'next/head';
-import { BiSolidChevronLeft } from 'react-icons/bi';
+
 import { AiOutlineHome } from 'react-icons/ai';
-import { FaChevronLeft, IconName } from 'react-icons/fa';
+import { FaChevronLeft } from 'react-icons/fa';
 
 interface LayoutProps {
   title?: string;
