@@ -71,3 +71,10 @@ npm i swr
 # icon
 
 - https://heroicons.com/
+- https://react-icons.github.io/react-icons/
+
+# daisyui
+
+https://daisyui.com/components
+
+# TODO
