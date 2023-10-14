@@ -28,22 +28,5 @@ const config: Config = {
     prefix: '', // prefix for daisyUI classnames (components, modifiers and responsive class names. Not colors)
     logs: true, // Shows info about daisyUI version and used config in the console when building your CSS
   },
-  plugins1: [
-    plugin(function ({ addComponents }) {
-      addComponents({
-        '.btn': {
-          padding: '.5rem 1rem !important',
-          borderRadius: '.25rem !important',
-          fontWeight: '600 !important',
-          backgroundColor: '#fff !important',
-        },
-        '.btn-neutral': {
-          backgroundColor: 'transparent !important',
-          color: '#fff !important',
-          borderColor: '#fff !important',
-        },
-      });
-    }),
-  ],
 };
 export default config;
