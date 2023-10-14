@@ -24,7 +24,7 @@ const Community: NextPage<PostResponse> = ({ posts }) => {
 
   return (
     <Layout hasTabBar title="화재생활">
-      <div className="neutral divide-y-[1px] divide-neutral">
+      <div className="divide-y-[1px] divide-neutral">
         {posts?.map((_, i) => (
           <div key={i} className="">
             <PostItem

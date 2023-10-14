@@ -130,7 +130,7 @@ const Upload: NextPage = () => {
           label="가격"
           placeholder="가격을 입력해주세요."
           name="price"
-          type="text"
+          type="number"
           kind="price"
         />
         <TextArea

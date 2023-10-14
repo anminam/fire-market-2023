@@ -11,7 +11,7 @@ const StreamsList = ({ data }: IProps) => {
     <div>
       {data?.data.map((_) => (
         <Link key={_.id} href={`/streams/${_.id}`}>
-          <div className="space-y-3">
+          <div className="space-y-3 px-4">
             <div className="relative w-full rounded-md shadow-sm bg-slate-300 aspect-video overflow-hidden">
               <Image
                 layout="fill"

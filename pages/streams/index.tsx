@@ -19,7 +19,7 @@ const Live: NextPage = () => {
   return (
     <Layout hasTabBar title="라이브">
       <div>
-        <div className="py-2">
+        <div className="py-4">
           <StreamsList data={data} />
         </div>
         <FloatingButton href="/streams/create">

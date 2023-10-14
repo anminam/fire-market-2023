@@ -24,7 +24,7 @@ export default function PostItem({
     <Link
       key={id}
       href={`/community/${id}`}
-      className="flex flex-col items-start py-5"
+      className="flex flex-col items-start px-4 py-5"
     >
       <div className="badge badge-sm badge-neutral">질문</div>
       <div className="text-lg font-bold">{content}</div>

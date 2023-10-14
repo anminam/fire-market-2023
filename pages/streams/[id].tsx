@@ -75,7 +75,7 @@ const StreamPage: NextPage = () => {
 
   return (
     <Layout canGoBack>
-      <div className="py-10 px-4  space-y-4">
+      <div className="py-10 px-4 space-y-4">
         {/* 비디오 */}
         <div className="w-full rounded-md shadow-sm bg-slate-300 aspect-video">
           {data?.data.cloudStreamId ? (

@@ -14,9 +14,9 @@ export default function TextArea({
   ...rest
 }: TextAreaProps) {
   return (
-    <div>
+    <div className="space-y-2">
       {label ? (
-        <label className="text-sm opacity-50" htmlFor={name}>
+        <label className="text-sm font-bold" htmlFor={name}>
           {label}
         </label>
       ) : null}

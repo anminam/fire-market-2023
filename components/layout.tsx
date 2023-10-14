@@ -6,6 +6,8 @@ import LayoutTitle from './layout-title';
 import GroundNavBar from './GroundNavBar';
 import Head from 'next/head';
 import { BiSolidChevronLeft } from 'react-icons/bi';
+import { AiOutlineHome } from 'react-icons/ai';
+import { FaChevronLeft, IconName } from 'react-icons/fa';
 
 interface LayoutProps {
   title?: string;
@@ -21,9 +23,15 @@ export default function Layout({
   children,
 }: LayoutProps) {
   const router = useRouter();
-  const onClick = () => {
+
+  const onBackClick = () => {
     router.back();
   };
+
+  const onHomeClick = () => {
+    router.replace('/');
+  };
+
   const title = `${pTitle} | 화재장터`;
 
   return (
@@ -33,9 +41,14 @@ export default function Layout({
       </Head>
       <div className="w-full h-12 max-w-xl justify-center bg-base-100 fixed border-b border-b-neutral top-0 flex items-center z-10">
         {canGoBack ? (
-          <button onClick={onClick} className="absolute left-4">
-            <BiSolidChevronLeft />
-          </button>
+          <div className="absolute flex left-4 space-x-2 items-center h-5 text-lg">
+            <button onClick={onBackClick} className="">
+              <FaChevronLeft size="16" />
+            </button>
+            <button onClick={onHomeClick} className="">
+              <AiOutlineHome size="18" />
+            </button>
+          </div>
         ) : null}
         {pTitle && <LayoutTitle canGoBack={canGoBack}>{pTitle}</LayoutTitle>}
       </div>

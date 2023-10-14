@@ -16,8 +16,8 @@ export default function Input({
   ...rest
 }: InputProps) {
   return (
-    <div className="space-y-1">
-      <label className="text-sm opacity-50" htmlFor={name}>
+    <div className="space-y-2">
+      <label className="text-sm font-bold" htmlFor={name}>
         {label}
       </label>
       {kind === 'text' ? (
@@ -59,7 +59,7 @@ export default function Input({
             type={type}
             {...register}
             {...rest}
-            className="appearance-none w-full px-3 py-2 border border-gray-300 rounded-md rounded-l-none shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            className="appearance-none pl-7 input input-bordered w-full placeholder-neutral-600"
           />
         </div>
       ) : null}
