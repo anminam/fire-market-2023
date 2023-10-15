@@ -33,7 +33,6 @@ const Create: NextPage = () => {
 
   useEffect(() => {
     if (data && data.result) {
-      debugger;
       router.push(`/streams/${data.data.id}`);
     }
   }, [data, router]);
