@@ -3,12 +3,13 @@ import Layout from '@/components/layout';
 import Message from '@/components/message';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
-import { Stream, StreamMessage } from '@prisma/client';
+import { Stream, StreamMessage, User } from '@prisma/client';
 import { useForm } from 'react-hook-form';
 import useMutation from '@/libs/client/useMutation';
 import useUser from '@/libs/client/useUser';
 import { useEffect } from 'react';
 import { moneyFormat } from '@/libs/client/utils';
+import UserProfileContainer from '@/components/UserProfileContainer';
 
 interface IStreamMessage {
   id: number;
@@ -22,6 +23,7 @@ interface IStreamMessage {
 
 interface StreamWithMessage extends Stream {
   StreamMessage: IStreamMessage[];
+  user: User;
 }
 
 interface StreamResponse {
@@ -87,18 +89,25 @@ const StreamPage: NextPage = () => {
             ></iframe>
           ) : null}
         </div>
+        {/* 프로필 */}
+        <UserProfileContainer
+          id={data?.data?.user?.id.toString() || ''}
+          avatar={data?.data?.user?.avatar}
+          name={data?.data?.user?.name}
+          size="12"
+          isViewTextProfile
+        ></UserProfileContainer>
+        <div className="divider"></div>
         {/* 설명 */}
         <div className="mt-5">
           {/* 타이틀 */}
-          <h1 className="text-3xl font-bold text-gray-900">
-            {data?.data?.name}
-          </h1>
+          <h1 className="text-3xl font-bold">{data?.data?.name}</h1>
           {/* 가격 */}
-          <span className="text-2xl block mt-3 text-gray-900">
+          <span className="text-2xl block mt-3">
             {moneyFormat(Number(data?.data?.price))} 원
           </span>
           {/* 설명 */}
-          <p className=" my-6 text-gray-700">{data?.data?.description}</p>
+          <p className="my-6">{data?.data?.description}</p>
           {/* 방송하기 */}
           {data?.data?.cloudStreamKey && (
             <div className="bg-slate-200 rounded-xl p-4 overflow-scroll">
@@ -119,7 +128,7 @@ const StreamPage: NextPage = () => {
           )}
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">라이브 챗</h2>
+          <h2 className="text-2xl font-bold">라이브 챗</h2>
           <div className="py-10 pb-16 h-[50vh] overflow-y-scroll  px-4 space-y-4">
             {data?.data?.StreamMessage?.map((_) => (
               <Message

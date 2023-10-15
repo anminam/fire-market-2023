@@ -4,11 +4,11 @@ import { withApiSession } from '@/libs/server/withSession';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { id } = req.body;
+  const { id } = req.query;
 
-  const user = await client.user.findFirst({
+  const user = await client.user.findUnique({
     where: {
-      id,
+      id: Number(id),
     },
   });
 
