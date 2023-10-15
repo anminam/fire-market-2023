@@ -137,18 +137,26 @@ const MiniProfile = () => {
 const Profile: NextPage = () => {
   return (
     <Layout isViewTabBar title="나의 화재">
-      <div className="px-4">
-        <Suspense fallback={<div>loading...</div>}>
-          <MiniProfile />
-        </Suspense>
+      <div className="">
+        <div className="px-4">
+          <Suspense fallback={<div>loading...</div>}>
+            <MiniProfile />
+          </Suspense>
+        </div>
         <div className="divider"></div>
-        <MyBusiness />
+        <div className="px-4">
+          <MyBusiness />
+        </div>
         <div className="divider"></div>
-        <Suspense fallback={<div>loading...</div>}>
-          <Reviews />
-        </Suspense>
+        <div className="px-4">
+          <Suspense fallback={<div>loading...</div>}>
+            <Reviews />
+          </Suspense>
+        </div>
         <div className="divider"></div>
-        <Others />
+        <div className="px-4">
+          <Others />
+        </div>
       </div>
     </Layout>
   );

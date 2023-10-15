@@ -39,34 +39,39 @@ const ItemDetail = () => {
     return <div>로딩중...</div>;
   }
 
+  const handleChatClick = () => {
+    alert('준비중입니다.');
+  };
+
   return (
     <Layout canGoBack title={`상품 | ${data?.product?.name || ''}`}>
-      <div className="px-4 py-4">
+      <div className="py-4">
         <div className="mb-8">
           <div className="relative pb-80 h-96 bg-slate-300">
             {data?.product?.image && (
-              <Image
+              <img
                 alt={data?.product?.name + ' 이미지'}
-                fill
+                className="absolute inset-0 w-full h-full object-cover"
                 src={`https://imagedelivery.net/6-jfB1-8fzgOcmfBEr6cGA/${data?.product?.image}/public`}
-                priority={true}
               />
             )}
           </div>
 
           {/* 프로필 */}
-          <UserProfileContainer
-            id={data?.product.user?.id.toString() || ''}
-            avatar={data?.product.user?.avatar}
-            name={data?.product.user?.name}
-            size="12"
-            isViewTextProfile
-          />
+          <div className="mx-4">
+            <UserProfileContainer
+              id={data?.product.user?.id.toString() || ''}
+              avatar={data?.product.user?.avatar}
+              name={data?.product.user?.name}
+              size="12"
+              isViewTextProfile
+            />
+          </div>
 
           <div className="divider" />
 
           {/* 상품정보 */}
-          <div className="mt-5">
+          <div className="mx-4 mt-5">
             {/* 타이틀 */}
             <h1 className="text-3xl font-bold">{data?.product.name}</h1>
             {/* 가격 */}
@@ -75,8 +80,16 @@ const ItemDetail = () => {
             </div>
             {/* 설명 */}
             <p className="my-6">{data?.product.description}</p>
-            <div className="flex items-center justify-between space-x-2">
-              <Button large text="채팅하기" />
+            <div className="divider" />
+            {/* 하단 버튼부 */}
+
+            <div className="flex items-center justify-between space-x-2 mt-4">
+              <button
+                className="btn btn-primary flex-1"
+                onClick={handleChatClick}
+              >
+                채팅하기
+              </button>
               <button
                 onClick={onFavClick}
                 className={cls(
