@@ -30,7 +30,7 @@ const Join: NextPage = () => {
   ] = useMutation<JoinMutationResult>('/api/users/token-confirm');
 
   const { register, watch, reset, handleSubmit } = useForm<JoinForm>();
-  const { register: tokenRegister, handleSubmit: tokenHandleSubmit } =
+  const { register: tokenRegister, handleSubmit: tokenHandleSubmitcreate } =
     useForm<TokenForm>();
 
   // 가입하기 클릭
@@ -60,7 +60,7 @@ const Join: NextPage = () => {
 
   return (
     <div className="mt-16 px-4">
-      <h3 className="text-3xl font-bold text-center">입장하기</h3>
+      <h3 className="text-3xl font-bold text-center">인증받기</h3>
       <div className="mt-12">
         {data?.result ? (
           <form
