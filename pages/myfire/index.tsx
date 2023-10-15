@@ -77,6 +77,9 @@ const MyBusiness = () => {
   );
 };
 
+/**
+ * 기타
+ */
 const Others = () => {
   const router = useRouter();
 
@@ -100,6 +103,9 @@ const Others = () => {
   );
 };
 
+/**
+ * 나의 화재
+ */
 const Profile: NextPage = () => {
   const { user } = useUser();
 
@@ -140,25 +146,4 @@ const Profile: NextPage = () => {
   );
 };
 
-// 메인 페이지
-const Page: NextPage<{ data: User }> = ({ data }) => {
-  return <Profile />;
-};
-
-export const getServerSideProps = withSSRSession(async function ({
-  req,
-}: NextPageContext) {
-  const data = await client?.user.findUnique({
-    where: {
-      id: req?.session.user?.id,
-    },
-  });
-
-  return {
-    props: {
-      data: JSON.parse(JSON.stringify(data)),
-    },
-  };
-});
-
-export default Page;
+export default Profile;
