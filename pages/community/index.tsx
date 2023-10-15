@@ -1,8 +1,6 @@
 import type { NextPage } from 'next';
-import Link from 'next/link';
 import FloatingButton from '@/components/floating-button';
 import Layout from '@/components/layout';
-import useSWR from 'swr';
 import { Post, User } from '@prisma/client';
 import PostItem from '@/components/PostItem';
 import client from '@/libs/server/client';
@@ -23,7 +21,7 @@ const Community: NextPage<PostResponse> = ({ posts }) => {
   // const { data, isLoading } = useSWR<PostResponse>('/api/posts');
 
   return (
-    <Layout hasTabBar title="화재생활">
+    <Layout isViewTabBar title="화재생활">
       <div className="divide-y-[1px] divide-neutral">
         {posts?.map((_, i) => (
           <div key={i} className="">
