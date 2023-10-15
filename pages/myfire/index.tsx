@@ -8,7 +8,7 @@ import EvaluationItem from '@/components/EvaluationItem';
 import { withSSRSession } from '@/libs/server/withSession';
 import client from '@/libs/server/client';
 import PageContentsContainer from '@/components/PageContentsContainer';
-import { BiHeart, BiReceipt, BiShoppingBag } from 'react-icons/bi';
+import { BiHeart, BiLogOut, BiReceipt, BiShoppingBag } from 'react-icons/bi';
 import MyProfileImage from '@/components/MyProfileImage';
 import { useRouter } from 'next/router';
 
@@ -49,15 +49,15 @@ const MyBusiness = () => {
         <ul className="space-y-6">
           <li>
             <Link href="/myfire/loved">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center space-x-2">
                 <BiHeart size="20" />
                 <div>관심목록</div>
               </div>
             </Link>
           </li>
           <li>
-            <Link href="/myfire/sale">
-              <div className="flex items-center gap-2">
+            <Link href="/myfire/sale-all">
+              <div className="flex items-center space-x-2">
                 <BiReceipt size="20" />
                 <div>판매내역</div>
               </div>
@@ -65,7 +65,7 @@ const MyBusiness = () => {
           </li>
           <li>
             <Link href="/myfire/bought">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center space-x-2">
                 <BiShoppingBag size="20" />
                 <div>구매내역</div>
               </div>
@@ -95,7 +95,10 @@ const Others = () => {
       <div>
         <ul className="space-y-6">
           <li>
-            <button onClick={handleLogout}>로그아웃</button>
+            <div className="flex items-center space-x-2">
+              <BiLogOut size="20" />
+              <button onClick={handleLogout}>로그아웃</button>
+            </div>
           </li>
         </ul>
       </div>
@@ -115,7 +118,7 @@ const Profile: NextPage = () => {
   };
 
   return (
-    <Layout hasTabBar title="나의 화재">
+    <Layout isViewTabBar title="나의 화재">
       <div className="px-4">
         <Link href="/myfire/edit">
           <div className="flex items-center justify-between mt-5">
