@@ -14,7 +14,7 @@ export default function useUser() {
 
   useEffect(() => {
     if (data && !data.result) {
-      router.replace('/join');
+      router.replace('/login');
       return;
     }
   }, [data, router]);
