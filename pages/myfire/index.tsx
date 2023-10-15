@@ -6,12 +6,11 @@ import useSWR, { SWRConfig } from 'swr';
 import { Review, User } from '@prisma/client';
 import EvaluationItem from '@/components/EvaluationItem';
 import { withSSRSession } from '@/libs/server/withSession';
-import Image from 'next/image';
 import client from '@/libs/server/client';
 import PageContentsContainer from '@/components/PageContentsContainer';
-import { AiOutlineHeart } from 'react-icons/ai';
 import { BiHeart, BiReceipt, BiShoppingBag } from 'react-icons/bi';
 import MyProfileImage from '@/components/MyProfileImage';
+import { useRouter } from 'next/router';
 
 interface ReviewWithUser extends Review {
   createdBy: User;
@@ -79,11 +78,22 @@ const MyBusiness = () => {
 };
 
 const Others = () => {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await fetch('/api/users/logout', {
+      method: 'POST',
+    }).then(() => {
+      router.replace('/');
+    });
+  };
   return (
     <PageContentsContainer title="기타">
       <div>
         <ul className="space-y-6">
-          <li>딩가딩가</li>
+          <li>
+            <button onClick={handleLogout}>로그아웃</button>
+          </li>
         </ul>
       </div>
     </PageContentsContainer>
@@ -92,6 +102,11 @@ const Others = () => {
 
 const Profile: NextPage = () => {
   const { user } = useUser();
+
+  const router = useRouter();
+  const handleProfileButtonClicked = () => {
+    router.push('/myfire/edit');
+  };
 
   return (
     <Layout hasTabBar title="나의 화재">
@@ -105,9 +120,12 @@ const Profile: NextPage = () => {
               </div>
             </div>
             <div className="">
-              <Link href="/myfire/edit" className="text-sm text-gray-700">
-                <button className="btn btn-sm btn-neutral">프로필보기</button>
-              </Link>
+              <button
+                className="btn btn-sm btn-neutral"
+                onClick={handleProfileButtonClicked}
+              >
+                프로필보기
+              </button>
             </div>
           </div>
         </Link>
@@ -122,21 +140,9 @@ const Profile: NextPage = () => {
   );
 };
 
+// 메인 페이지
 const Page: NextPage<{ data: User }> = ({ data }) => {
-  return (
-    <SWRConfig
-      value={{
-        fallback: {
-          '/api/users/my': {
-            result: true,
-            data,
-          },
-        },
-      }}
-    >
-      <Profile />
-    </SWRConfig>
-  );
+  return <Profile />;
 };
 
 export const getServerSideProps = withSSRSession(async function ({
