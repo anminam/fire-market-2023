@@ -23,8 +23,14 @@ export default function withHandlers({
       return res.status(405).end();
     }
 
+    if (isPrivate && !req.session.firebaseUser?.uid) {
+      return res
+        .status(401)
+        .json({ result: false, error: '로그인해야 합니다.' });
+    }
+
     if (isPrivate && !req.session.user) {
-      return res.status(401).json({ result: false, error: '로그인해라' });
+      return res.status(401).json({ result: false, error: '인증해야 합니다.' });
     }
 
     try {

@@ -5,11 +5,16 @@ declare module 'iron-session' {
     user?: {
       id: number;
     };
+    firebaseUser?: {
+      uid: string;
+      email: string;
+      displayName: string;
+    };
   }
 }
 
 const option = {
-  cookieName: 'firesession',
+  cookieName: process.env.COOKIE_NAME!,
   password: process.env.COOKIE_PASSWORD!,
 };
 
