@@ -1,4 +1,3 @@
-import { ProductKind } from '@/interface/ProductKind';
 import useSWR from 'swr';
 import Item from './ProductItem';
 import { ProductWithCount } from '@/pages';
@@ -16,12 +15,31 @@ interface Record {
 interface ProductListResponse {
   [key: string]: Record[];
 }
-
+function CenterContainer({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex justify-center items-center h-full w-full mt-10">
+      {children}
+    </div>
+  );
+}
 export default function ProductList({ kind }: ProductListProps) {
-  const { data } = useSWR<ProductListResponse>(`/api/users/my/${kind}`);
+  const { data, isLoading } = useSWR<ProductListResponse>(
+    `/api/users/my/${kind}`
+  );
 
+  if (isLoading) {
+    return (
+      <CenterContainer>
+        <div className="loading loading-spinner loading-lg"></div>
+      </CenterContainer>
+    );
+  }
   if (!data || data.data.length === 0) {
-    return <Nothing />;
+    return (
+      <CenterContainer>
+        <Nothing />
+      </CenterContainer>
+    );
   }
 
   return data.data.map((_) => {
