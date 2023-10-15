@@ -41,12 +41,12 @@ export default function Layout({
       </Head>
       <div className="w-full h-12 max-w-xl justify-center bg-base-100 fixed border-b border-b-neutral top-0 flex items-center z-10">
         {canGoBack ? (
-          <div className="absolute flex left-4 space-x-2 items-center h-5 text-lg">
+          <div className="absolute flex left-4 space-x-5 items-center h-5 text-lg">
             <button onClick={onBackClick} className="">
-              <FaChevronLeft size="16" />
+              <FaChevronLeft size="18" />
             </button>
             <button onClick={onHomeClick} className="">
-              <AiOutlineHome size="18" />
+              <AiOutlineHome size="20" />
             </button>
           </div>
         ) : null}
