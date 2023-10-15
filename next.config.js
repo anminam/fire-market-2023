@@ -5,6 +5,7 @@ const nextConfig = {
     domains: [
       'imagedelivery.net',
       'customer-rfd4j8o0msz4s9nx.cloudflarestream.com',
+      'developers.google.com',
     ],
   },
 };
