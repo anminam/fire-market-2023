@@ -21,12 +21,23 @@ export async function middleware(req: NextRequest, ev: NextFetchEvent) {
     },
   });
 
-  if (!session.user && !req.url.includes('/join')) {
+  if (!session.firebaseUser && !req.url.includes('/login')) {
     const url = req.nextUrl.clone();
     url.searchParams.set('from', url.pathname);
-    url.pathname = '/join';
+    url.pathname = '/login';
     return NextResponse.redirect(url);
   }
+
+  // if (
+  //   !session.user &&
+  //   !req.url.includes('/join') &&
+  //   !req.url.includes('/login')
+  // ) {
+  //   const url = req.nextUrl.clone();
+  //   url.searchParams.set('from', url.pathname);
+  //   url.pathname = '/join';
+  //   return NextResponse.redirect(url);
+  // }
 }
 
 export const config = {
