@@ -1,4 +1,3 @@
-import type { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import Button from '@/components/button';
 import Layout from '@/components/layout';
 import { useRouter } from 'next/router';
@@ -7,8 +6,8 @@ import Link from 'next/link';
 import useMutation from '@/libs/client/useMutation';
 import { cls, moneyFormat } from '@/libs/client/utils';
 import Image from 'next/image';
-import client from '@/libs/server/client';
 import useSWR from 'swr';
+import UserProfileContainer from '@/components/UserProfileContainer';
 
 interface ProductWithUser extends Product {
   user: User;
@@ -20,7 +19,7 @@ interface ItemDetailResult {
   isLike: boolean;
   relatedProducts: Product[];
 }
-const ItemDetail: NextPage = () => {
+const ItemDetail = () => {
   const router = useRouter();
   const { data, mutate: boundMutate } = useSWR<ItemDetailResult>(
     router.query.id ? `/api/products/${router.query.id}` : null
@@ -41,38 +40,28 @@ const ItemDetail: NextPage = () => {
   }
 
   return (
-    <Layout canGoBack title={`상품 | ${data?.product.name}`}>
+    <Layout canGoBack title={`상품 | ${data?.product?.name || ''}`}>
       <div className="px-4 py-4">
         <div className="mb-8">
-          <div className="relative pb-80">
-            <Image
-              alt={data?.product.name + ' 이미지'}
-              layout="fill"
-              src={`https://imagedelivery.net/6-jfB1-8fzgOcmfBEr6cGA/${data?.product.image}/public`}
-              className="h-96 bg-slate-300 object-cover"
-            />
+          <div className="relative pb-80 h-96 bg-slate-300">
+            {data?.product?.image && (
+              <Image
+                alt={data?.product?.name + ' 이미지'}
+                fill
+                src={`https://imagedelivery.net/6-jfB1-8fzgOcmfBEr6cGA/${data?.product?.image}/public`}
+                priority={true}
+              />
+            )}
           </div>
 
           {/* 프로필 */}
-          <Link
-            href={`/users/products/${data?.product.user?.id}`}
-            className="flex space-x-4 items-center mt-5"
-          >
-            <Image
-              alt={`${data?.product.user?.name}의 아바타`}
-              width={48}
-              height={48}
-              src={`https://imagedelivery.net/6-jfB1-8fzgOcmfBEr6cGA/${data?.product.user.avatar}/avatar`}
-              className="w-12 h-12 rounded-full bg-slate-300"
-            />
-            <div>
-              <div className="text-sm font-bold   neutral">
-                {data?.product.user?.name}
-              </div>
-
-              <p className="text-xs">프로필 보기</p>
-            </div>
-          </Link>
+          <UserProfileContainer
+            id={data?.product.user?.id.toString() || ''}
+            avatar={data?.product.user?.avatar}
+            name={data?.product.user?.name}
+            size="12"
+            isViewTextProfile
+          />
 
           <div className="divider" />
 
