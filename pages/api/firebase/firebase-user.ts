@@ -2,6 +2,7 @@ import withHandlers from '@/libs/server/withHandlers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { withApiSession } from '@/libs/server/withSession';
+import client from '@/libs/server/client';
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { displayName, email, uid } = req.body;
