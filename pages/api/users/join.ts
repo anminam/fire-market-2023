@@ -28,6 +28,7 @@ async function handler(
         connectOrCreate: {
           where: { ...user },
           create: {
+            firebaseUid: '', // !TODO 이거 나중에 버그됨 firebaseUid 가져오는 방법 추가해야함
             name: 'Anonymous',
             ...user,
           },
