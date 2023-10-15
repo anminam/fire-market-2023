@@ -76,7 +76,7 @@ const StreamPage: NextPage = () => {
   };
 
   return (
-    <Layout canGoBack>
+    <Layout canGoBack title="라이브 ">
       <div className="py-10 px-4 space-y-4">
         {/* 비디오 */}
         <div className="w-full rounded-md shadow-sm bg-slate-300 aspect-video">
@@ -127,6 +127,8 @@ const StreamPage: NextPage = () => {
             </div>
           )}
         </div>
+        <div className="divider"></div>
+        {/* 챗 */}
         <div>
           <h2 className="text-2xl font-bold">라이브 챗</h2>
           <div className="py-10 pb-16 h-[50vh] overflow-y-scroll  px-4 space-y-4">
@@ -144,7 +146,7 @@ const StreamPage: NextPage = () => {
             // <Message message="I want ￦20,000" reversed />
             // <Message message="미쳤어" /> */}
           </div>
-          <div className="fixed py-2 bg-white  bottom-0 inset-x-0">
+          <div className="fixed py-2 bottom-0 inset-x-0">
             <form
               onSubmit={handleSubmit(onValid)}
               className="flex relative max-w-md items-center  w-full mx-auto"
