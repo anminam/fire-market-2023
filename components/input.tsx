@@ -26,7 +26,7 @@ export default function Input({
             id={name}
             {...register}
             {...rest}
-            class="input input-bordered w-full placeholder-neutral-600"
+            className="input input-bordered w-full placeholder-neutral-600"
           />
         </div>
       ) : null}
