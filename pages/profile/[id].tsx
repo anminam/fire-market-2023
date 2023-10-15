@@ -23,7 +23,11 @@ const OtherProfile: NextPage = () => {
   return (
     <Layout canGoBack title="나의 화재">
       <div className="px-4">
-        <OtherProfileImage avatar={data?.data.avatar} name={data?.data.name} />
+        <OtherProfileImage
+          avatar={data?.data.avatar}
+          name={data?.data.name}
+          id={data?.data.id.toString()}
+        />
       </div>
       <div className="divider"></div>
     </Layout>
