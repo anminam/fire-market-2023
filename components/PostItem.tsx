@@ -1,4 +1,4 @@
-import { dateFormate } from '@/libs/client/utils';
+import { dateFormat } from '@/libs/client/utils';
 import Link from 'next/link';
 import { AiOutlineQuestionCircle } from 'react-icons/ai';
 import { BiSolidChat } from 'react-icons/bi';
@@ -30,7 +30,7 @@ export default function PostItem({
       <div className="text-lg font-bold">{content}</div>
 
       <div className="mt-1 items-center justify-between w-full font-medium text-xs">
-        <span>{name}</span> &bull; <span>{dateFormate(createdAt)}</span>
+        <span>{name}</span> &bull; <span>{dateFormat(createdAt)}</span>
       </div>
 
       <div className="text-xs flex mt-1 space-x-1">

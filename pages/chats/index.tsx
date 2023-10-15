@@ -5,7 +5,7 @@ import MyProfileImage from '@/components/MyProfileImage';
 
 const Chats: NextPage = () => {
   return (
-    <Layout hasTabBar title="채팅">
+    <Layout isViewTabBar title="채팅">
       <div className="divide-y-[1px] divide-neutral">
         {[1, 1, 1, 1, 1, 1, 1].map((_, i) => (
           <Link
