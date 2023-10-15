@@ -12,15 +12,17 @@ import { FaChevronLeft } from 'react-icons/fa';
 interface LayoutProps {
   title?: string;
   canGoBack?: boolean;
-  hasTabBar?: boolean;
+  isViewTabBar?: boolean;
   children: React.ReactNode;
+  isHideTitle?: boolean;
 }
 
 export default function Layout({
   title: pTitle,
   canGoBack,
-  hasTabBar,
+  isViewTabBar,
   children,
+  isHideTitle = true,
 }: LayoutProps) {
   const router = useRouter();
 
@@ -39,21 +41,25 @@ export default function Layout({
       <Head>
         <title>{title}</title>
       </Head>
-      <div className="w-full h-12 max-w-xl justify-center bg-base-100 fixed border-b border-b-neutral top-0 flex items-center z-10">
-        {canGoBack ? (
-          <div className="absolute flex left-4 space-x-5 items-center h-5 text-lg">
-            <button onClick={onBackClick} className="">
-              <FaChevronLeft size="18" />
-            </button>
-            <button onClick={onHomeClick} className="">
-              <AiOutlineHome size="20" />
-            </button>
-          </div>
-        ) : null}
-        {pTitle && <LayoutTitle canGoBack={canGoBack}>{pTitle}</LayoutTitle>}
+      {isHideTitle && (
+        <div className="w-full h-12 max-w-xl justify-center bg-base-100 fixed border-b border-b-neutral top-0 flex items-center z-10">
+          {canGoBack ? (
+            <div className="absolute flex left-4 space-x-5 items-center h-5 text-lg">
+              <button onClick={onBackClick} className="">
+                <FaChevronLeft size="18" />
+              </button>
+              <button onClick={onHomeClick} className="">
+                <AiOutlineHome size="20" />
+              </button>
+            </div>
+          ) : null}
+          {pTitle && <LayoutTitle canGoBack={canGoBack}>{pTitle}</LayoutTitle>}
+        </div>
+      )}
+      <div className={cls('pt-12', isViewTabBar ? 'pb-24' : '')}>
+        {children}
       </div>
-      <div className={cls('pt-12', hasTabBar ? 'pb-24' : '')}>{children}</div>
-      {hasTabBar && <GroundNavBar />}
+      {isViewTabBar && <GroundNavBar />}
     </div>
   );
 }
