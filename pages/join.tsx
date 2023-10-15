@@ -30,7 +30,7 @@ const Join: NextPage = () => {
   ] = useMutation<JoinMutationResult>('/api/users/token-confirm');
 
   const { register, watch, reset, handleSubmit } = useForm<JoinForm>();
-  const { register: tokenRegister, handleSubmit: tokenHandleSubmitcreate } =
+  const { register: tokenRegister, handleSubmit: tokenHandleSubmitCreate } =
     useForm<TokenForm>();
 
   // 가입하기 클릭
@@ -65,7 +65,7 @@ const Join: NextPage = () => {
         {data?.result ? (
           <form
             className="flex flex-col mt-8 space-y-4"
-            onSubmit={tokenHandleSubmit(onTokenValid)}
+            onSubmit={tokenHandleSubmitCreate(onTokenValid)}
           >
             <Input
               register={tokenRegister('token', { required: true })}
