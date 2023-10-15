@@ -21,7 +21,7 @@ export async function middleware(req: NextRequest, ev: NextFetchEvent) {
     },
   });
 
-  if (!session.firebaseUser && !req.url.includes('/login')) {
+  if (!session?.firebaseUser?.uid && !req.url.includes('/login')) {
     const url = req.nextUrl.clone();
     url.searchParams.set('from', url.pathname);
     url.pathname = '/login';

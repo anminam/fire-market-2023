@@ -33,7 +33,11 @@ const LoginPage = () => {
           email,
           uid,
         });
-        router.replace('/');
+
+        // 타이밍 이슈로 인해 1초 뒤에 홈으로 이동
+        setTimeout(() => {
+          router.replace('/');
+        }, 1000);
       }
     } catch (error) {
       console.error('구글 로그인 실패:', error);
