@@ -1,5 +1,4 @@
 import type { NextPage } from 'next';
-import Button from '@/components/button';
 import Input from '@/components/input';
 import Layout from '@/components/layout';
 
@@ -85,6 +84,14 @@ const EditProfile: NextPage = () => {
   const avatar = watch('avatar');
 
   const [avatarPreview, setAvatarPreview] = useState('');
+
+  useEffect(() => {
+    user?.avatar &&
+      setAvatarPreview(
+        `https://imagedelivery.net/6-jfB1-8fzgOcmfBEr6cGA/${user?.avatar}/avatar`
+      );
+  }, [user?.avatar]);
+
   useEffect(() => {
     if (avatar && avatar.length) {
       const file = avatar[0];
@@ -103,17 +110,19 @@ const EditProfile: NextPage = () => {
     <Layout canGoBack title="내 정보 변경하기">
       <form onSubmit={handleSubmit(onValid)} className="py-10 px-4 space-y-4">
         <div className="flex items-center space-x-3">
-          {avatarPreview ? (
-            <Image
-              alt={`의 프로필 사진`}
-              src={avatarPreview}
-              className="w-14 h-14 rounded-full bg-slate-500"
-            />
-          ) : (
-            <div className="w-14 h-14 rounded-full bg-slate-500" />
-          )}
+          <div className="w-14 h-14 rounded-full bg-slate-500 relative overflow-hidden">
+            {avatarPreview && (
+              <Image
+                alt={`의 프로필 사진`}
+                src={avatarPreview}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                priority={true}
+              />
+            )}
+          </div>
           <label htmlFor="picture" className="btn btn-sm btn-neutral">
-            변경
+            <div>사진변경</div>
             <input
               {...register('avatar')}
               id="picture"
