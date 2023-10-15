@@ -18,14 +18,17 @@ const ProductImage = ({ title, imgSrc }: { imgSrc: string; title: string }) => {
     <div className="relative w-20 h-20 bg-gray-400 rounded-md overflow-hidden">
       <Image
         alt={`${title} 이미지`}
-        layout="fill"
+        fill
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        priority={true}
         src={`https://imagedelivery.net/6-jfB1-8fzgOcmfBEr6cGA/${imgSrc}/public`}
         className=" bg-slate-300 object-cover"
       />
     </div>
   );
 };
-export default function Item({
+
+export default function ProductItem({
   title,
   price,
   comments,
