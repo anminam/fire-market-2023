@@ -8,6 +8,7 @@ import { app } from '@/libs/client/firebase';
 import Image from 'next/image';
 import useMutation from '@/libs/client/useMutation';
 import { useRouter } from 'next/router';
+import Layout from '@/components/layout';
 
 interface LoginPageResult {
   result: boolean;
@@ -45,22 +46,24 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center">
-      <h1 className="m-6 text-2xl font-bold">화재장터 LOGIN</h1>
-      <button
-        className="btn bg-white text-gray-600 border border-gray-300 py-2 px-4 flex items-center"
-        onClick={handleGoogleLogin}
-      >
-        <Image
-          height={5}
-          width={5}
-          src="https://developers.google.com/identity/images/g-logo.png"
-          alt="Google 로고"
-          className="w-5 h-5"
-        />
-        <span>Google 로그인</span>
-      </button>
-    </div>
+    <Layout title="로그인" isViewTabBar={false} isHideTitle={false}>
+      <div className="flex flex-col justify-center items-center">
+        <h1 className="m-6 text-2xl font-bold">화재장터 LOGIN</h1>
+        <button
+          className="btn bg-white text-gray-600 border border-gray-300 py-2 px-4 flex items-center"
+          onClick={handleGoogleLogin}
+        >
+          <Image
+            height={5}
+            width={5}
+            src="https://developers.google.com/identity/images/g-logo.png"
+            alt="Google 로고"
+            className="w-5 h-5"
+          />
+          <span>Google 로그인</span>
+        </button>
+      </div>
+    </Layout>
   );
 };
 
