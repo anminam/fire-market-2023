@@ -13,9 +13,10 @@ const StreamsList = ({ data }: IProps) => {
         <Link key={_.id} href={`/streams/${_.id}`}>
           <div className="space-y-3 px-4">
             <div className="relative w-full rounded-md shadow-sm bg-slate-300 aspect-video overflow-hidden">
-              <Image
-                layout="fill"
+              <img
+                className="w-full h-full object-cover"
                 src={`https://customer-rfd4j8o0msz4s9nx.cloudflarestream.com/${_.cloudStreamId}/thumbnails/thumbnail.jpg?height=270`}
+                // https://customer-rfd4j8o0msz4s9nx.cloudflarestream.com/3c425c304a1e302aea2a500731d41e38/thumbnails/thumbnail.jpg?height=200
                 alt={`${_.name} 의 방송`}
               />
             </div>
