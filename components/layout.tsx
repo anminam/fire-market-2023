@@ -45,10 +45,16 @@ export default function Layout({
         <div className="w-full h-12 max-w-xl justify-center bg-base-100 fixed border-b border-b-neutral top-0 flex items-center z-10">
           {canGoBack ? (
             <div className="absolute flex left-4 space-x-5 items-center h-5 text-lg">
-              <button onClick={onBackClick} className="">
+              <button
+                onClick={onBackClick}
+                className="btn btn-circle btn-ghost"
+              >
                 <FaChevronLeft size="18" />
               </button>
-              <button onClick={onHomeClick} className="">
+              <button
+                onClick={onHomeClick}
+                className="btn btn-circle btn-ghost"
+              >
                 <AiOutlineHome size="20" />
               </button>
             </div>
