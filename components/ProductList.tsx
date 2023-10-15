@@ -4,7 +4,7 @@ import { ProductWithCount } from '@/pages';
 import Nothing from './Nothing';
 
 interface ProductListProps {
-  kind: 'sales' | 'favorites' | 'purchase';
+  kind: 'sales' | 'favorites' | 'purchase' | 'sales-all';
 }
 
 interface Record {

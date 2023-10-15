@@ -1,4 +1,4 @@
-import { dateFormate } from '@/libs/client/utils';
+import { dateFormat } from '@/libs/client/utils';
 import { StreamsResponse } from '@/pages/streams';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -21,7 +21,7 @@ const StreamsList = ({ data }: IProps) => {
             </div>
             <h1 className="text-2xl font-bold">{_.name}</h1>
             <div>
-              <span className="_date text-sm">{dateFormate(_.updatedAt)}</span>
+              <span className="_date text-sm">{dateFormat(_.updatedAt)}</span>
             </div>
           </div>
           <div className="divider "></div>

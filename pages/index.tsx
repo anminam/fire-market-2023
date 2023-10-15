@@ -24,7 +24,7 @@ const Home: NextPage = () => {
   const { data } = useSWR<ProductsResponse>('/api/products');
 
   return (
-    <Layout title="장터보기" hasTabBar>
+    <Layout title="장터보기" isViewTabBar>
       <div className="flex flex-col space-y-5 divide-y divide-neutral">
         {data ? <MainProducts products={data.products} /> : 'loading'}
 
