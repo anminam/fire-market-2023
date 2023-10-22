@@ -3,13 +3,14 @@ import Image from 'next/image';
 
 interface IProps {
   avatar?: string | null;
+  size: number;
 }
-const ProfileImage = ({ avatar }: IProps) => {
+const ProfileImage = ({ avatar, size = 16 }: IProps) => {
   return (
     <div className="avatar">
       <div
         className={cls(
-          `w-16 h-16 rounded-full bg-neutral relative overflow-hidden`,
+          `w-${size} h-${size} rounded-full bg-neutral relative overflow-hidden`,
           !avatar ? 'animate-pulse' : ''
         )}
       >

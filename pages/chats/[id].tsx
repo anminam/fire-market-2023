@@ -46,9 +46,9 @@ const ChatDetail: NextPage = () => {
   return (
     <Layout canGoBack title="채팅">
       <div className="py-10 pb-16 px-4 space-y-4">
-        <Message message="Hi how much are you selling them for?" />
-        <Message message="I want ￦20,000" reversed />
-        <Message message="미쳤어" />
+        <Message message="만들고있어요" />
+        <Message message="잘되냐?" reversed />
+        <Message message="아니요" />
         <ChatDetailBottomContainer onSubmit={handleSubmit} />
       </div>
     </Layout>

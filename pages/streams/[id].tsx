@@ -136,7 +136,7 @@ const StreamPage: NextPage = () => {
               <Message
                 key={_.id}
                 message={_.message}
-                avatarUrl={_.user.avatar}
+                avatar={_.user.avatar}
                 reversed={_.user.id === user?.id}
                 userName={_.user.name}
               />
