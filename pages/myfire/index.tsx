@@ -115,9 +115,13 @@ const MiniProfile = () => {
       <div className="flex items-center justify-between mt-5">
         <div className="flex items-center space-x-3 ">
           <MyProfileImage />
-          <div className="text-xl font-bold ">
-            <span className="">{user?.name}</span>
-          </div>
+          {user?.name ? (
+            <div className="text-xl font-bold">
+              <span className="">{user?.name}</span>
+            </div>
+          ) : (
+            <div className="animate-pulse h-4 bg-neutral rounded min-w-full" />
+          )}
         </div>
         <div className="">
           <button

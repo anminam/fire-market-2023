@@ -101,32 +101,34 @@ const ItemDetail = () => {
 
           {/* 하단 고정 컨테이너 만들기 */}
           {/* 하단 */}
-          <div className="fixed bottom-0 w-full p-3 border-t-[1px] border-neutral-700 z-10 bg-base-100">
-            {/* 하단 버튼부 */}
-            <div className="flex items-center justify-between space-x-2">
-              {/* 하트버튼 */}
-              <button
-                onClick={onFavClick}
-                className={cls(
-                  'p-3 rounded-md flex items-center justify-center',
-                  data?.isLike
-                    ? 'text-red-400 hover:bg-red-100 hover:text-red-500'
-                    : 'text-gray-400 hover:bg-gray-100 hover:text-gray-500'
-                )}
-              >
-                {data?.isLike ? (
-                  <AiFillHeart size="24" />
-                ) : (
-                  <AiOutlineHeart size="24" />
-                )}
-              </button>
-              {/* 채팅버튼 */}
-              <button
-                className="btn btn-primary flex-1"
-                onClick={handleChatClick}
-              >
-                채팅하기
-              </button>
+          <div className="relative overflow-hidden">
+            <div className="fixed bottom-0 max-w-xl w-full p-3 border-t-[1px] border-neutral-700 z-10 bg-base-100">
+              {/* 하단 버튼부 */}
+              <div className="flex items-center justify-between space-x-2">
+                {/* 하트버튼 */}
+                <button
+                  onClick={onFavClick}
+                  className={cls(
+                    'p-3 rounded-md flex items-center justify-center',
+                    data?.isLike
+                      ? 'text-red-400 hover:bg-red-100 hover:text-red-500'
+                      : 'text-gray-400 hover:bg-gray-100 hover:text-gray-500'
+                  )}
+                >
+                  {data?.isLike ? (
+                    <AiFillHeart size="24" />
+                  ) : (
+                    <AiOutlineHeart size="24" />
+                  )}
+                </button>
+                {/* 채팅버튼 */}
+                <button
+                  className="btn btn-primary flex-1"
+                  onClick={handleChatClick}
+                >
+                  채팅하기
+                </button>
+              </div>
             </div>
           </div>
 

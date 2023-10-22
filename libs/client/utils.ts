@@ -1,4 +1,4 @@
-export function cls(...classnames: string[]) {
+export function cls(...classnames: string[]): string {
   return classnames.join(' ');
 }
 
