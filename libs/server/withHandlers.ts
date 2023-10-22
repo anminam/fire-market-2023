@@ -13,6 +13,10 @@ interface ConfigType {
   isPrivate?: boolean;
 }
 
+function isLogin(req: NextApiRequest): boolean {
+  return req.session.user?.id && req.session.user?.token ? true : false;
+}
+
 export default function withHandlers({
   methods,
   handler,
@@ -23,14 +27,10 @@ export default function withHandlers({
       return res.status(405).end();
     }
 
-    if (isPrivate && !req.session.firebaseUser?.uid) {
+    if (isPrivate && !isLogin(req)) {
       return res
         .status(401)
         .json({ result: false, error: '로그인해야 합니다.' });
-    }
-
-    if (isPrivate && !req.session.user) {
-      return res.status(401).json({ result: false, error: '인증해야 합니다.' });
     }
 
     try {

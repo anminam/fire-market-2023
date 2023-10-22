@@ -4,11 +4,7 @@ declare module 'iron-session' {
   interface IronSessionData {
     user?: {
       id: number;
-    };
-    firebaseUser?: {
-      uid: string;
-      email: string;
-      displayName: string;
+      token: string;
     };
   }
 }

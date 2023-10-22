@@ -30,10 +30,12 @@ const LoginPage = () => {
       await signInWithPopup(auth, provider);
       if (auth.currentUser) {
         const { displayName, email, uid } = auth.currentUser;
+        const token = await auth.currentUser.getIdToken();
         saveToken({
           displayName,
           email,
           uid,
+          token,
         });
       }
     } catch (error) {

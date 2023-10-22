@@ -1,4 +1,3 @@
-import Button from '@/components/button';
 import Layout from '@/components/layout';
 import { useRouter } from 'next/router';
 import { Product, User } from '@prisma/client';

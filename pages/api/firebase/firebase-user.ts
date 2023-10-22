@@ -5,13 +5,7 @@ import { withApiSession } from '@/libs/server/withSession';
 import client from '@/libs/server/client';
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { displayName, email, uid } = req.body;
-
-  req.session.firebaseUser = {
-    displayName,
-    email,
-    uid,
-  };
+  const { displayName, email, uid, token } = req.body;
 
   let user = await client?.user.findUnique({
     where: {
@@ -57,12 +51,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
   req.session.user = {
     id: user.id,
-  };
-
-  req.session.firebaseUser = {
-    uid,
-    displayName,
-    email,
+    token: token,
   };
 
   // 세션 저장.

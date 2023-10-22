@@ -1,5 +1,4 @@
 import { moneyFormat } from '@/libs/client/utils';
-import Image from 'next/image';
 import Link from 'next/link';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { BiSolidChat } from 'react-icons/bi';

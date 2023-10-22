@@ -36,31 +36,4 @@ const Home: NextPage = () => {
   );
 };
 
-const PageContainer: NextPage<{ products: ProductWithCount[] }> = ({
-  products,
-}) => {
-  return (
-    <SWRConfig
-      value={{
-        fallback: {
-          '/api/products': {
-            result: true,
-            products,
-          },
-        },
-      }}
-    >
-      <Home />
-    </SWRConfig>
-  );
-};
-export async function getServerSideProps() {
-  const products = await client?.product.findMany({});
-  return {
-    props: {
-      products: JSON.parse(JSON.stringify(products)),
-    },
-  };
-}
-
-export default PageContainer;
+export default Home;
