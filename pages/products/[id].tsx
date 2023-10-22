@@ -8,6 +8,7 @@ import Image from 'next/image';
 import useSWR from 'swr';
 import UserProfileContainer from '@/components/UserProfileContainer';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
+import { useEffect } from 'react';
 
 interface ProductWithUser extends Product {
   user: User;
@@ -26,6 +27,9 @@ const ItemDetail = () => {
   );
 
   const [toggleFav] = useMutation(`/api/products/${router.query.id}/favorite`);
+  const [setChat, { loading: chatLoading, data: chatData }] = useMutation(
+    `/api/chats/${router.query.id}}`
+  );
   const onFavClick = () => {
     if (!data) return;
     boundMutate(
@@ -35,13 +39,25 @@ const ItemDetail = () => {
     toggleFav({});
   };
 
+  const handleChatClick = () => {
+    if (chatLoading) return;
+    if (chatData) {
+    }
+    setChat({
+      productId: data?.product.id as number,
+      sellingId: data?.product.user?.id as number,
+    });
+  };
+
+  useEffect(() => {
+    if (chatData) {
+      router.push(`/chats/${chatData.data.id}`);
+    }
+  }, [router, chatData]);
+
   if (router.isFallback) {
     return <div>로딩중...</div>;
   }
-
-  const handleChatClick = () => {
-    alert('준비중입니다.');
-  };
 
   return (
     <Layout canGoBack isTranslate title="상품">
