@@ -22,8 +22,7 @@ export async function middleware(req: NextRequest, ev: NextFetchEvent) {
   });
 
   if (
-    !session?.user?.id &&
-    !session?.user?.token &&
+    (!session?.user?.id || !session?.user?.token) &&
     !req.url.includes('/login')
   ) {
     const url = req.nextUrl.clone();
