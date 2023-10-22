@@ -9,6 +9,7 @@ import Image from 'next/image';
 import useMutation from '@/libs/client/useMutation';
 import { useRouter } from 'next/router';
 import Layout from '@/components/layout';
+import { useEffect } from 'react';
 
 interface LoginPageResult {
   result: boolean;
@@ -34,16 +35,17 @@ const LoginPage = () => {
           email,
           uid,
         });
-
-        // 타이밍 이슈로 인해 1초 뒤에 홈으로 이동
-        setTimeout(() => {
-          router.replace('/');
-        }, 1000);
       }
     } catch (error) {
       console.error('구글 로그인 실패:', error);
     }
   };
+
+  useEffect(() => {
+    if (tokenData) {
+      router.replace('/');
+    }
+  });
 
   return (
     <Layout title="로그인" isViewTabBar={false} isHideTitle={false}>
