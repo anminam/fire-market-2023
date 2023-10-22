@@ -138,6 +138,7 @@ const StreamPage: NextPage = () => {
                 avatar={_.user.avatar}
                 reversed={_.user.id === user?.id}
                 name={_.user.name}
+                time={''}
               />
             ))}
           </div>
