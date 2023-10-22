@@ -33,7 +33,7 @@ const Chats: NextPage = () => {
 
   return (
     <Layout isViewTabBar title="채팅">
-      <div className="mt-5">
+      <div className="mt-4">
         {!data || !data?.data.length ? (
           <CenterContainer>아직 채팅이 없네요</CenterContainer>
         ) : (

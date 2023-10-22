@@ -1,14 +1,13 @@
 import type { NextPage } from 'next';
-import Layout from '@/components/layout';
-import Message from '@/components/message';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
-import { Stream, StreamMessage, User } from '@prisma/client';
+import { Stream, User } from '@prisma/client';
 import { useForm } from 'react-hook-form';
 import useMutation from '@/libs/client/useMutation';
 import useUser from '@/libs/client/useUser';
-import { useEffect } from 'react';
 import { moneyFormat } from '@/libs/client/utils';
+import Layout from '@/components/layout';
+import Message from '@/components/message';
 import UserProfileContainer from '@/components/UserProfileContainer';
 
 interface IStreamMessage {
@@ -94,7 +93,7 @@ const StreamPage: NextPage = () => {
           id={data?.data?.user?.id.toString() || ''}
           avatar={data?.data?.user?.avatar}
           name={data?.data?.user?.name}
-          size="12"
+          size={12}
           isViewTextProfile
         ></UserProfileContainer>
         <div className="divider"></div>
@@ -138,13 +137,9 @@ const StreamPage: NextPage = () => {
                 message={_.message}
                 avatar={_.user.avatar}
                 reversed={_.user.id === user?.id}
-                userName={_.user.name}
+                name={_.user.name}
               />
             ))}
-
-            {/* // <Message message="Hi how much are you selling them for?" />
-            // <Message message="I want ￦20,000" reversed />
-            // <Message message="미쳤어" /> */}
           </div>
           <div className="fixed py-2 bottom-0 inset-x-0">
             <form

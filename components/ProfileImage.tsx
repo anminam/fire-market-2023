@@ -1,11 +1,11 @@
 import { cls } from '@/libs/client/utils';
-import Image from 'next/image';
 
 interface IProps {
   avatar?: string | null;
-  size: number;
+  alt?: string;
+  size?: number;
 }
-const ProfileImage = ({ avatar, size = 16 }: IProps) => {
+const ProfileImage = ({ avatar, size = 16, alt = 'avatar' }: IProps) => {
   return (
     <div className="avatar">
       <div
@@ -15,12 +15,9 @@ const ProfileImage = ({ avatar, size = 16 }: IProps) => {
         )}
       >
         {avatar && (
-          <Image
-            alt="avatar"
+          <img
+            alt={alt}
             src={`https://imagedelivery.net/6-jfB1-8fzgOcmfBEr6cGA/${avatar}/avatar`}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            priority={true}
           />
         )}
       </div>

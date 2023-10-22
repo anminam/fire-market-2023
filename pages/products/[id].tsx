@@ -10,6 +10,7 @@ import UserProfileContainer from '@/components/UserProfileContainer';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import { useEffect } from 'react';
 import useUser from '@/libs/client/useUser';
+import { getDummyProduct } from '@/libs/client/mocks/products';
 
 interface ProductWithUser extends Product {
   user: User;
@@ -32,6 +33,7 @@ const ItemDetail = () => {
   const [setChat, { loading: chatLoading, data: chatData }] = useMutation(
     `/api/chats/${router.query.id}}`
   );
+
   const onFavClick = () => {
     if (!data) return;
     boundMutate(
@@ -46,8 +48,8 @@ const ItemDetail = () => {
     if (chatData) {
     }
     setChat({
-      productId: data?.product.id as number,
-      sellingId: data?.product.user?.id as number,
+      productId: data?.product?.id as number,
+      sellingId: data?.product?.user?.id as number,
     });
   };
 
@@ -65,7 +67,12 @@ const ItemDetail = () => {
     <Layout canGoBack isTranslate title="상품">
       <div className="">
         <div className="mb-24">
-          <div className="relative pb-80 h-96 bg-slate-300">
+          <div
+            className={cls(
+              'relative pb-80 h-96 bg-neutral',
+              data?.product?.image ? '' : 'animate-pulse'
+            )}
+          >
             {data?.product?.image && (
               <img
                 alt={data?.product?.name + ' 이미지'}
@@ -78,10 +85,10 @@ const ItemDetail = () => {
           {/* 프로필 */}
           <div className="mx-4">
             <UserProfileContainer
-              id={data?.product.user?.id.toString() || ''}
-              avatar={data?.product.user?.avatar}
-              name={data?.product.user?.name}
-              size="12"
+              id={data?.product?.user?.id.toString() || ''}
+              avatar={data?.product?.user?.avatar}
+              name={data?.product?.user?.name}
+              size={12}
               isViewTextProfile
             />
           </div>
@@ -89,16 +96,27 @@ const ItemDetail = () => {
           <div className="divider" />
 
           {/* 상품정보 */}
-          <div className="mx-4 mt-5">
-            {/* 타이틀 */}
-            <h1 className="text-3xl font-bold">{data?.product.name}</h1>
-            {/* 가격 */}
-            <div className="text-2xl block mt-3">
-              {data?.product && moneyFormat(data?.product.price)} 원
+          {data?.product ? (
+            <div className="mx-4 mt-5">
+              {/* 타이틀 */}
+              <h1 className="text-xl font-bold">{data?.product?.name}</h1>
+              {/* 가격 */}
+              <div className="block mt-3">
+                {data?.product && moneyFormat(data?.product?.price)}원
+              </div>
+              {/* 설명 */}
+              <p className="my-6">{data?.product?.description}</p>
             </div>
-            {/* 설명 */}
-            <p className="my-6">{data?.product.description}</p>
-          </div>
+          ) : (
+            <div className="mx-4 mt-5">
+              {/* 타이틀 */}
+              <h1 className="bg-neutral rounded animate-pulse w-40 h-8" />
+              {/* 가격 */}
+              <div className="bg-neutral rounded animate-pulse w-40 h-5 mt-3" />
+              {/* 설명 */}
+              <p className="bg-neutral rounded animate-pulse w-40 h-10 my-6" />
+            </div>
+          )}
           <div className="divider" />
 
           {/* 하단 고정 컨테이너 만들기 */}
@@ -127,7 +145,7 @@ const ItemDetail = () => {
                 <button
                   className={cls(
                     `btn btn-primary flex-1`,
-                    !isMe(data?.product.user, user.user) ? '' : 'btn-disabled'
+                    !isMe(data?.product?.user, user.user) ? '' : 'btn-disabled'
                   )}
                   onClick={handleChatClick}
                 >
