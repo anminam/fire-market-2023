@@ -7,7 +7,7 @@ import { Chat } from '@prisma/client';
 
 import { AiOutlineSend } from 'react-icons/ai';
 import useChat from '@/hooks/useChat';
-import { useEffect } from 'react';
+import react from 'react';
 import useFirebaseUser from '@/hooks/useFirebaseUser';
 
 interface ChatDetailResult {
@@ -20,35 +20,49 @@ const ChatDetail: NextPage = () => {
   const { data, mutate, isLoading } = useSWR<ChatDetailResult>(
     router.query.id ? `/api/chats/${router.query.id}` : null
   );
-  const { setToken } = useChat();
+  const { start, sendMessage, messages } = useChat();
   const { token } = useFirebaseUser();
 
-  useEffect(() => {
-    if (!token) return;
-    setToken(token);
-  }, [setToken, token]);
+  react.useEffect(() => {
+    if (!token || !data?.data) return;
+    start(token, getRoomName(data.data));
+  }, [data, token]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const message = formData.get('message') as string;
-    console.log(message);
-    // TODO: Send message to server
     e.currentTarget.reset();
+
+    if (!message) return;
+    if (!data) return;
+
+    sendMessage({
+      text: message,
+      roomNm: getRoomName(data.data),
+    });
   };
 
-  const loadRoom = (data: any) => {
-    debugger;
+  react.useEffect(() => {
+    // 스크롤 맨아래로 내리기
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight;
+    window.scrollTo({ top: scrollHeight - clientHeight, behavior: 'smooth' });
+  }, [messages]);
+
+  const getRoomName = (data: Chat) => {
+    const { productId, sellingUserId, buyingUserId } = data;
+    return `${productId}-${sellingUserId}-${buyingUserId}`; // '상품id - 판매자id - 구매자id',
+    // return `${1}-${14}-${15}`; // '상품id - 판매자id - 구매자id',
   };
 
-  if (data) {
-  }
   return (
     <Layout canGoBack title="채팅">
       <div className="py-10 pb-16 px-4 space-y-4">
-        <Message message="만들고있어요" />
-        <Message message="잘되냐?" reversed />
-        <Message message="아니요" />
+        {messages.map((_) => (
+          <Message key={_.id} message={_.text} time={_.date.format} />
+        ))}
+
         <ChatDetailBottomContainer onSubmit={handleSubmit} />
       </div>
     </Layout>
@@ -65,10 +79,11 @@ const ChatDetailBottomContainer = ({
       onSubmit={onSubmit}
       className="fixed bottom-0 w-full max-w-xl mx-auto"
     >
-      <div className=" bg-base-100 left-0 p-2">
+      <div className="bg-base-100 left-0 p-2">
         <div className="flex items-center space-x-2">
           <input
             type="text"
+            name="message"
             className="w-full input input-sm bg-base-200"
             placeholder="메시지 보내기..."
           />

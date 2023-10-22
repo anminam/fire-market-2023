@@ -6,6 +6,7 @@ interface MessageProps {
   reversed?: boolean;
   avatar?: string;
   name?: string;
+  time: string;
 }
 
 export default function Message({
@@ -13,6 +14,7 @@ export default function Message({
   avatar,
   reversed,
   name,
+  time,
 }: MessageProps) {
   return (
     <div className="w-full">
@@ -22,7 +24,7 @@ export default function Message({
         </div>
         <div className="chat-header">
           {name}
-          {/* <time className="text-xs opacity-50">12:45</time> */}
+          <time className="text-xs opacity-50">{time}</time>
         </div>
         <div className="chat-bubble">{message}</div>
         {/* <div className="chat-footer opacity-50">아마 본거?</div> */}

@@ -13,6 +13,34 @@ export interface IChatServerManager {
   buyingUser: User;
 }
 
+export interface IChatSendMessage {
+  roomNm: string;
+  text: string;
+}
+export interface IChatReceivedServerMessage {
+  createdAt: string;
+  id: number;
+  roomNm: string;
+  text: string;
+  userId: number;
+}
+
+export interface IChatMessage {
+  id: number; // message Id
+  roomNm: string; // room name
+  text: string;
+  userId: number;
+  date: {
+    year: string;
+    month: string;
+    day: string;
+    hour: string;
+    minute: string;
+    format: string;
+    isAm: boolean;
+  };
+}
+
 export interface IChatManager {
   id: number;
   product: Product;
