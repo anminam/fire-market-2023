@@ -22,6 +22,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
   req.session.user = {
     id: foundToken.userId,
+    token: foundToken.payload,
   };
 
   // 세션 저장.
