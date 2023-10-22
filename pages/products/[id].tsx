@@ -44,9 +44,9 @@ const ItemDetail = () => {
   };
 
   return (
-    <Layout canGoBack isTranslate>
+    <Layout canGoBack isTranslate title="상품">
       <div className="">
-        <div className="mb-8">
+        <div className="mb-24">
           <div className="relative pb-80 h-96 bg-slate-300">
             {data?.product?.image && (
               <img
@@ -85,7 +85,7 @@ const ItemDetail = () => {
 
           {/* 하단 고정 컨테이너 만들기 */}
           {/* 하단 */}
-          <div className="fixed bottom-0 w-full p-3 border-t-[1px] border-neutral-700">
+          <div className="fixed bottom-0 w-full p-3 border-t-[1px] border-neutral-700 z-10 bg-base-100">
             {/* 하단 버튼부 */}
             <div className="flex items-center justify-between space-x-2">
               {/* 하트버튼 */}

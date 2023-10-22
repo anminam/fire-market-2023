@@ -18,7 +18,7 @@ export default function GroundNavBar({}: Props) {
       <Link
         href="/"
         className={cls(
-          'flex flex-col items-center space-y-1 ',
+          'flex flex-col items-center space-y-1',
           getItemColor(router.pathname, '/')
         )}
       >

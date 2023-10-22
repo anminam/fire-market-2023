@@ -73,7 +73,9 @@ export default function Layout({
               </button>
             </div>
           ) : null}
-          {pTitle && <LayoutTitle canGoBack={canGoBack}>{pTitle}</LayoutTitle>}
+          {pTitle && !isTranslate && (
+            <LayoutTitle canGoBack={canGoBack}>{pTitle}</LayoutTitle>
+          )}
         </div>
       )}
       <div
