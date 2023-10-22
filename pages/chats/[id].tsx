@@ -8,7 +8,7 @@ import { Chat } from '@prisma/client';
 import { AiOutlineSend } from 'react-icons/ai';
 import useChat from '@/hooks/useChat';
 import { useEffect } from 'react';
-import useFirebaseAuth from '@/hooks/useFirebaseCurrentUsre';
+import useFirebaseUser from '@/hooks/useFirebaseUser';
 
 interface ChatDetailResult {
   result: boolean;
@@ -21,7 +21,7 @@ const ChatDetail: NextPage = () => {
     router.query.id ? `/api/chats/${router.query.id}` : null
   );
   const { setToken } = useChat();
-  const { token } = useFirebaseAuth();
+  const { token } = useFirebaseUser();
 
   useEffect(() => {
     if (!token) return;
