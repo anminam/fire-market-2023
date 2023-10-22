@@ -15,6 +15,7 @@ interface LayoutProps {
   isViewTabBar?: boolean;
   children: React.ReactNode;
   isHideTitle?: boolean;
+  isTranslate?: boolean;
 }
 
 export default function Layout({
@@ -23,6 +24,7 @@ export default function Layout({
   isViewTabBar,
   children,
   isHideTitle = true,
+  isTranslate = false,
 }: LayoutProps) {
   const router = useRouter();
 
@@ -42,27 +44,41 @@ export default function Layout({
         <title>{title}</title>
       </Head>
       {isHideTitle && (
-        <div className="w-full h-12 max-w-xl justify-center bg-base-100 fixed border-b border-b-neutral top-0 flex items-center z-10">
+        <div
+          className={`w-full h-12 max-w-xl justify-center fixed top-0 flex items-center z-10 ${
+            isTranslate
+              ? 'bg-transparent'
+              : 'bg-base-100 border-b border-b-neutral'
+          }`}
+        >
           {canGoBack ? (
-            <div className="absolute flex left-4 space-x-5 items-center h-5 text-lg">
+            <div className="absolute flex left-2 space-x-1 items-center h-5 text-lg">
               <button
                 onClick={onBackClick}
                 className="btn btn-circle btn-ghost"
               >
-                <FaChevronLeft size="18" />
+                <FaChevronLeft
+                  size="18"
+                  color={cls(isTranslate ? 'white' : '')}
+                />
               </button>
               <button
                 onClick={onHomeClick}
                 className="btn btn-circle btn-ghost"
               >
-                <AiOutlineHome size="20" />
+                <AiOutlineHome
+                  size="20"
+                  color={cls(isTranslate ? 'white' : '')}
+                />
               </button>
             </div>
           ) : null}
           {pTitle && <LayoutTitle canGoBack={canGoBack}>{pTitle}</LayoutTitle>}
         </div>
       )}
-      <div className={cls('pt-12', isViewTabBar ? 'pb-24' : '')}>
+      <div
+        className={cls(isTranslate ? '' : 'pt-12', isViewTabBar ? 'pb-24' : '')}
+      >
         {children}
       </div>
       {isViewTabBar && <GroundNavBar />}

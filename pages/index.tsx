@@ -7,12 +7,13 @@ import { Product } from '@prisma/client';
 import client from '@/libs/server/client';
 import { HiPlus } from 'react-icons/hi';
 import MainProducts from '@/components/MainProducts';
+import { getDummyProducts } from '@/libs/client/mocks/products';
 
 interface ProductsResponse {
   result: boolean;
   products: ProductWithCount[];
 }
-
+const dummyProducts = getDummyProducts();
 export interface ProductWithCount extends Product {
   _count: {
     Favorite: number;
@@ -20,13 +21,12 @@ export interface ProductWithCount extends Product {
 }
 
 const Home: NextPage = () => {
-  const { user, isLoading } = useUser();
   const { data } = useSWR<ProductsResponse>('/api/products');
 
   return (
     <Layout title="장터보기" isViewTabBar>
       <div className="flex flex-col space-y-5 divide-y divide-neutral">
-        {data ? <MainProducts products={data.products} /> : 'loading'}
+        <MainProducts products={data ? data.products : dummyProducts} />
 
         <FloatingButton href="/products/upload">
           <HiPlus className="text-lg" />

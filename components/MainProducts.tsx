@@ -13,7 +13,7 @@ const MainProducts = ({ products }: IProps) => {
           key={item.id}
           title={item.name}
           price={item.price}
-          comments={1}
+          comments={0}
           hearts={item._count?.Favorite || 0}
           imgSrc={item.image}
         />
