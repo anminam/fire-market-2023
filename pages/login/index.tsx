@@ -10,18 +10,17 @@ import useMutation from '@/libs/client/useMutation';
 import { useRouter } from 'next/router';
 import Layout from '@/components/layout';
 import { useEffect } from 'react';
+import useFirebaseUser from '@/hooks/useFirebaseUser';
 
 interface LoginPageResult {
   result: boolean;
 }
 
 const LoginPage = () => {
-  const [
-    saveToken,
-    { loading: tokenLoading, data: tokenData, error: tokenError },
-  ] = useMutation<LoginPageResult>('/api/firebase/firebase-user');
-
   const router = useRouter();
+  const [saveToken, { loading, data, error: tokenError }] =
+    useMutation<LoginPageResult>('/api/firebase/firebase-user');
+
   // 구글 로그인
   const handleGoogleLogin = async () => {
     const auth = getAuth(app);
@@ -44,10 +43,10 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-    if (tokenData) {
+    if (data?.result) {
       router.replace('/');
     }
-  });
+  }, [router, data]);
 
   return (
     <Layout title="로그인" isViewTabBar={false} isHideTitle={false}>
