@@ -1,13 +1,14 @@
 import type { NextPage } from 'next';
 import Link from 'next/link';
 import Layout from '@/components/layout';
-import MyProfileImage from '@/components/MyProfileImage';
 import useSWR from 'swr';
-import { Chat } from '@prisma/client';
+import ProfileImage from '@/components/ProfileImage';
+import { IChatManager } from '@/interface/Chat';
+import useUser from '@/libs/client/useUser';
 
 interface ChatsResponse {
   result: boolean;
-  data: Chat[];
+  data: IChatManager[];
 }
 
 function CenterContainer({ children }: { children: React.ReactNode }) {
@@ -20,6 +21,7 @@ function CenterContainer({ children }: { children: React.ReactNode }) {
 
 const Chats: NextPage = () => {
   const { data, isLoading } = useSWR<ChatsResponse>('/api/chats');
+  const user = useUser();
 
   if (isLoading) {
     return (
@@ -31,32 +33,51 @@ const Chats: NextPage = () => {
 
   return (
     <Layout isViewTabBar title="채팅">
-      <div className="">
+      <div className="mt-5">
         {!data || !data?.data.length ? (
           <CenterContainer>아직 채팅이 없네요</CenterContainer>
         ) : (
-          data.data.map((_, i) => (
-            <div key={i}>
-              <Link
-                href={`/chats/${i}`}
-                className="flex px-4 cursor-pointer py-3 items-center space-x-3"
-              >
-                <>
-                  <MyProfileImage />
-                  <div>
-                    <p className="">안미남</p>
-                    <p className="text-xs opacity-">
-                      더에셋에서 6시반에 만나요
-                    </p>
-                  </div>
-                </>
-              </Link>
-              <div className="divider"></div>
-            </div>
-          ))
+          data.data.map((_) => {
+            let tUser = _.sellingUser;
+
+            // 같으면 변경.
+            if (tUser.id === user.user?.id) {
+              tUser = _.buyingUser;
+            }
+
+            return (
+              <div key={_.id}>
+                <Link
+                  href={`/chats/${tUser.id}`}
+                  className="flex px-2 cursor-pointer items-center space-x-3"
+                >
+                  <Profile avatar={tUser.avatar} name={tUser.name} />
+                </Link>
+                <div className="divider my-2"></div>
+              </div>
+            );
+          })
         )}
       </div>
     </Layout>
+  );
+};
+
+const Profile = ({
+  name,
+  avatar,
+}: {
+  name?: string;
+  avatar?: string | null;
+}) => {
+  return (
+    <>
+      <ProfileImage avatar={avatar} />
+      <div>
+        <p className="">{name}</p>
+        <p className="text-xs opacity-">...</p>
+      </div>
+    </>
   );
 };
 

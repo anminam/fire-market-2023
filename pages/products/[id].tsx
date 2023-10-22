@@ -9,6 +9,7 @@ import useSWR from 'swr';
 import UserProfileContainer from '@/components/UserProfileContainer';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import { useEffect } from 'react';
+import useUser from '@/libs/client/useUser';
 
 interface ProductWithUser extends Product {
   user: User;
@@ -22,6 +23,7 @@ interface ItemDetailResult {
 }
 const ItemDetail = () => {
   const router = useRouter();
+  const user = useUser();
   const { data, mutate: boundMutate } = useSWR<ItemDetailResult>(
     router.query.id ? `/api/products/${router.query.id}` : null
   );
@@ -123,7 +125,10 @@ const ItemDetail = () => {
                 </button>
                 {/* 채팅버튼 */}
                 <button
-                  className="btn btn-primary flex-1"
+                  className={cls(
+                    `btn btn-primary flex-1`,
+                    !isMe(data?.product.user, user.user) ? '' : 'btn-disabled'
+                  )}
                   onClick={handleChatClick}
                 >
                   채팅하기
@@ -161,5 +166,9 @@ const ItemDetail = () => {
     </Layout>
   );
 };
+
+function isMe(you?: User, me?: User) {
+  return you?.id === me?.id;
+}
 
 export default ItemDetail;
