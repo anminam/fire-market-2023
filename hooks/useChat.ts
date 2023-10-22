@@ -26,12 +26,14 @@ const useChat = () => {
     socket.connect();
 
     socket.on('connect', async () => {
-      const list = await getRooms(token);
+      try {
+        const list = await getRooms(token);
+      } catch (err) {
+        // console.log(err);
+      }
     });
 
-    socket.on('recMessage', (message) => {
-      debugger;
-    });
+    socket.on('recMessage', (message) => {});
     // socket.emit('sendMessage', message);
     setSocket(socket);
   };
@@ -46,22 +48,16 @@ const useChat = () => {
 };
 
 async function getRooms(token: string) {
-  debugger;
-  const res = await fetch(`${URL}/api/rooms`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const json = (response: Response) => response.json();
-  debugger;
-  // .then((response) => response.json())
-  // .then(({ rooms: data }) => {
-  //   debugger;
-  //   data.forEach((el) => {
-  //     rooms.push(el);
-  //   });
-  // })
-  // .catch((err) => console.error(err));
+  try {
+    const res = await fetch(`${URL}/api/rooms`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const json = await res.json();
+  } catch (err) {
+    throw new Error(err as string);
+  }
 }
 
 export default useChat;
