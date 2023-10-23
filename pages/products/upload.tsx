@@ -142,7 +142,7 @@ const Upload: NextPage = () => {
           label="자세한 설명"
           placeholder="이쁜말 고은말"
         />
-        <TextArea
+        <Input
           register={register('place', { required: true })}
           name="where-is"
           label="거래 희망 장소"

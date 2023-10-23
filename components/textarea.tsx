@@ -23,7 +23,7 @@ export default function TextArea({
       <textarea
         id={name}
         {...register}
-        className="py-1 input input-bordered w-full placeholder-neutral-600"
+        className="textarea textarea-bordered h-24 py-1 w-full placeholder-neutral-600"
         rows={4}
         {...rest}
       />
