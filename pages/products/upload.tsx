@@ -3,12 +3,12 @@ import Button from '@/components/button';
 import Input from '@/components/input';
 import Layout from '@/components/layout';
 import TextArea from '@/components/textarea';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import useMutation from '@/libs/client/useMutation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Product } from '@prisma/client';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
+import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 
 interface UploadProductForm {
   name: string;
@@ -24,8 +24,10 @@ interface UploadProductResult {
 }
 
 const Upload: NextPage = () => {
+  const MAX_PHOTO_COUNT = 3;
   const router = useRouter();
-  const { register, handleSubmit, watch } = useForm<UploadProductForm>();
+  const [photoFiles, setPhotoFiles] = useState<File[]>([]);
+  const { register, handleSubmit, watch, control, reset } = useForm<UploadProductForm>();
   const [apiUploadProduct, { loading, data }] =
     useMutation<UploadProductResult>('/api/products');
 
@@ -47,7 +49,7 @@ const Upload: NextPage = () => {
         return;
       }
       const formData = new FormData();
-      formData.append('file', photo[0], name);
+      formData.append('file', photoFiles[0], name);
 
       const res = await (
         await fetch(uploadURL, {
@@ -63,6 +65,17 @@ const Upload: NextPage = () => {
     }
   };
 
+  
+
+  const photoItem = useWatch({
+    control,
+    name: 'photo'
+  });
+  
+  const onDeleteClick = useCallback((file: File) => {
+    setPhotoFiles([...photoFiles.filter(_ => _.name !== file.name)]);
+  },[photoFiles]);
+
   useEffect(() => {
     if (data?.result) {
       router.replace(`/products/${data.product.id}`);
@@ -70,53 +83,43 @@ const Upload: NextPage = () => {
     }
   }, [data, router]);
 
-  const photo = watch('photo');
-  const [photoPreview, setPhotoPreview] = useState('');
+  
+  const addPhoto = useCallback((file:File) => {
+    const findLength = photoFiles.filter(item => {
+      return item.name === file.name;
+    }).length;
 
-  useEffect(() => {
-    if (photo && photo.length > 0) {
-      const file = photo[0];
-      setPhotoPreview(URL.createObjectURL(file));
+    if (findLength > 0) {
+      alert('이미등록된 사진입니다.');
+      return;
+    };
+
+    if (photoFiles.length >= MAX_PHOTO_COUNT) {
+      alert('더이상 등록할 수 없습니다.');
+      return;
     }
-  }, [photo]);
+
+    
+    
+    setPhotoFiles((list) => [...list, file]);
+  },[photoFiles]);
+
+  // 사진 form 등록.
+  useEffect(() => {
+    if(!photoItem || photoItem.length <= 0) return;
+  
+    // 사진 등록
+    addPhoto(photoItem[0]);
+    // input 초기화
+    reset({photo:undefined});
+  }, [addPhoto, photoFiles, photoItem, reset]);
 
   return (
     <Layout canGoBack title="내 물건 팔기">
       <form className="p-4 space-y-4" onSubmit={handleSubmit(onValid)}>
-        <div>
-          {photoPreview ? (
-            <div className="relative w-full h-48 rounded-md">
-              <Image
-                alt="photo"
-                layout="fill"
-                src={photoPreview}
-                className="object-contain"
-              ></Image>
-            </div>
-          ) : (
-            <label className="w-full cursor-pointer text-gray-600 hover:border-blue-500 hover:text-blue-500 flex items-center justify-center border-2 border-dashed border-gray-300 h-48 rounded-md">
-              <svg
-                className="h-12 w-12"
-                stroke="currentColor"
-                fill="none"
-                viewBox="0 0 48 48"
-                aria-hidden="true"
-              >
-                <path
-                  d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <input
-                {...register('photo')}
-                className="hidden"
-                type="file"
-                accept="image/*"
-              />
-            </label>
-          )}
+        <div className='flex space-x-2'>
+          <PhotoRegister register={register} />
+          <PhotoListContainer photoPreviewList={photoFiles} onDeleteClick={onDeleteClick}/>
         </div>
         <Input
           register={register('name', { required: true })}
@@ -150,5 +153,49 @@ const Upload: NextPage = () => {
     </Layout>
   );
 };
+
+const PhotoRegister =({register}:{register:any}) => {
+  return (
+    <label className="w-16 h-16 cursor-pointer text-gray-600 hover:border-primary hover:text-primary flex items-center justify-center border-2 border-dashed rounded-md">
+      <MdOutlineAddPhotoAlternate size={40} />
+      <input
+        {...register('photo')}
+        className="hidden"
+        type="file"
+        accept="image/*"
+      />
+    </label>
+  );
+}
+
+const PhotoListContainer = ({photoPreviewList, onDeleteClick}:{photoPreviewList:File[], onDeleteClick:(file:File) => void }) => {
+  return (
+    <div className='flex space-x-2'>
+      {photoPreviewList.map((_,i) => (
+        <PhotoItem key={i} file={_} onDeleteClick={onDeleteClick}/>
+      ))}
+    </div>
+  )
+}
+const PhotoItem = ({file, onDeleteClick}: {file: File, onDeleteClick:(file:File) => void}) => {
+
+  const handleDeleteClick = (file: File) => {
+    onDeleteClick(file);
+  }
+  return (
+    <div className='relative'>
+      <button className='rounded-full w-5 h-5 absolute right-[-6px] top-[-8px] bg-neutral text-xs border-1 border border-black' onClick={() => handleDeleteClick(file)}>X
+      {/* <AiOutlineDelete /> */}
+      </button>
+      <div className="w-16 h-16 rounded-md overflow-hidden">
+        <img
+          alt="photo"
+          src={URL.createObjectURL(file)}
+          className="object-contain"
+        ></img>
+      </div>
+    </div>
+  )
+}
 
 export default Upload;
