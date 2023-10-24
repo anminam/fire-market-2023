@@ -197,7 +197,12 @@ const ItemDetail = () => {
         </div>
 
         {/* 모달 */}
-        <MoreModal ref={dialogRef} productId={router.query.id as string} />
+        <MoreModal
+          ref={dialogRef}
+          productId={router.query.id as string}
+          userId={user.user?.id as number}
+          productUserId={data?.product?.user?.id as number}
+        />
       </div>
     </Layout>
   );
