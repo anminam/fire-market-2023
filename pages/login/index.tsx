@@ -3,14 +3,14 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   AuthError,
-} from 'firebase/auth';
-import { app } from '@/libs/client/firebase';
-import Image from 'next/image';
-import useMutation from '@/libs/client/useMutation';
-import { useRouter } from 'next/router';
-import Layout from '@/components/layout';
-import { useEffect } from 'react';
-import useFirebaseUser from '@/hooks/useFirebaseUser';
+} from "firebase/auth";
+import { app } from "@/libs/client/firebase";
+import Image from "next/image";
+import useMutation from "@/libs/client/useMutation";
+import { useRouter } from "next/router";
+import Layout from "@/components/layout";
+import { useEffect } from "react";
+import useFirebaseUser from "@/hooks/useFirebaseUser";
 
 interface LoginPageResult {
   result: boolean;
@@ -19,7 +19,7 @@ interface LoginPageResult {
 const LoginPage = () => {
   const router = useRouter();
   const [saveToken, { loading, data, error: tokenError }] =
-    useMutation<LoginPageResult>('/api/firebase/firebase-user');
+    useMutation<LoginPageResult>("/api/firebase/firebase-user");
 
   // 구글 로그인
   const handleGoogleLogin = async () => {
@@ -38,13 +38,13 @@ const LoginPage = () => {
         });
       }
     } catch (error) {
-      console.error('구글 로그인 실패:', error);
+      console.error("구글 로그인 실패:", error);
     }
   };
 
   useEffect(() => {
     if (data?.result) {
-      router.replace('/');
+      router.replace("/");
     }
   }, [router, data]);
 
@@ -52,19 +52,21 @@ const LoginPage = () => {
     <Layout title="로그인" isViewTabBar={false} isHideTitle={false}>
       <div className="flex flex-col justify-center items-center">
         <h1 className="m-6 text-2xl font-bold">화재장터 LOGIN</h1>
-        <button
-          className="btn bg-white text-gray-600 border border-gray-300 py-2 px-4 flex items-center"
-          onClick={handleGoogleLogin}
-        >
-          <Image
-            height={5}
-            width={5}
-            src="https://developers.google.com/identity/images/g-logo.png"
-            alt="Google 로고"
-            className="w-5 h-5"
-          />
-          <span>Google 로그인</span>
-        </button>
+        {loading ? (
+          <div className="loading loading-spinner loading-lg"></div>
+        ) : (
+          <button
+            className="btn bg-white text-gray-600 border border-gray-300 py-2 px-4 flex items-center"
+            onClick={handleGoogleLogin}
+          >
+            <img
+              src="https://developers.google.com/identity/images/g-logo.png"
+              alt="Google 로고"
+              className="w-5 h-5"
+            />
+            <span>Google 로그인</span>
+          </button>
+        )}
       </div>
     </Layout>
   );

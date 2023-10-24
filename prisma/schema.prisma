@@ -63,6 +63,7 @@ model Product {
   Sale        Sale[]
   Purchase    Purchase[]
   Chat        Chat[]
+  status      String @default("SALE")
 
   @@index([userId])
 }
