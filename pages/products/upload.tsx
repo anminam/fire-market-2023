@@ -3,12 +3,13 @@ import Button from '@/components/button';
 import Input from '@/components/input';
 import Layout from '@/components/layout';
 import TextArea from '@/components/textarea';
-import { useForm, useWatch } from 'react-hook-form';
+import { set, useForm, useWatch } from 'react-hook-form';
 import useMutation from '@/libs/client/useMutation';
-import { useCallback, useEffect, useState } from 'react';
+import { use, useCallback, useEffect, useState } from 'react';
 import { Product } from '@prisma/client';
 import { useRouter } from 'next/router';
-import { MdOutlineAddPhotoAlternate } from "react-icons/md";
+import { MdOutlineAddPhotoAlternate } from 'react-icons/md';
+import useUser from '@/libs/client/useUser';
 
 interface UploadProductForm {
   name: string;
@@ -27,9 +28,48 @@ const Upload: NextPage = () => {
   const MAX_PHOTO_COUNT = 3;
   const router = useRouter();
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
-  const { register, handleSubmit, watch, control, reset } = useForm<UploadProductForm>();
+  const { register, handleSubmit, watch, control, reset, setValue } =
+    useForm<UploadProductForm>();
   const [apiUploadProduct, { loading, data }] =
     useMutation<UploadProductResult>('/api/products');
+  const { user } = useUser();
+
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
+
+  // 초기화
+  useEffect(() => {
+    const func = async () => {
+      // param id가 있으면 수정모드
+      const { productId } = router.query;
+      if (productId && user?.id) {
+        const res = await fetch(`/api/products/${productId}`);
+        const json = await res.json();
+        // 본인이 아니면 종료.
+        if (json.product.userId !== user?.id) {
+          alert('본인의 상품만 수정할 수 있습니다.');
+          router.replace(`/products/${productId}`);
+          return;
+        }
+
+        setValue('name', json.product.name);
+        setValue('price', json.product.price);
+        setValue('description', json.product.description);
+        setValue('place', json.product.place);
+        const imgSrc = json.product.image;
+
+        // 로드해서 파일로만들기
+        const src = `https://imagedelivery.net/6-jfB1-8fzgOcmfBEr6cGA/${imgSrc}/public`;
+        const res2 = await fetch(src);
+        const blob = await res2.blob();
+        const file = new File([blob], imgSrc, { type: blob.type });
+        setPhotoFiles([file]);
+
+        // 수정 모드셋팅.
+        setIsEditMode(true);
+      }
+    };
+    func();
+  }, [router.query, user]);
 
   const onValid = async ({
     name,
@@ -39,7 +79,7 @@ const Upload: NextPage = () => {
     photo,
   }: UploadProductForm) => {
     if (loading) return;
-    if (photo && photo.length > 0) {
+    if (photoFiles && photoFiles.length > 0) {
       const {
         data: { uploadURL },
       } = await (await fetch('/api/files')).json();
@@ -58,23 +98,44 @@ const Upload: NextPage = () => {
         })
       ).json();
       const photoId = res.result.id;
-
-      apiUploadProduct({ name, price, description, place, photoId });
+      const obj = {
+        name,
+        price,
+        description,
+        place,
+        photoId,
+      };
+      if (router.query.productId) {
+        apiUploadProduct({ ...obj, id: router.query.productId });
+      } else {
+        apiUploadProduct(obj);
+      }
     } else {
-      apiUploadProduct({ name, price, description, place });
+      const obj = {
+        name,
+        price,
+        description,
+        place,
+      };
+      if (router.query.productId) {
+        apiUploadProduct({ ...obj, id: router.query.productId });
+      } else {
+        apiUploadProduct({ obj });
+      }
     }
   };
 
-  
-
   const photoItem = useWatch({
     control,
-    name: 'photo'
+    name: 'photo',
   });
-  
-  const onDeleteClick = useCallback((file: File) => {
-    setPhotoFiles([...photoFiles.filter(_ => _.name !== file.name)]);
-  },[photoFiles]);
+
+  const onDeleteClick = useCallback(
+    (file: File) => {
+      setPhotoFiles([...photoFiles.filter((_) => _.name !== file.name)]);
+    },
+    [photoFiles]
+  );
 
   useEffect(() => {
     if (data?.result) {
@@ -83,43 +144,46 @@ const Upload: NextPage = () => {
     }
   }, [data, router]);
 
-  
-  const addPhoto = useCallback((file:File) => {
-    const findLength = photoFiles.filter(item => {
-      return item.name === file.name;
-    }).length;
+  const addPhoto = useCallback(
+    (file: File) => {
+      const findLength = photoFiles.filter((item) => {
+        return item.name === file.name;
+      }).length;
 
-    if (findLength > 0) {
-      alert('이미등록된 사진입니다.');
-      return;
-    };
+      if (findLength > 0) {
+        alert('이미등록된 사진입니다.');
+        return;
+      }
 
-    if (photoFiles.length >= MAX_PHOTO_COUNT) {
-      alert('더이상 등록할 수 없습니다.');
-      return;
-    }
+      if (photoFiles.length >= MAX_PHOTO_COUNT) {
+        alert('더이상 등록할 수 없습니다.');
+        return;
+      }
 
-    
-    
-    setPhotoFiles((list) => [...list, file]);
-  },[photoFiles]);
+      setPhotoFiles((list) => [...list, file]);
+    },
+    [photoFiles]
+  );
 
   // 사진 form 등록.
   useEffect(() => {
-    if(!photoItem || photoItem.length <= 0) return;
-  
+    if (!photoItem || photoItem.length <= 0) return;
+
     // 사진 등록
     addPhoto(photoItem[0]);
     // input 초기화
-    reset({photo:undefined});
+    reset({ photo: undefined });
   }, [addPhoto, photoFiles, photoItem, reset]);
 
   return (
     <Layout canGoBack title="내 물건 팔기">
       <form className="p-4 space-y-4" onSubmit={handleSubmit(onValid)}>
-        <div className='flex space-x-2'>
+        <div className="flex space-x-2">
           <PhotoRegister register={register} />
-          <PhotoListContainer photoPreviewList={photoFiles} onDeleteClick={onDeleteClick}/>
+          <PhotoListContainer
+            photoPreviewList={photoFiles}
+            onDeleteClick={onDeleteClick}
+          />
         </div>
         <Input
           register={register('name', { required: true })}
@@ -154,7 +218,7 @@ const Upload: NextPage = () => {
   );
 };
 
-const PhotoRegister =({register}:{register:any}) => {
+const PhotoRegister = ({ register }: { register: any }) => {
   return (
     <label className="w-16 h-16 cursor-pointer text-gray-600 hover:border-primary hover:text-primary flex items-center justify-center border-2 border-dashed rounded-md">
       <MdOutlineAddPhotoAlternate size={40} />
@@ -166,26 +230,40 @@ const PhotoRegister =({register}:{register:any}) => {
       />
     </label>
   );
-}
+};
 
-const PhotoListContainer = ({photoPreviewList, onDeleteClick}:{photoPreviewList:File[], onDeleteClick:(file:File) => void }) => {
+const PhotoListContainer = ({
+  photoPreviewList,
+  onDeleteClick,
+}: {
+  photoPreviewList: File[];
+  onDeleteClick: (file: File) => void;
+}) => {
   return (
-    <div className='flex space-x-2'>
-      {photoPreviewList.map((_,i) => (
-        <PhotoItem key={i} file={_} onDeleteClick={onDeleteClick}/>
+    <div className="flex space-x-2">
+      {photoPreviewList.map((_, i) => (
+        <PhotoItem key={i} file={_} onDeleteClick={onDeleteClick} />
       ))}
     </div>
-  )
-}
-const PhotoItem = ({file, onDeleteClick}: {file: File, onDeleteClick:(file:File) => void}) => {
-
+  );
+};
+const PhotoItem = ({
+  file,
+  onDeleteClick,
+}: {
+  file: File;
+  onDeleteClick: (file: File) => void;
+}) => {
   const handleDeleteClick = (file: File) => {
     onDeleteClick(file);
-  }
+  };
   return (
-    <div className='relative'>
-      <button className='rounded-full w-5 h-5 absolute right-[-6px] top-[-8px] bg-neutral text-xs border-1 border border-black' onClick={() => handleDeleteClick(file)}>X
-      {/* <AiOutlineDelete /> */}
+    <div className="relative">
+      <button
+        className="rounded-full w-5 h-5 absolute right-[-6px] top-[-8px] bg-neutral text-xs border-1 border border-black"
+        onClick={() => handleDeleteClick(file)}
+      >
+        X{/* <AiOutlineDelete /> */}
       </button>
       <div className="w-16 h-16 rounded-md overflow-hidden">
         <img
@@ -195,7 +273,7 @@ const PhotoItem = ({file, onDeleteClick}: {file: File, onDeleteClick:(file:File)
         ></img>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Upload;

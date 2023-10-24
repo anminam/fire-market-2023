@@ -8,8 +8,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const products = await client.product.findMany({
       orderBy: [
         {
-          createdAt: 'desc'
-        }
+          createdAt: 'desc',
+        },
       ],
       include: {
         _count: {
@@ -28,10 +28,41 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   }
   if (req.method === 'POST') {
     const {
-      body: { name, price, description, place, photoId },
+      body: { name, price, description, place, photoId, id },
       session: { user },
     } = req;
 
+    // id가 있으면 수정
+    if (id) {
+      const {
+        body: { name, price, description, place, photoId, id },
+        session: { user },
+      } = req;
+      const product = await client.product.update({
+        where: {
+          id: +id,
+        },
+        data: {
+          name,
+          price: +price,
+          description,
+          image: photoId,
+          place,
+          user: {
+            connect: {
+              id: user?.id,
+            },
+          },
+        },
+      });
+      res.json({
+        result: true,
+        product,
+      });
+      return;
+    }
+
+    // Create a new product
     const product = await client.product.create({
       data: {
         name,

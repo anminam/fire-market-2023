@@ -6,7 +6,7 @@ import LayoutTitle from './layout-title';
 import GroundNavBar from './GroundNavBar';
 import Head from 'next/head';
 
-import { AiOutlineHome } from 'react-icons/ai';
+import { AiOutlineHome, AiOutlineMore } from 'react-icons/ai';
 import { FaChevronLeft } from 'react-icons/fa';
 
 interface LayoutProps {
@@ -16,6 +16,8 @@ interface LayoutProps {
   children: React.ReactNode;
   isHideTitle?: boolean;
   isTranslate?: boolean;
+  isMore?: boolean;
+  onMoreClick?: () => void;
 }
 
 export default function Layout({
@@ -25,6 +27,8 @@ export default function Layout({
   children,
   isHideTitle = true,
   isTranslate = false,
+  isMore = false,
+  onMoreClick,
 }: LayoutProps) {
   const router = useRouter();
 
@@ -36,7 +40,11 @@ export default function Layout({
     router.replace('/');
   };
 
-  const title = `${pTitle} | 화재장터`;
+  const handleClickMore = () => {
+    onMoreClick?.();
+  };
+
+  const title = `${pTitle ?? ''} | 화재장터`;
 
   return (
     <div>
@@ -75,6 +83,16 @@ export default function Layout({
           ) : null}
           {pTitle && !isTranslate && (
             <LayoutTitle canGoBack={canGoBack}>{pTitle}</LayoutTitle>
+          )}
+          {isMore && (
+            <div className="absolute flex right-2 space-x-1 items-center h-5 text-lg">
+              <button
+                onClick={() => handleClickMore()}
+                className="btn btn-circle btn-ghost"
+              >
+                <AiOutlineMore size="20" color="white" />
+              </button>
+            </div>
           )}
         </div>
       )}

@@ -8,9 +8,10 @@ import Image from 'next/image';
 import useSWR from 'swr';
 import UserProfileContainer from '@/components/UserProfileContainer';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
-import { useEffect } from 'react';
+import { RefObject, forwardRef, useEffect, useRef } from 'react';
 import useUser from '@/libs/client/useUser';
 import { getDummyProduct } from '@/libs/client/mocks/products';
+import MoreModal from '@/components/MoreModal';
 
 interface ProductWithUser extends Product {
   user: User;
@@ -53,6 +54,14 @@ const ItemDetail = () => {
     });
   };
 
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  const handleMoreClick = () => {
+    if (dialogRef.current) {
+      dialogRef.current.showModal();
+    }
+  };
+
   useEffect(() => {
     if (chatData) {
       router.push(`/chats/${chatData.data.id}`);
@@ -64,7 +73,13 @@ const ItemDetail = () => {
   }
 
   return (
-    <Layout canGoBack isTranslate title="상품">
+    <Layout
+      title="상품"
+      canGoBack
+      isTranslate
+      isMore
+      onMoreClick={handleMoreClick}
+    >
       <div className="">
         <div className="mb-24">
           <div
@@ -180,6 +195,9 @@ const ItemDetail = () => {
             </div>
           ) : null}
         </div>
+
+        {/* 모달 */}
+        <MoreModal ref={dialogRef} productId={router.query.id as string} />
       </div>
     </Layout>
   );

@@ -21,12 +21,14 @@ interface EditProfileResponse {
   result: boolean;
   error: string;
 }
+
 const EditProfile: NextPage = () => {
   const { user } = useUser();
 
   const [setProfile, { data, loading }] =
     useMutation<EditProfileResponse>('/api/users/my');
 
+  console.log(loading);
   const {
     register,
     handleSubmit,
@@ -38,14 +40,13 @@ const EditProfile: NextPage = () => {
 
   useEffect(() => {
     if (user?.email) setValue('email', user?.email);
-    if (user?.phone) setValue('phone', user?.phone);
     if (user?.name) setValue('name', user?.name);
   }, [user, setValue]);
 
-  const onValid = async ({ email, phone, name, avatar }: EditProfileForm) => {
+  const onValid = async ({ email, name, avatar }: EditProfileForm) => {
     if (loading) return;
 
-    if (email === '' && phone === '' && name === '') {
+    if (email === '' && name === '') {
       return setError('formErrors', {
         message: '이메일 또는 전화번호를 입력해주세요.',
       });
@@ -67,15 +68,12 @@ const EditProfile: NextPage = () => {
 
       setProfile({
         email,
-        phone,
         name,
         avatarId: result.id,
       });
     } else {
-      return;
       setProfile({
         email,
-        phone,
         name,
       });
     }
@@ -100,6 +98,9 @@ const EditProfile: NextPage = () => {
   }, [avatar]);
 
   useEffect(() => {
+    if (data?.result) {
+      alert('변경되었습니다.');
+    }
     if (data && !data.result) {
       setError('formErrors', {
         message: data?.error || '알 수 없는 오류입니다.',
@@ -146,14 +147,14 @@ const EditProfile: NextPage = () => {
           name="email"
           type="email"
         />
-        <Input
+        {/* <Input
           register={register('phone')}
           required={false}
           label="전화번호"
           name="phone"
           type="number"
           kind="phone"
-        />
+        /> */}
         <FormErrorMessage message={errors.formErrors?.message || ''} />
         <button className="btn btn-primary w-full">
           {' '}
