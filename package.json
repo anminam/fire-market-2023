@@ -38,11 +38,11 @@
     "unified": "^11.0.3"
   },
   "devDependencies": {
-    "@prisma/client": "^5.4.2",
+    "@prisma/client": "^5.5.0",
     "@tailwindcss/typography": "^0.5.10",
     "daisyui": "^3.9.2",
     "gray-matter": "^4.0.3",
-    "prisma": "^5.4.2"
+    "prisma": "^5.5.0"
   },
   "prisma": {
     "streamSeed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/StreamSeed.ts",
