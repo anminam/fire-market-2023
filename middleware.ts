@@ -24,7 +24,8 @@ export async function middleware(req: NextRequest, ev: NextFetchEvent) {
 
   if (
     (!session?.user?.id || !session?.user?.token) &&
-    !req.url.includes('/login')
+    !req.url.includes('/login') &&
+    !req.url.includes('/error')
   ) {
     const url = req.nextUrl.clone();
     url.searchParams.set('from', url.pathname);

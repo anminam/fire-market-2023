@@ -1,17 +1,17 @@
 import type { NextPage } from 'next';
 import FloatingButton from '@/components/floating-button';
 import Layout from '@/components/layout';
-import useUser from '@/libs/client/useUser';
-import useSWR, { SWRConfig } from 'swr';
+import useSWR from 'swr';
 import { Product } from '@prisma/client';
-import client from '@/libs/server/client';
 import { HiPlus } from 'react-icons/hi';
 import MainProducts from '@/components/MainProducts';
 import { getDummyProducts } from '@/libs/client/mocks/products';
+import { useRouter } from 'next/router';
 
 interface ProductsResponse {
   result: boolean;
   products: ProductWithCount[];
+  error: any;
 }
 const dummyProducts = getDummyProducts();
 export interface ProductWithCount extends Product {
@@ -22,11 +22,18 @@ export interface ProductWithCount extends Product {
 
 const Home: NextPage = () => {
   const { data } = useSWR<ProductsResponse>('/api/products');
+  const router = useRouter();
+
+  const products = data?.products || dummyProducts;
+
+  if (data?.error?.code === 'P2022') {
+    router.push('/error?message=점검중입니다.&code=P2022');
+  }
 
   return (
     <Layout title="장터보기" isViewTabBar>
       <div className="flex flex-col space-y-5 divide-y divide-neutral">
-        <MainProducts products={data ? data.products : dummyProducts} />
+        <MainProducts products={products} />
 
         <FloatingButton href="/products/upload">
           <HiPlus className="text-lg" />
