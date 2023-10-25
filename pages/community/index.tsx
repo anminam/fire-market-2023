@@ -5,6 +5,7 @@ import { Post, User } from '@prisma/client';
 import PostItem from '@/components/PostItem';
 import client from '@/libs/server/client';
 import { HiPencil } from 'react-icons/hi';
+import useSWR from 'swr';
 
 interface PostWithUser extends Post {
   user: User;
@@ -17,13 +18,12 @@ interface PostResponse {
   posts: PostWithUser[];
 }
 
-const Community: NextPage<PostResponse> = ({ posts }) => {
-  // const { data, isLoading } = useSWR<PostResponse>('/api/posts');
-
+const Community = () => {
+  const { data, isLoading } = useSWR<PostResponse>('/api/posts');
   return (
     <Layout isViewTabBar title="화재생활">
       <div className="divide-y-[1px] divide-neutral">
-        {posts?.map((_, i) => (
+        {data?.posts.map((_, i) => (
           <div key={i} className="">
             <PostItem
               content={_.question}
@@ -42,15 +42,5 @@ const Community: NextPage<PostResponse> = ({ posts }) => {
     </Layout>
   );
 };
-
-export async function getStaticProps() {
-  const posts = await client.post.findMany({ include: { user: true } });
-  return {
-    props: {
-      posts: JSON.parse(JSON.stringify(posts)),
-    },
-    // revalidate: 120,
-  };
-}
 
 export default Community;
