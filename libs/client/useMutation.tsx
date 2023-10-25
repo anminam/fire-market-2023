@@ -6,7 +6,10 @@ interface UseMutationState<T> {
   error?: any;
 }
 
-type UseMutationResult<T> = [(data: any) => void, UseMutationState<T>];
+type UseMutationResult<T> = [
+  (data: any, method?: 'POST' | 'PUT' | 'DELETE' | 'PATCH') => void,
+  UseMutationState<T>
+];
 export default function useMutation<T = any>(
   url: string
 ): UseMutationResult<T> {
@@ -16,11 +19,14 @@ export default function useMutation<T = any>(
     error: undefined,
   });
 
-  function mutation(data: any) {
+  function mutation(
+    data: any,
+    method: 'POST' | 'PUT' | 'DELETE' | 'PATCH' = 'POST'
+  ) {
     setState((prev) => ({ ...prev, loading: true }));
 
     fetch(url, {
-      method: 'POST',
+      method,
       headers: {
         'Content-Type': 'application/json',
       },

@@ -8,10 +8,10 @@ import Image from 'next/image';
 import useSWR from 'swr';
 import UserProfileContainer from '@/components/UserProfileContainer';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
-import { RefObject, forwardRef, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useUser from '@/libs/client/useUser';
-import { getDummyProduct } from '@/libs/client/mocks/products';
 import MoreModal from '@/components/MoreModal';
+import { ProductStatus } from '@/interface/ProductKind';
 
 interface ProductWithUser extends Product {
   user: User;
@@ -23,6 +23,24 @@ interface ItemDetailResult {
   isLike: boolean;
   relatedProducts: Product[];
 }
+
+interface IProductStatusResult {
+  result: boolean;
+  data: any;
+}
+
+interface IStatus {
+  value: ProductStatus;
+  label: string;
+}
+
+const statusList: IStatus[] = [
+  { value: 'SALE', label: '판매중' },
+  { value: 'RSRV', label: '예약중' },
+  { value: 'CMPL', label: '판매완료' },
+  { value: 'CNCL', label: '등록취소' },
+];
+
 const ItemDetail = () => {
   const router = useRouter();
   const user = useUser();
@@ -34,6 +52,10 @@ const ItemDetail = () => {
   const [setChat, { loading: chatLoading, data: chatData }] = useMutation(
     `/api/chats/${router.query.id}}`
   );
+
+  // 상태 수정.
+  const [setState] = useMutation(`/api/products/${router.query.id}/status`);
+  const [stateName, setStateName] = useState<string>('판매중');
 
   const onFavClick = () => {
     if (!data) return;
@@ -52,6 +74,17 @@ const ItemDetail = () => {
       productId: data?.product?.id as number,
       sellingId: data?.product?.user?.id as number,
     });
+  };
+
+  // 상태 변경 클릭.
+  const handleStateClick = (status: ProductStatus) => {
+    setState({ status }, 'PATCH');
+    setStateName(statusList.find((_) => _.value === status)?.label || '');
+    // 감추기
+    const el = document.activeElement as HTMLElement;
+    if (el) {
+      el?.blur();
+    }
   };
 
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -109,6 +142,33 @@ const ItemDetail = () => {
           </div>
 
           <div className="divider" />
+
+          {/* 상태 */}
+          {isMe(data?.product?.user, user.user) && (
+            <div>
+              <div className="dropdown dropdown-bottom">
+                <label tabIndex={0} className="btn btn-neutral m-1">
+                  {stateName}
+                </label>
+                <ul
+                  tabIndex={0}
+                  className="dropdown-content z-[1] menu p-2 shadow bg-neutral rounded-box w-32"
+                >
+                  {statusList.map((_) => {
+                    if (_.value === data?.product?.status) return null;
+                    return (
+                      <li key={_.value}>
+                        <button onClick={() => handleStateClick(_.value)}>
+                          {_.label}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+              <div className="divider" />
+            </div>
+          )}
 
           {/* 상품정보 */}
           {data?.product ? (

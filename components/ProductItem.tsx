@@ -1,3 +1,4 @@
+import { ProductStatus } from '@/interface/ProductKind';
 import { cls, moneyFormat } from '@/libs/client/utils';
 import Link from 'next/link';
 import { AiOutlineHeart } from 'react-icons/ai';
@@ -10,15 +11,36 @@ interface ItemProps {
   comments: number;
   hearts: number;
   imgSrc: string;
+  status: ProductStatus;
 }
 
-const ProductImage = ({ title, imgSrc }: { imgSrc: string; title: string }) => {
+const ProductImage = ({
+  title,
+  imgSrc,
+  status,
+}: {
+  imgSrc: string;
+  title: string;
+  status: ProductStatus;
+}) => {
   return (
     <div
       className={`relative w-20 h-20 bg-gray-400 rounded-md overflow-hidden ${cls(
         imgSrc ? '' : 'animate-pulse'
       )}`}
     >
+      {status === ProductStatus.RSRV && (
+        <div className="absolute flex flex-col top-0 left-0 w-full items-center bg-black bg-opacity-50">
+          <div className="text-sm">{'예약중'}</div>
+        </div>
+      )}
+
+      {status === ProductStatus.CNCL && (
+        <div className="absolute flex flex-col top-0 left-0 w-full items-center bg-black bg-opacity-50">
+          <div className="text-sm">{'등록취소'}</div>
+        </div>
+      )}
+
       {imgSrc && (
         <img
           alt={`${title} 이미지`}
@@ -37,12 +59,13 @@ export default function ProductItem({
   hearts,
   imgSrc,
   id,
+  status,
 }: ItemProps) {
   return (
     <Link href={`/products/${id}`}>
-      <div className="flex px-4 pt-5 cursor-pointer justify-between">
+      <div className="relative flex px-4 pt-5 cursor-pointer justify-between">
         <div className="flex space-x-4">
-          <ProductImage title={title} imgSrc={imgSrc} />
+          <ProductImage title={title} imgSrc={imgSrc} status={status} />
           <div className="pt-2 flex flex-col">
             <h3 className="text-sm font-bold">{title}</h3>
             {price ? (
