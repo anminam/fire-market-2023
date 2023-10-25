@@ -17,7 +17,7 @@ interface WriteForm {
 
 interface WriteFormResponse {
   result: boolean;
-  post: Post;
+  data: Post;
 }
 
 const Write: NextPage = () => {
@@ -38,7 +38,7 @@ const Write: NextPage = () => {
 
   useEffect(() => {
     if (data?.result) {
-      router.push(`/community/${data.post.id}`);
+      router.push(`/community/${data.data.id}`);
     }
   }, [data, router]);
 

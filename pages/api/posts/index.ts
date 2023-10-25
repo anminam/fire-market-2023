@@ -23,11 +23,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       },
     });
 
-    await res.revalidate('/community');
-
     res.json({
       result: true,
-      post,
+      data: post,
     });
   }
 
