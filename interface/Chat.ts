@@ -62,4 +62,16 @@ export interface IChatManager {
   buyingUser: IUser;
 }
 
-export interface IRoom {}
+export interface IRoom {
+  roomNm: string;
+  productId: number;
+  sellerId: number;
+  buyerId: number;
+  sellerReadId: number;
+  buyerReadId: number;
+  updatedAt: Date;
+  text: String;
+  product: Product;
+  seller: User;
+  buyer: User;
+}

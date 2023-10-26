@@ -42,7 +42,6 @@ const Chats: NextPage = () => {
       },
     }
   );
-
   // const { data } = useSWR<IRoomResponse>(roomData ? '/api/rooms' : null);
   // debugger;
 
@@ -57,23 +56,22 @@ const Chats: NextPage = () => {
             <div className="loading loading-spinner loading-lg"></div>
           </CenterContainer>
         )}
-        {/* 없을경우 */}
-        {rooms && rooms.length && (
+        {/* 받았는데 리스트가 존재하지 않으면 */}
+        {rooms && !rooms.length && (
           <CenterContainer>아직 채팅이 없네요</CenterContainer>
         )}
-        {/* {rooms?.map(_ => {
-          debugger;
-          let tUser = _.sellingUser;
+        {rooms?.map(_ => {
+          let tUser = _.seller;
 
           // 같으면 변경.
           if (tUser.id === user.user?.id) {
-            tUser = _.buyingUser;
+            tUser = _.buyer;
           }
 
           return (
-            <div key={_.id}>
+            <div key={_.roomNm}>
               <Link
-                href={`/chats/${tUser.id}`}
+                href={`/chats/${_.roomNm}`}
                 className="flex px-2 cursor-pointer items-center space-x-3"
               >
                 <ChatThumbnailItem avatar={tUser.avatar} name={tUser.name} />
@@ -81,7 +79,7 @@ const Chats: NextPage = () => {
               <div className="divider my-2"></div>
             </div>
           );
-        })} */}
+        })}
       </div>
     </Layout>
   );
