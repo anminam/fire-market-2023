@@ -239,3 +239,21 @@ model Chat {
   @@index([sellingUserId])
   @@index([buyingUserId])
 }
+
+model chatroom {
+  roomNm       String   @id @db.VarChar(255)
+  productId    Int
+  sellerId     Int
+  buyerId      Int
+  sellerReadId Int      @default(0)
+  buyerReadId  Int      @default(0)
+  updatedAt    DateTime @default(now()) @db.Timestamp(0)
+}
+
+model chatting {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  roomNm    String   @db.VarChar(255)
+  text      String   @db.VarChar(255)
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+}
