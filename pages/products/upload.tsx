@@ -1,15 +1,15 @@
-import type { NextPage } from 'next';
-import Button from '@/components/button';
-import Input from '@/components/input';
-import Layout from '@/components/layout';
-import TextArea from '@/components/textarea';
-import { set, useForm, useWatch } from 'react-hook-form';
-import useMutation from '@/libs/client/useMutation';
-import { use, useCallback, useEffect, useState } from 'react';
-import { Product } from '@prisma/client';
-import { useRouter } from 'next/router';
-import { MdOutlineAddPhotoAlternate } from 'react-icons/md';
-import useUser from '@/libs/client/useUser';
+import type { NextPage } from "next";
+import Button from "@/components/button";
+import Input from "@/components/input";
+import Layout from "@/components/layout";
+import TextArea from "@/components/textarea";
+import { set, useForm, useWatch } from "react-hook-form";
+import useMutation from "@/libs/client/useMutation";
+import { use, useCallback, useEffect, useState } from "react";
+import { Product } from "@prisma/client";
+import { useRouter } from "next/router";
+import { MdOutlineAddPhotoAlternate } from "react-icons/md";
+import useUser from "@/libs/client/useUser";
 
 interface UploadProductForm {
   name: string;
@@ -31,7 +31,9 @@ const Upload: NextPage = () => {
   const { register, handleSubmit, watch, control, reset, setValue } =
     useForm<UploadProductForm>();
   const [apiUploadProduct, { loading, data }] =
-    useMutation<UploadProductResult>('/api/products');
+    useMutation<UploadProductResult>("/api/products");
+
+  const [loadingImage, setLoadingImage] = useState(false);
   const { user } = useUser();
 
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
@@ -46,15 +48,15 @@ const Upload: NextPage = () => {
         const json = await res.json();
         // 본인이 아니면 종료.
         if (json.product.userId !== user?.id) {
-          alert('본인의 상품만 수정할 수 있습니다.');
+          alert("본인의 상품만 수정할 수 있습니다.");
           router.replace(`/products/${productId}`);
           return;
         }
 
-        setValue('name', json.product.name);
-        setValue('price', json.product.price);
-        setValue('description', json.product.description);
-        setValue('place', json.product.place);
+        setValue("name", json.product.name);
+        setValue("price", json.product.price);
+        setValue("description", json.product.description);
+        setValue("place", json.product.place);
         const imgSrc = json.product.image;
 
         // 로드해서 파일로만들기
@@ -79,36 +81,44 @@ const Upload: NextPage = () => {
     photo,
   }: UploadProductForm) => {
     if (loading) return;
+    if (loadingImage) return;
+
     if (photoFiles && photoFiles.length > 0) {
-      const {
-        data: { uploadURL },
-      } = await (await fetch('/api/files')).json();
+      try {
+        setLoadingImage(true);
+        const {
+          data: { uploadURL },
+        } = await (await fetch("/api/files")).json();
 
-      if (!uploadURL) {
-        alert('파일 업로드에 실패했습니다.');
-        return;
-      }
-      const formData = new FormData();
-      formData.append('file', photoFiles[0], name);
+        if (!uploadURL) {
+          alert("파일 업로드에 실패했습니다.");
+          return;
+        }
+        const formData = new FormData();
+        formData.append("file", photoFiles[0], name);
 
-      const res = await (
-        await fetch(uploadURL, {
-          method: 'POST',
-          body: formData,
-        })
-      ).json();
-      const photoId = res.result.id;
-      const obj = {
-        name,
-        price,
-        description,
-        place,
-        photoId,
-      };
-      if (router.query.productId) {
-        apiUploadProduct({ ...obj, id: router.query.productId });
-      } else {
-        apiUploadProduct(obj);
+        const res = await (
+          await fetch(uploadURL, {
+            method: "POST",
+            body: formData,
+          })
+        ).json();
+        const photoId = res.result.id;
+        const obj = {
+          name,
+          price,
+          description,
+          place,
+          photoId,
+        };
+        if (router.query.productId) {
+          apiUploadProduct({ ...obj, id: router.query.productId });
+        } else {
+          apiUploadProduct(obj);
+        }
+      } catch (e) {
+      } finally {
+        setLoadingImage(false);
       }
     } else {
       const obj = {
@@ -127,14 +137,14 @@ const Upload: NextPage = () => {
 
   const photoItem = useWatch({
     control,
-    name: 'photo',
+    name: "photo",
   });
 
   const onDeleteClick = useCallback(
     (file: File) => {
       setPhotoFiles([...photoFiles.filter((_) => _.name !== file.name)]);
     },
-    [photoFiles]
+    [photoFiles],
   );
 
   useEffect(() => {
@@ -151,18 +161,18 @@ const Upload: NextPage = () => {
       }).length;
 
       if (findLength > 0) {
-        alert('이미등록된 사진입니다.');
+        alert("이미등록된 사진입니다.");
         return;
       }
 
       if (photoFiles.length >= MAX_PHOTO_COUNT) {
-        alert('더이상 등록할 수 없습니다.');
+        alert("더이상 등록할 수 없습니다.");
         return;
       }
 
       setPhotoFiles((list) => [...list, file]);
     },
-    [photoFiles]
+    [photoFiles],
   );
 
   // 사진 form 등록.
@@ -186,14 +196,14 @@ const Upload: NextPage = () => {
           />
         </div>
         <Input
-          register={register('name', { required: true })}
+          register={register("name", { required: true })}
           label="제목"
           name="name"
           type="text"
           placeholder="제목"
         />
         <Input
-          register={register('price', { required: true })}
+          register={register("price", { required: true })}
           label="가격"
           placeholder="가격을 입력해주세요."
           name="price"
@@ -201,18 +211,20 @@ const Upload: NextPage = () => {
           kind="price"
         />
         <TextArea
-          register={register('description', { required: true })}
+          register={register("description", { required: true })}
           name="description"
           label="자세한 설명"
           placeholder="이쁜말 고은말"
         />
         <Input
-          register={register('place', { required: true })}
+          register={register("place", { required: true })}
           name="where-is"
           label="거래 희망 장소"
           placeholder="더에셋 1층"
         />
-        <Button text={loading ? '기다리는 중...' : '작성완료'} />
+        <Button
+          text={loading || loadingImage ? "기다리는 중..." : "작성완료"}
+        />
       </form>
     </Layout>
   );
@@ -223,7 +235,7 @@ const PhotoRegister = ({ register }: { register: any }) => {
     <label className="w-16 h-16 cursor-pointer text-gray-600 hover:border-primary hover:text-primary flex items-center justify-center border-2 border-dashed rounded-md">
       <MdOutlineAddPhotoAlternate size={40} />
       <input
-        {...register('photo')}
+        {...register("photo")}
         className="hidden"
         type="file"
         accept="image/*"
