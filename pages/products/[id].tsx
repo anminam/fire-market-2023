@@ -110,7 +110,7 @@ const ItemDetail = () => {
 
   useEffect(() => {
     if (data?.product?.status) {
-      setStateName(updateStateName(data.product.status));
+      updateStateName(data.product.status);
     }
   }, [data?.product?.status]);
 
