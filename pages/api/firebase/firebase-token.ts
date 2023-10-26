@@ -61,12 +61,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     // 세션 저장.
     await req.session.save();
-  }
 
-  // end
-  res.json({
-    result: true,
-  });
+    return res.redirect(307, '/')
+  }
 }
 
 export default withApiSession(
