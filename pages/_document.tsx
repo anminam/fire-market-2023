@@ -8,10 +8,10 @@ export default function Document() {
           href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap"
           rel="stylesheet"
         ></link>
-        <meta
+        {/* <meta
           httpEquiv="Content-Security-Policy"
           content="upgrade-insecure-requests"
-        />
+        /> */}
       </Head>
 
       <body>
