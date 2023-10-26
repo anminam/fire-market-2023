@@ -84,6 +84,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         description,
         image: photoId,
         place,
+        status: {
+          connect: {
+            name: 'SALE',
+          },
+        },
         user: {
           connect: {
             id: user?.id,

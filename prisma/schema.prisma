@@ -69,7 +69,7 @@ model Product {
   id          Int        @id @default(autoincrement())
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User       @relation(fields: [userId], references: [id])
   userId      Int
   image       String
   name        String
@@ -81,8 +81,8 @@ model Product {
   Sale        Sale[]
   Purchase    Purchase[]
   chatroom    chatroom[]
-  status      Status?    @relation(fields: [statusId], references: [id])
-  statusId  Int?
+  status      Status    @relation(fields: [statusId], references: [name])
+  statusId    String
 
   @@index([userId])
   @@index([statusId])
@@ -92,7 +92,7 @@ model Post {
   id         Int         @id @default(autoincrement())
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
-  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User        @relation(fields: [userId], references: [id])
   userId     Int
   question   String      @db.MediumText
   latitude   Float?

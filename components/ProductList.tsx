@@ -42,7 +42,7 @@ export default function ProductList({ kind }: ProductListProps) {
     );
   }
 
-  return data.data.map((_) => {
+  return data.data.map(_ => {
     return (
       <Item
         id={_.product.id}
@@ -52,7 +52,7 @@ export default function ProductList({ kind }: ProductListProps) {
         imgSrc={_.product.image}
         comments={1}
         hearts={_.product._count.Favorite}
-        status={_.product.status}
+        status={_.product.statusId}
       />
     );
   });
