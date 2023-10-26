@@ -54,7 +54,9 @@ const ItemDetail = () => {
   );
 
   // 상태 수정.
-  const [setState] = useMutation(`/api/products/${router.query.id}/status`);
+  const [setStateToServer] = useMutation(
+    `/api/products/${router.query.id}/status`
+  );
   const [stateName, setStateName] = useState<string>('판매중');
 
   const onFavClick = () => {
@@ -78,13 +80,18 @@ const ItemDetail = () => {
 
   // 상태 변경 클릭.
   const handleStateClick = (status: ProductStatus) => {
-    setState({ status }, 'PATCH');
-    setStateName(statusList.find((_) => _.value === status)?.label || '');
+    setStateToServer({ status }, 'PATCH');
+    updateStateName(status);
+    setStateName(statusList.find(_ => _.value === status)?.label || '');
     // 감추기
     const el = document.activeElement as HTMLElement;
     if (el) {
       el?.blur();
     }
+  };
+
+  const updateStateName = (status: any) => {
+    setStateName(statusList.find(_ => _.value === status)?.label || '');
   };
 
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -100,6 +107,12 @@ const ItemDetail = () => {
       router.push(`/chats/${chatData.data.id}`);
     }
   }, [router, chatData]);
+
+  useEffect(() => {
+    if (data?.product?.status) {
+      setStateName(updateStateName(data.product.status));
+    }
+  }, [data?.product?.status]);
 
   if (router.isFallback) {
     return <div>로딩중...</div>;
@@ -156,7 +169,7 @@ const ItemDetail = () => {
                   tabIndex={0}
                   className="dropdown-content z-[1] menu p-2 shadow bg-neutral rounded-box w-32"
                 >
-                  {statusList.map((_) => {
+                  {statusList.map(_ => {
                     if (_.value === data?.product?.status) return null;
                     return (
                       <li key={_.value}>
