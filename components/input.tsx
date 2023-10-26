@@ -47,9 +47,11 @@ export default function Input({
             {...rest}
             maxlength="10"
             onChange={e => {
-              let value = e.target.value.replace(/,/g, '');
+              // 숫자만 입력
+              let value = e.target.value.replace(/[^0-9]/g, '');
+              // 콤마추가
               value = value.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
-
+              // 변경
               e.target.value = value;
             }}
           />
