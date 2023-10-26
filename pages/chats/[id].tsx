@@ -17,16 +17,14 @@ interface ChatDetailResult {
 
 const ChatDetail: NextPage = () => {
   const router = useRouter();
-  const { data, mutate, isLoading } = useSWR<ChatDetailResult>(
-    router.query.id ? `/api/chats/${router.query.id}` : null
-  );
-  const { start, sendMessage, messages } = useChat();
+  const { init, sendMessage, messages } = useChat();
+
   const { token } = useFirebaseUser();
 
   react.useEffect(() => {
-    if (!token || !data?.data) return;
-    start(token, getRoomName(data.data));
-  }, [data, token]);
+    if (!token) return;
+    init({ token, roomName: router.query.id as string });
+  }, [token]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,12 +33,9 @@ const ChatDetail: NextPage = () => {
     e.currentTarget.reset();
 
     if (!message) return;
-    if (!data) return;
+    // if (!data) return;
 
-    sendMessage({
-      text: message,
-      roomNm: getRoomName(data.data),
-    });
+    sendMessage(message);
   };
 
   react.useEffect(() => {
@@ -59,7 +54,7 @@ const ChatDetail: NextPage = () => {
   return (
     <Layout canGoBack title="채팅">
       <div className="py-10 pb-16 px-4 space-y-4">
-        {messages.map((_) => (
+        {messages.map(_ => (
           <Message key={_.id} message={_.text} time={_.date.format} />
         ))}
 
@@ -75,21 +70,20 @@ const ChatDetailBottomContainer = ({
   onSubmit: React.FormEventHandler<HTMLFormElement>;
 }) => {
   return (
-    <form
-      onSubmit={onSubmit}
-      className="fixed bottom-0 w-full max-w-xl mx-auto"
-    >
-      <div className="bg-base-100 left-0 p-2">
-        <div className="flex items-center space-x-2">
-          <input
-            type="text"
-            name="message"
-            className="w-full input input-sm bg-base-200"
-            placeholder="메시지 보내기..."
-          />
-          <button className="btn bg-base-100 border-base-100">
-            <AiOutlineSend />
-          </button>
+    <form onSubmit={onSubmit} className="fixed left-0 bottom-0 w-full">
+      <div className="w-full max-w-xl mx-auto">
+        <div className="bg-base-100 left-0 p-2">
+          <div className="flex items-center space-x-2">
+            <input
+              type="text"
+              name="message"
+              className="w-full input bg-base-200"
+              placeholder="메시지 보내기..."
+            />
+            <button className="btn bg-base-100 border-base-100">
+              <AiOutlineSend />
+            </button>
+          </div>
         </div>
       </div>
     </form>

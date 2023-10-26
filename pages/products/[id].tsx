@@ -12,6 +12,7 @@ import { useEffect, useRef, useState } from 'react';
 import useUser from '@/libs/client/useUser';
 import MoreModal from '@/components/MoreModal';
 import { ProductStatus } from '@/interface/ProductKind';
+import useChat from '@/hooks/useChat';
 
 interface ProductWithUser extends Product {
   user: User;
@@ -42,6 +43,7 @@ const statusList: IStatus[] = [
 ];
 
 const ItemDetail = () => {
+  const { makeChatRoomId } = useChat();
   const router = useRouter();
   const user = useUser();
   const { data, mutate: boundMutate } = useSWR<ItemDetailResult>(
@@ -68,14 +70,17 @@ const ItemDetail = () => {
     toggleFav({});
   };
 
+  // 채팅하기 클릭.
   const handleChatClick = () => {
     if (chatLoading) return;
-    if (chatData) {
-    }
-    setChat({
+
+    const id = makeChatRoomId({
       productId: data?.product?.id as number,
-      sellingId: data?.product?.user?.id as number,
+      sellerId: data?.product?.userId as number,
+      buyerId: user.user?.id as number,
     });
+
+    router.push(`/chats/${id}`);
   };
 
   // 상태 변경 클릭.

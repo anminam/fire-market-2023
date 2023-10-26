@@ -17,12 +17,26 @@ export interface IChatSendMessage {
   roomNm: string;
   text: string;
 }
+
+export interface IChatReceivedRoomInfo {
+  messages: IChatReceivedServerMessage[];
+  room: IChatReceivedServerRoom;
+}
 export interface IChatReceivedServerMessage {
   createdAt: string;
   id: number;
   roomNm: string;
   text: string;
   userId: number;
+}
+export interface IChatReceivedServerRoom {
+  roomNm: string;
+  productId: number;
+  sellerId: number;
+  buyerId: number;
+  sellerReadId: number;
+  buyerReadId: number;
+  updatedAt: Date;
 }
 
 export interface IChatMessage {
