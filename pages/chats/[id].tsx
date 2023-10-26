@@ -51,6 +51,7 @@ const ChatDetail: NextPage = () => {
   );
 };
 
+/** 하단 */
 const ChatDetailBottomContainer = ({
   onSubmit,
 }: {

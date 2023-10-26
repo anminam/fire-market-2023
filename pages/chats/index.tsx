@@ -68,13 +68,19 @@ const Chats: NextPage = () => {
             tUser = _.buyer;
           }
 
+          const textList = _.text.split('::');
+
           return (
             <div key={_.roomNm}>
-              <Link
-                href={`/chats/${_.roomNm}`}
-                className="flex px-2 cursor-pointer items-center space-x-3"
-              >
-                <ChatThumbnailItem avatar={tUser.avatar} name={tUser.name} />
+              <Link href={`/chats/${_.roomNm}`} className="space-x-3">
+                <ChatThumbnailItem
+                  avatar={tUser.avatar}
+                  name={tUser.name}
+                  text={textList[2]}
+                  date={_.updatedAt}
+                  productImage={_.product.image}
+                  productImageAlt={_.product.name}
+                />
               </Link>
               <div className="divider my-2"></div>
             </div>

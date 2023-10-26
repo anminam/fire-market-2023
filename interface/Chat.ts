@@ -70,7 +70,7 @@ export interface IRoom {
   sellerReadId: number;
   buyerReadId: number;
   updatedAt: Date;
-  text: String;
+  text: string;
   product: Product;
   seller: User;
   buyer: User;

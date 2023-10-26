@@ -1,4 +1,4 @@
-import { cls } from '@/libs/client/utils';
+import { cls, getImageSrc } from '@/libs/client/utils';
 
 interface IProps {
   avatar?: string | null;
@@ -14,12 +14,7 @@ const ProfileImage = ({ avatar, size = 16, alt = 'avatar' }: IProps) => {
           !avatar ? 'animate-pulse' : ''
         )}
       >
-        {avatar && (
-          <img
-            alt={alt}
-            src={`https://imagedelivery.net/6-jfB1-8fzgOcmfBEr6cGA/${avatar}/avatar`}
-          />
-        )}
+        {avatar && <img alt={alt} src={getImageSrc(avatar, true)} />}
       </div>
     </div>
   );
