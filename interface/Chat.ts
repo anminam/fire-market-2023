@@ -61,3 +61,5 @@ export interface IChatManager {
   sellingUser: IUser;
   buyingUser: IUser;
 }
+
+export interface IRoom {}

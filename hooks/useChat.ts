@@ -2,7 +2,6 @@ import {
   IChatMessage,
   IChatReceivedRoomInfo,
   IChatReceivedServerMessage,
-  IChatSendMessage,
 } from '@/interface/Chat';
 import react, { useEffect } from 'react';
 import io, { Socket } from 'socket.io-client';
@@ -22,15 +21,12 @@ interface IRoomName {
 
 const useChat = () => {
   const [currentUser, setCurrentUser] = react.useState<any>(null);
-  const [room, setRoom] = react.useState<any>(null);
-  const [rooms, setRooms] = react.useState<any>(null);
   const [_socket, setSocket] = react.useState<Socket>();
   const [initInfo, init] = react.useState<IUseChatInit>({
     roomName: '',
     token: '',
   });
   const [messages, setMessages] = react.useState<IChatMessage[]>([]);
-  const [roomId, setRoomId] = react.useState<string>('');
 
   const makeChatRoomId = ({
     productId,
@@ -58,12 +54,6 @@ const useChat = () => {
 
     socket?.on('connect', async () => {
       try {
-        // const list = await getRooms(token);
-        // const findList = list.filter((_) => _.roomNm === roomName);
-        // if (findList.length) {
-        //   debugger;
-        //   setMessages(findList[0].map(updateMessage));
-        // }
         console.log('연결');
 
         const list = await getServerChatMessage(
@@ -91,7 +81,6 @@ const useChat = () => {
   return {
     init,
     currentUser,
-    room,
     sendMessage,
     messages,
     makeChatRoomId,

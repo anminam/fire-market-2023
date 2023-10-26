@@ -28,14 +28,15 @@ model User {
   Wonderings      Wondering[]
   writtenReviews  Review[]        @relation(name: "writtenReviews")
   receivedRevices Review[]        @relation(name: "receivedRevices")
+  sellerChatRooms chatroom[]      @relation(name: "sellerChatRooms")
+  buyerChatroom   chatroom[]      @relation(name: "buyerChatroom")
   Recode          Recode[]
   Favorite        Favorite[]
   Sale            Sale[]
   Purchase        Purchase[]
   Stream          Stream[]
   StreamMessage   StreamMessage[]
-  SellingChat     Chat[]          @relation(name: "SellingUser")
-  BuyingChat      Chat[]          @relation(name: "BuyingUser")
+  chatting        chatting[]
 }
 
 model Token {
@@ -45,6 +46,8 @@ model Token {
   userId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model Product {
@@ -62,8 +65,8 @@ model Product {
   Favorite    Favorite[]
   Sale        Sale[]
   Purchase    Purchase[]
-  Chat        Chat[]
-  status      Status @default(SALE)
+  chatroom    chatroom[]
+  status      Status     @default(SALE)
 
   @@index([userId])
 }
@@ -224,36 +227,30 @@ model StreamMessage {
   @@index([streamId])
 }
 
-model Chat {
-  id            Int      @id @default(autoincrement())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId     Int
-  sellingUser   User     @relation(name: "SellingUser", fields: [sellingUserId], references: [id], onDelete: Cascade)
-  sellingUserId Int
-  buyingUser    User     @relation(name: "BuyingUser", fields: [buyingUserId], references: [id], onDelete: Cascade)
-  buyingUserId  Int
-
-  @@index([productId])
-  @@index([sellingUserId])
-  @@index([buyingUserId])
-}
-
 model chatroom {
   roomNm       String   @id @db.VarChar(255)
+  product      Product  @relation(fields: [productId], references: [id])
   productId    Int
+  seller       User     @relation(name: "sellerChatRooms", fields: [sellerId], references: [id])
   sellerId     Int
+  buyer        User     @relation(name: "buyerChatroom", fields: [buyerId], references: [id])
   buyerId      Int
   sellerReadId Int      @default(0)
   buyerReadId  Int      @default(0)
   updatedAt    DateTime @default(now()) @db.Timestamp(0)
+
+  @@index([productId])
+  @@index([sellerId])
+  @@index([buyerId])
 }
 
 model chatting {
   id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
   userId    Int
   roomNm    String   @db.VarChar(255)
   text      String   @db.VarChar(255)
   createdAt DateTime @default(now()) @db.Timestamp(0)
+
+  @@index([userId])
 }

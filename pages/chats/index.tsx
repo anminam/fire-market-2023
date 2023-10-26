@@ -2,13 +2,18 @@ import type { NextPage } from 'next';
 import Link from 'next/link';
 import Layout from '@/components/layout';
 import useSWR from 'swr';
-import { IChatManager } from '@/interface/Chat';
+import { IChatManager, IRoom } from '@/interface/Chat';
 import useUser from '@/libs/client/useUser';
 import ChatThumbnailItem from '@/components/ChatThumbnailItem';
+import useRooms from '@/hooks/useRooms';
+import useFirebaseUser from '@/hooks/useFirebaseUser';
+import { tokenFetcher } from '@/libs/client/fetcher';
+import { chatUrl } from '@/libs/client/url';
+import { useState } from 'react';
+import { set } from 'react-hook-form';
 
-interface ChatsResponse {
-  result: boolean;
-  data: IChatManager[];
+interface IRoomResponse {
+  rooms: IRoom[];
 }
 
 function CenterContainer({ children }: { children: React.ReactNode }) {
@@ -20,8 +25,28 @@ function CenterContainer({ children }: { children: React.ReactNode }) {
 }
 
 const Chats: NextPage = () => {
-  const { data, isLoading } = useSWR<ChatsResponse>('/api/chats');
   const user = useUser();
+  const { token } = useFirebaseUser();
+  const [rooms, setRooms] = useState<IRoom[] | null>(null);
+
+  const {
+    data: roomData,
+    isLoading,
+    error,
+  } = useSWR<IRoomResponse>(
+    token ? [`${chatUrl}/api/rooms`, token] : null,
+    tokenFetcher,
+    {
+      onSuccess: data => {
+        setRooms(data.rooms);
+      },
+    }
+  );
+
+  // const { data } = useSWR<IRoomResponse>(roomData ? '/api/rooms' : null);
+  // debugger;
+
+  // const { isLoading, error } = useSWR<IRoomResponse>('/api/rooms');
 
   return (
     <Layout isViewTabBar title="채팅">
@@ -33,30 +58,30 @@ const Chats: NextPage = () => {
           </CenterContainer>
         )}
         {/* 없을경우 */}
-        {!data || !data?.data.length ? (
+        {rooms && rooms.length && (
           <CenterContainer>아직 채팅이 없네요</CenterContainer>
-        ) : (
-          data.data.map((_) => {
-            let tUser = _.sellingUser;
-
-            // 같으면 변경.
-            if (tUser.id === user.user?.id) {
-              tUser = _.buyingUser;
-            }
-
-            return (
-              <div key={_.id}>
-                <Link
-                  href={`/chats/${tUser.id}`}
-                  className="flex px-2 cursor-pointer items-center space-x-3"
-                >
-                  <ChatThumbnailItem avatar={tUser.avatar} name={tUser.name} />
-                </Link>
-                <div className="divider my-2"></div>
-              </div>
-            );
-          })
         )}
+        {/* {rooms?.map(_ => {
+          debugger;
+          let tUser = _.sellingUser;
+
+          // 같으면 변경.
+          if (tUser.id === user.user?.id) {
+            tUser = _.buyingUser;
+          }
+
+          return (
+            <div key={_.id}>
+              <Link
+                href={`/chats/${tUser.id}`}
+                className="flex px-2 cursor-pointer items-center space-x-3"
+              >
+                <ChatThumbnailItem avatar={tUser.avatar} name={tUser.name} />
+              </Link>
+              <div className="divider my-2"></div>
+            </div>
+          );
+        })} */}
       </div>
     </Layout>
   );
