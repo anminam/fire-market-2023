@@ -12,6 +12,21 @@ datasource db {
   relationMode = "prisma"
 }
 
+model Status {
+  id              Int             @id @default(autoincrement())
+  name            String          @unique
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  Products        Product[]
+}
+
+// SALE // 판매중
+// CMPL // 판매완료
+// RSRV // 예약중
+// CNCL // 취소
+// HIDE // 숨김
+// DLTE // 삭제
+
 model User {
   id              Int             @id @default(autoincrement())
   phone           String?         @unique
@@ -66,18 +81,11 @@ model Product {
   Sale        Sale[]
   Purchase    Purchase[]
   chatroom    chatroom[]
-  status      Status     @default(SALE)
+  status      Status?    @relation(fields: [statusId], references: [id])
+  statusId  Int?
 
   @@index([userId])
-}
-
-enum Status {
-  SALE // 판매중
-  CMPL // 판매완료
-  RSRV // 예약중
-  CNCL // 취소
-  HIDE // 숨김
-  DLTE // 삭제
+  @@index([statusId])
 }
 
 model Post {

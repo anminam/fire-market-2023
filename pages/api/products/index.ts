@@ -12,10 +12,18 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         },
       ],
       where: {
-        // status 가 CNCL가 아닌것만 가져온다.
-        NOT: {
-          status: 'CNCL',
-        },
+        OR: [
+          {
+            status: {
+              name: 'SALE',
+            },
+          },
+          {
+            status: {
+              name: 'RSRV',
+            },
+          },
+        ],
       },
       include: {
         _count: {
