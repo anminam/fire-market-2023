@@ -49,24 +49,7 @@ export default function Input({
             thousandSeparator=","
           />
         </div>
-      ) : // <div className="rounded-md relative flex items-center shadow-sm">
-      //   <div className="absolute left-0 pointer-events-none pl-3 flex items-center justify-center">
-      //     <span className="text-gray-500 text-sm">₩</span>
-      //   </div>
-      //   <input
-      //     id={name}
-      //     required={required}
-      //     type={type}
-      //     {...register}
-      //     {...rest}
-      //     onChange={handleOnChanged}
-      //     className="appearance-none pl-7 input input-bordered w-full placeholder-neutral-600"
-      //   />
-      //   <div className="absolute right-0 pointer-events-none pr-3 flex items-center">
-      //     <span className="text-gray-500">원</span>
-      //   </div>
-      // </div>
-      null}
+      ) : null}
       {kind === "phone" ? (
         <div className="flex rounded-md shadow-sm">
           <span className="flex items-center justify-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 select-none text-sm">

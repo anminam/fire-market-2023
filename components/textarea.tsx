@@ -1,4 +1,4 @@
-import { UseFormRegisterReturn } from 'react-hook-form';
+import { UseFormRegisterReturn } from "react-hook-form";
 
 interface TextAreaProps {
   label?: string;
@@ -16,7 +16,7 @@ export default function TextArea({
   return (
     <div className="space-y-2">
       {label ? (
-        <label className="text-sm font-bold" htmlFor={name}>
+        <label className="font-bold" htmlFor={name}>
           {label}
         </label>
       ) : null}
