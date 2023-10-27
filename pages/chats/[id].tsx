@@ -13,6 +13,7 @@ import ProductImage from '@/components/ProductImage';
 import { moneyFormat } from '@/libs/client/utils';
 import Link from 'next/link';
 import { IRoom } from '@/interface/Chat';
+import { User } from '@prisma/client';
 
 const ChatDetail: NextPage = () => {
   const router = useRouter();
@@ -46,9 +47,6 @@ const ChatDetail: NextPage = () => {
       ?.scroll({ top: 999999, behavior: 'smooth' });
   }, [messages]);
 
-  const elementRef = useRef(null);
-  const [elementHeight, setElementHeight] = useState(null);
-
   useEffect(() => {
     // 요소의 크기가 변경될 때 실행될 함수
     function handleResize() {
@@ -77,7 +75,7 @@ const ChatDetail: NextPage = () => {
   return (
     <Layout canGoBack title={'채팅'}>
       {/* 상단에 상품보여주기 */}
-      {room && <ChatDetailTopContainer room={room} />}
+      {room && user && <ChatDetailTopContainer room={room} user={user} />}
       {/* 채팅 */}
       <div className="relative flex pt-14 overflow-hidden chat-container ">
         <div className="px-4 space-y-4 overflow-scroll scroll-container w-full">
@@ -102,23 +100,47 @@ const ChatDetail: NextPage = () => {
   );
 };
 
-const ChatDetailTopContainer = ({ room }: { room: IRoom }) => {
+const ChatDetailTopContainer = ({
+  room,
+  user,
+}: {
+  room: IRoom;
+  user: User;
+}) => {
+  const handleClick = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    event.preventDefault();
+    alert('준비중입니다.');
+  };
+
+  const isMe = user.id === room.sellerId;
   return (
     <div className="fixed z-10 left-0 w-full">
       <div className="w-full max-w-xl mx-auto bg-base-100">
         <Link href={`/products/${room?.product.id}`}>
-          <div className="px-4 py-2 flex border-b-[1px] border-neutral">
-            <ProductImage
-              size={10}
-              alt={`${room?.product.name} 이미지`}
-              src={room?.product.image}
-            />
-            <div className="flex flex-col text-xs justify-center pl-4">
-              <span className="overflow-hidden">{room?.product.name}</span>
-              <span>
-                {room?.product.price && moneyFormat(room?.product.price) + '원'}
-              </span>
+          <div className="flex justify-between border-b-[1px] border-neutral items-center px-4">
+            <div className="py-2 flex">
+              <ProductImage
+                size={10}
+                alt={`${room?.product.name} 이미지`}
+                src={room?.product.image}
+              />
+              <div className="flex flex-col text-xs justify-center pl-4">
+                <span className="overflow-hidden">{room?.product.name}</span>
+                <span>
+                  {room?.product.price &&
+                    moneyFormat(room?.product.price) + '원'}
+                </span>
+              </div>
             </div>
+            {isMe && (
+              <div className="">
+                <button className="btn btn-sm" onClick={handleClick}>
+                  거래완료
+                </button>
+              </div>
+            )}
           </div>
         </Link>
       </div>
