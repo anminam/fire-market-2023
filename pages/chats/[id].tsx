@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 
 import { AiOutlineSend } from 'react-icons/ai';
 import useChat from '@/hooks/useChat';
-import react, { useEffect, useRef, useState } from 'react';
+import react, { use, useEffect, useRef, useState } from 'react';
 import useFirebaseUser from '@/hooks/useFirebaseUser';
 import useUser from '@/libs/client/useUser';
 import useRoom from '@/hooks/useRoom';
@@ -14,6 +14,8 @@ import { moneyFormat } from '@/libs/client/utils';
 import Link from 'next/link';
 import { IRoom } from '@/interface/Chat';
 import { User } from '@prisma/client';
+import useMutation from '@/libs/client/useMutation';
+import ModalSellProductState from '@/components/ModalSellProductState';
 
 const ChatDetail: NextPage = () => {
   const router = useRouter();
@@ -107,14 +109,23 @@ const ChatDetailTopContainer = ({
   room: IRoom;
   user: User;
 }) => {
+  const router = useRouter();
+
+  // 거래 변경클릭
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     event.preventDefault();
-    alert('준비중입니다.');
+
+    if (dialogRef.current) {
+      dialogRef.current.showModal();
+    }
   };
 
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
   const isMe = user.id === room.sellerId;
+
   return (
     <div className="fixed z-10 left-0 w-full">
       <div className="w-full max-w-xl mx-auto bg-base-100">
@@ -137,13 +148,20 @@ const ChatDetailTopContainer = ({
             {isMe && (
               <div className="">
                 <button className="btn btn-sm" onClick={handleClick}>
-                  거래완료
+                  거래변경
                 </button>
               </div>
             )}
           </div>
         </Link>
       </div>
+      {/* 모달 */}
+      <ModalSellProductState
+        ref={dialogRef}
+        productId={room.productId}
+        buyerId={room.buyerId}
+        productUserId={room.sellerId}
+      />
     </div>
   );
 };
