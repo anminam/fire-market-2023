@@ -12,6 +12,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       user: {
         id: user?.id,
       },
+      NOT: {
+        statusCd: 'DLTE',
+      },
     },
     include: {
       _count: {
