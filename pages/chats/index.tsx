@@ -2,15 +2,13 @@ import type { NextPage } from 'next';
 import Link from 'next/link';
 import Layout from '@/components/layout';
 import useSWR from 'swr';
-import { IChatManager, IRoom } from '@/interface/Chat';
+import { IRoom } from '@/interface/Chat';
 import useUser from '@/libs/client/useUser';
 import ChatThumbnailItem from '@/components/ChatThumbnailItem';
-import useRooms from '@/hooks/useRooms';
 import useFirebaseUser from '@/hooks/useFirebaseUser';
 import { tokenFetcher } from '@/libs/client/fetcher';
 import { chatUrl } from '@/libs/client/url';
-import { useState } from 'react';
-import { set } from 'react-hook-form';
+import { useEffect, useState } from 'react';
 
 interface IRoomResponse {
   rooms: IRoom[];
@@ -35,18 +33,13 @@ const Chats: NextPage = () => {
     error,
   } = useSWR<IRoomResponse>(
     token ? [`${chatUrl}/api/rooms`, token] : null,
-    tokenFetcher,
-    {
-      onSuccess: data => {
-        setRooms(data.rooms);
-      },
-    }
+    tokenFetcher
   );
 
-  // const { data } = useSWR<IRoomResponse>(roomData ? '/api/rooms' : null);
-  // debugger;
-
-  // const { isLoading, error } = useSWR<IRoomResponse>('/api/rooms');
+  useEffect(() => {
+    if (!roomData) return;
+    setRooms(roomData.rooms);
+  }, [roomData]);
 
   return (
     <Layout isViewTabBar title="채팅">

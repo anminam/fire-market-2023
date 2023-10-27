@@ -89,20 +89,6 @@ const useChat = () => {
   };
 };
 
-async function getRooms(token: string): Promise<any[]> {
-  try {
-    const res = await fetch(`${URL}/api/rooms`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const json = await res.json();
-    return json?.rooms;
-  } catch (err) {
-    throw new Error(err as string);
-  }
-}
-
 async function getServerChatMessage(
   token: string,
   roomName: string
