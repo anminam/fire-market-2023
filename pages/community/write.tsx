@@ -42,6 +42,8 @@ const Write: NextPage = () => {
     }
   }, [data, router]);
 
+  const isLoading = loading || data?.result;
+
   return (
     <Layout canGoBack title="화재생활 ">
       <form onSubmit={handleSubmit(onValid)} className="p-4 space-y-4">
@@ -56,7 +58,15 @@ const Write: NextPage = () => {
           })}
         />
         <FormErrorMessage message={errors?.question?.message || ''} />
-        <Button text={loading ? '서버에 올리고 있습니다....' : '질문하기'} />
+        <button
+          className={cls(
+            `btn btn-primary w-full`,
+            isLoading ? 'btn-disabled' : ''
+          )}
+          type="submit"
+        >
+          {isLoading ? '업로드중...' : '질문하기'}
+        </button>
       </form>
     </Layout>
   );
