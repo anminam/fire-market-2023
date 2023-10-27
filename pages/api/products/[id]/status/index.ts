@@ -18,14 +18,18 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     },
   });
 
+  // 상품이 있으면 상태 업데이트
   if (item) {
-    // 상품이 있으면 상태 업데이트
+    // status 가 예약중이면 바이어 삭제 아니면 바이어 추가
+    const buyerId = ['CMPL'].includes(status) ? item.buyerId || null : null;
+
     await client.product.update({
       where: {
         id: +(id as string),
       },
       data: {
         statusCd: status,
+        buyerId,
       },
     });
   }
