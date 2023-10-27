@@ -76,20 +76,32 @@ export default function ProductItem({
           {/* 이미지 */}
           <ProductImage title={title} imgSrc={imgSrc} status={status} />
           {/* 우측 문구들 */}
-          <div className="pt-2 flex flex-col">
-            {/* 상품이름 */}
-            <h3 className="text-sm font-bold">{title}</h3>
-            {/* 등록일 */}
-            {date ? (
-              <span className="text-xs mt-1 opacity-50">
-                {communityDateFormat(date)}
-              </span>
-            ) : null}
-            {/* 상품가격 */}
-            {price ? (
-              <span className="font-medium mt-1">{moneyFormat(price)}원</span>
-            ) : null}
-          </div>
+          {title ? (
+            <div className="pt-2 flex flex-col">
+              {/* 상품이름 */}
+              <h3 className="text-sm font-bold">{title}</h3>
+              {/* 등록일 */}
+              {date ? (
+                <span className="text-xs mt-1 opacity-50">
+                  {communityDateFormat(date)}
+                </span>
+              ) : null}
+              {/* 상품가격 */}
+              {price ? (
+                <span className="font-medium mt-1">{moneyFormat(price)}원</span>
+              ) : null}
+            </div>
+          ) : (
+            // 스켈레톤
+            <div className="pt-2 flex flex-col">
+              {/* 상품이름 */}
+              <h3 className="bg-neutral rounded animate-pulse w-40 h-4" />
+              {/* 등록일 */}
+              <div className="bg-neutral rounded animate-pulse w-20 h-2 mt-3" />
+              {/* 상품가격 */}
+              <div className="bg-neutral rounded animate-pulse w-32 h-4 mt-3" />
+            </div>
+          )}
         </div>
         {/* 하단 작은 아이콘 */}
         <div className="flex space-x-2 items-end justify-end text-sm opacity-50">

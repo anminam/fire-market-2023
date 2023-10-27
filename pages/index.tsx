@@ -20,6 +20,7 @@ const Home: NextPage = () => {
   const router = useRouter();
 
   const products = data?.products || dummyProducts;
+  // const products = dummyProducts;
 
   if (data?.error?.code === 'P2022') {
     router.push('/error?message=점검중입니다.&code=P2022');
