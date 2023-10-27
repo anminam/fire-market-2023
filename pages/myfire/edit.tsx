@@ -160,7 +160,6 @@ const EditProfile: NextPage = () => {
         /> */}
         <FormErrorMessage message={errors.formErrors?.message || ''} />
         <button className="btn btn-primary w-full">
-          {' '}
           {loading ? '변경 중 입니다...' : '변경하기'}{' '}
         </button>
       </form>

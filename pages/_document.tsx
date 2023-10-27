@@ -14,7 +14,7 @@ export default function Document() {
         /> */}
       </Head>
 
-      <body>
+      <body data-theme="dark">
         <Main />
         <NextScript />
       </body>

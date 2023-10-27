@@ -229,7 +229,10 @@ const Upload: NextPage = () => {
           placeholder="더에셋 1층"
         />
         <button
-          className={cls(`btn btn-primary`, isLoading ? 'btn-disabled' : '')}
+          className={cls(
+            `btn btn-primary w-full`,
+            isLoading ? 'btn-disabled' : ''
+          )}
           type="submit"
         >
           {isLoading ? '업로드중...' : '작성완료'}
