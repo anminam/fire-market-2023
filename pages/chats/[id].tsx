@@ -39,7 +39,7 @@ const ChatDetail: NextPage = () => {
   }, [messages]);
 
   return (
-    <Layout canGoBack title="채팅">
+    <Layout canGoBack title={'채팅'}>
       <div className="py-10 pb-16 px-4 space-y-4">
         {messages.map(_ => (
           <Message key={_.id} message={_.text} time={_.date.format} />
