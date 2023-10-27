@@ -4,7 +4,7 @@ import {
   IChatReceivedServerMessage,
 } from '@/interface/Chat';
 import { chatUrl } from '@/libs/client/url';
-import react, { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
 
 const URL = chatUrl;
@@ -22,13 +22,13 @@ interface IRoomName {
 }
 
 const useChat = () => {
-  const [currentUser, setCurrentUser] = react.useState<any>(null);
-  const [_socket, setSocket] = react.useState<Socket>();
-  const [initInfo, init] = react.useState<IUseChatInit>({
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [_socket, setSocket] = useState<Socket>();
+  const [initInfo, init] = useState<IUseChatInit>({
     roomName: '',
     token: '',
   });
-  const [messages, setMessages] = react.useState<IChatMessage[]>([]);
+  const [messages, setMessages] = useState<IChatMessage[]>([]);
 
   const makeChatRoomId = ({
     productId,

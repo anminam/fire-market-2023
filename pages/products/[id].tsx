@@ -223,7 +223,7 @@ const ItemDetail = () => {
           {data?.relatedProducts?.length ? (
             <div className="mb-10">
               <div className="divider" />
-              <h1 className="text-3xl font-bold">비슷한 물건</h1>
+              <h1 className="text-xl font-bold">비슷한 물건</h1>
               <div className=" mt-6 grid grid-cols-2 gap-4">
                 {data?.relatedProducts?.map((_: any, i: any) => {
                   return (
