@@ -41,10 +41,9 @@ const ChatDetail: NextPage = () => {
   };
 
   useEffect(() => {
-    // 스크롤 맨아래로 내리기
-    const scrollHeight = document.documentElement.scrollHeight;
-    const clientHeight = document.documentElement.clientHeight;
-    window.scrollTo({ top: scrollHeight - clientHeight, behavior: 'smooth' });
+    document
+      .querySelector<HTMLDivElement>('.scroll-container')
+      ?.scroll({ top: 999999, behavior: 'smooth' });
   }, [messages]);
 
   const elementRef = useRef(null);
