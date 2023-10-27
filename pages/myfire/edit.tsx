@@ -8,6 +8,8 @@ import { useEffect, useState } from 'react';
 import FormErrorMessage from '@/components/FormErrorMessage';
 import useMutation from '@/libs/client/useMutation';
 import Image from 'next/image';
+import { getImageSrc } from '@/libs/client/utils';
+import { useRouter } from 'next/router';
 
 interface EditProfileForm {
   email?: string;
@@ -24,11 +26,11 @@ interface EditProfileResponse {
 
 const EditProfile: NextPage = () => {
   const { user } = useUser();
+  const router = useRouter();
 
-  const [setProfile, { data, loading }] =
-    useMutation<EditProfileResponse>('/api/users/my');
+  const [runEdit, { data, loading }] =
+    useMutation<EditProfileResponse>('/api/users/edit');
 
-  console.log(loading);
   const {
     register,
     handleSubmit,
@@ -66,13 +68,13 @@ const EditProfile: NextPage = () => {
         })
       ).json();
 
-      setProfile({
+      runEdit({
         email,
         name,
         avatarId: result.id,
       });
     } else {
-      setProfile({
+      runEdit({
         email,
         name,
       });
@@ -84,10 +86,7 @@ const EditProfile: NextPage = () => {
   const [avatarPreview, setAvatarPreview] = useState('');
 
   useEffect(() => {
-    user?.avatar &&
-      setAvatarPreview(
-        `https://imagedelivery.net/6-jfB1-8fzgOcmfBEr6cGA/${user?.avatar}/avatar`
-      );
+    user?.avatar && setAvatarPreview(getImageSrc(user.avatar, true));
   }, [user?.avatar]);
 
   useEffect(() => {
@@ -98,15 +97,19 @@ const EditProfile: NextPage = () => {
   }, [avatar]);
 
   useEffect(() => {
-    if (data?.result) {
-      alert('변경되었습니다.');
-    }
+    if (!data) return;
+
     if (data && !data.result) {
       setError('formErrors', {
         message: data?.error || '알 수 없는 오류입니다.',
       });
     }
-  }, [data, setError]);
+    if (data.result) {
+      alert('변경되었습니다.');
+      router.back();
+    }
+  }, [data, router, setError]);
+
   return (
     <Layout canGoBack title="내 정보 변경하기">
       <form onSubmit={handleSubmit(onValid)} className="py-10 px-4 space-y-4">
