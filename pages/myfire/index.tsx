@@ -10,6 +10,7 @@ import { BiHeart, BiLogOut, BiReceipt, BiShoppingBag } from 'react-icons/bi';
 import MyProfileImage from '@/components/MyProfileImage';
 import { useRouter } from 'next/router';
 import { Suspense } from 'react';
+import { AiOutlineFire } from 'react-icons/ai';
 
 interface ReviewWithUser extends Review {
   createdBy: User;
@@ -19,31 +20,31 @@ interface ReviewResponse {
   data: ReviewWithUser[];
 }
 
-const Reviews: NextPage = () => {
-  const { data } = useSWR<ReviewResponse>('/api/users/my/reviews');
-  return (
-    <PageContentsContainer title="사람들에게 받은 평가">
-      <ul>
-        {data?.data?.map(_ => {
-          return (
-            <EvaluationItem
-              key={_.id}
-              comment={_.review}
-              id={_.createdBy.id}
-              name={_.createdBy.name}
-              star={_.rating}
-            />
-          );
-        })}
-      </ul>
-    </PageContentsContainer>
-  );
-};
+// const Reviews: NextPage = () => {
+//   const { data } = useSWR<ReviewResponse>('/api/users/my/reviews');
+//   return (
+//     <PageContentsContainer title="사람들에게 받은 평가">
+//       <ul>
+//         {data?.data?.map(_ => {
+//           return (
+//             <EvaluationItem
+//               key={_.id}
+//               comment={_.review}
+//               id={_.createdBy.id}
+//               name={_.createdBy.name}
+//               star={_.rating}
+//             />
+//           );
+//         })}
+//       </ul>
+//     </PageContentsContainer>
+//   );
+// };
 
-// 나의거래
+// 나의 거래
 const MyBusiness = () => {
   return (
-    <PageContentsContainer title="나의거래">
+    <PageContentsContainer title="나의 거래">
       <div>
         <ul className="space-y-6">
           <li>
@@ -67,6 +68,26 @@ const MyBusiness = () => {
               <div className="flex items-center space-x-2">
                 <BiShoppingBag size="20" />
                 <div>구매내역</div>
+              </div>
+            </Link>
+          </li>
+        </ul>
+      </div>
+    </PageContentsContainer>
+  );
+};
+
+// 나의 화재생활
+const MyFireCommunity = () => {
+  return (
+    <PageContentsContainer title="나의 화재생활">
+      <div>
+        <ul className="space-y-6">
+          <li>
+            <Link href="/myfire/community">
+              <div className="flex items-center space-x-2">
+                <AiOutlineFire size="20" />
+                <div>화재생활 활동</div>
               </div>
             </Link>
           </li>
@@ -147,15 +168,13 @@ const Profile: NextPage = () => {
             <MiniProfile />
           </Suspense>
         </div>
-        <div className="divider"></div>
+        <div className="divider" />
         <div className="px-4">
           <MyBusiness />
         </div>
-        <div className="divider"></div>
+        <div className="divider" />
         <div className="px-4">
-          <Suspense fallback={<div>loading...</div>}>
-            <Reviews />
-          </Suspense>
+          <MyFireCommunity />
         </div>
         <div className="divider"></div>
         <div className="px-4">
