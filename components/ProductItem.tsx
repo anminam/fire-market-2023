@@ -30,14 +30,20 @@ const ProductImage = ({
       )}`}
     >
       {status === ProductStatus.RSRV && (
-        <div className="absolute flex flex-col top-0 left-0 w-full items-center bg-black bg-opacity-50">
+        <div className="absolute flex flex-col top-0 left-0 w-full items-center bg-black bg-opacity-60 animate-bounce">
           <div className="text-sm">{'예약중'}</div>
         </div>
       )}
 
       {status === ProductStatus.CNCL && (
-        <div className="absolute flex flex-col top-0 left-0 w-full items-center bg-black bg-opacity-50">
+        <div className="absolute flex flex-col top-0 left-0 w-full items-center bg-black bg-opacity-60 animate-bounce">
           <div className="text-sm">{'등록취소'}</div>
+        </div>
+      )}
+
+      {status === ProductStatus.HIDE && (
+        <div className="absolute flex flex-col top-0 left-0 w-full items-center bg-black bg-opacity-60">
+          <div className="text-sm">{'등록대기'}</div>
         </div>
       )}
 

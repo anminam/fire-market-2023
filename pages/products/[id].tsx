@@ -39,7 +39,7 @@ const statusList: IStatus[] = [
   { value: 'SALE', label: '판매중' },
   { value: 'RSRV', label: '예약중' },
   { value: 'CMPL', label: '판매완료' },
-  { value: 'CNCL', label: '등록취소' },
+  { value: 'HIDE', label: '등록취소' },
 ];
 
 const ItemDetail = () => {
