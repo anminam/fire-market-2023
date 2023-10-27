@@ -9,7 +9,7 @@ interface ItemProps {
   id: number;
   price: number;
   comments: number;
-  hearts: number;
+  hearts?: number;
   imgSrc: string;
   status: ProductStatus;
 }

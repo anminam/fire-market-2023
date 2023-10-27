@@ -24,7 +24,7 @@ const Reviews: NextPage = () => {
   return (
     <PageContentsContainer title="사람들에게 받은 평가">
       <ul>
-        {data?.data?.map((_) => {
+        {data?.data?.map(_ => {
           return (
             <EvaluationItem
               key={_.id}
@@ -55,7 +55,7 @@ const MyBusiness = () => {
             </Link>
           </li>
           <li>
-            <Link href="/myfire/sale-all">
+            <Link href="/myfire/sell">
               <div className="flex items-center space-x-2">
                 <BiReceipt size="20" />
                 <div>판매내역</div>
