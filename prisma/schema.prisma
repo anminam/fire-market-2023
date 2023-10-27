@@ -81,11 +81,11 @@ model Product {
   Sale        Sale[]
   Purchase    Purchase[]
   chatroom    chatroom[]
-  status      Status    @relation(fields: [statusId], references: [name])
-  statusId    String
+  status      Status    @relation(fields: [statusCd], references: [name])
+  statusCd    String
 
   @@index([userId])
-  @@index([statusId])
+  @@index([statusCd])
 }
 
 model Post {
