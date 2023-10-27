@@ -4,7 +4,7 @@ import ProfileImage from './ProfileImage';
 interface MessageProps {
   message: string;
   reversed?: boolean;
-  avatar?: string;
+  avatar?: string | null;
   name?: string;
   time: string;
 }
@@ -22,8 +22,8 @@ export default function Message({
         <div className="chat-image avatar">
           <ProfileImage avatar={avatar} size={10} />
         </div>
-        <div className="chat-header">
-          {name}
+        <div className="chat-header space-x-1">
+          <span className="text-xs">{name}</span>
           <time className="text-xs opacity-50">{time}</time>
         </div>
         <div className="chat-bubble">{message}</div>
