@@ -3,9 +3,11 @@ import {
   IChatReceivedRoomInfo,
   IChatReceivedServerMessage,
 } from '@/interface/Chat';
+import { chatUrl } from '@/libs/client/url';
 import react, { useEffect } from 'react';
 import io, { Socket } from 'socket.io-client';
-const URL = 'http://kklim.iptime.org:3003';
+
+const URL = chatUrl;
 // const URL = process.env.URL_CHAT;
 
 interface IUseChatInit {

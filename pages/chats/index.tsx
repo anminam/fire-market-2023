@@ -42,6 +42,7 @@ const Chats: NextPage = () => {
       },
     }
   );
+
   // const { data } = useSWR<IRoomResponse>(roomData ? '/api/rooms' : null);
   // debugger;
 

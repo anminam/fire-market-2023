@@ -1,3 +1,4 @@
+import { chatUrl } from '@/libs/client/url';
 import client from '@/libs/server/client';
 import withHandlers from '@/libs/server/withHandlers';
 import { withApiSession } from '@/libs/server/withSession';
@@ -8,7 +9,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     session: { user },
   } = req;
 
-  const serverRes = await fetch(`http://kklim.iptime.org:3003/api/rooms`, {
+  const serverRes = await fetch(`${chatUrl}/api/rooms`, {
     headers: {
       Authorization: `Bearer ${user?.token}`,
     },
