@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 
 import { AiOutlineSend } from 'react-icons/ai';
 import useChat from '@/hooks/useChat';
-import react from 'react';
+import react, { useEffect, useRef, useState } from 'react';
 import useFirebaseUser from '@/hooks/useFirebaseUser';
 import useUser from '@/libs/client/useUser';
 import useRoom from '@/hooks/useRoom';
@@ -40,20 +40,48 @@ const ChatDetail: NextPage = () => {
     sendMessage(message);
   };
 
-  react.useEffect(() => {
+  useEffect(() => {
     // 스크롤 맨아래로 내리기
     const scrollHeight = document.documentElement.scrollHeight;
     const clientHeight = document.documentElement.clientHeight;
     window.scrollTo({ top: scrollHeight - clientHeight, behavior: 'smooth' });
   }, [messages]);
 
+  const elementRef = useRef(null);
+  const [elementHeight, setElementHeight] = useState(null);
+
+  useEffect(() => {
+    // 요소의 크기가 변경될 때 실행될 함수
+    function handleResize() {
+      const scrollContainer =
+        document.querySelector<HTMLDivElement>('.scroll-container');
+      if (scrollContainer) {
+        let height = document.documentElement.clientHeight;
+        height = height - 57 - 48 - 64;
+        console.log(height);
+        scrollContainer.style.maxHeight = `${height}px`;
+      }
+    }
+
+    // 초기 실행
+    handleResize();
+
+    // 이벤트 리스너 등록
+    window.addEventListener('resize', handleResize);
+
+    // 컴포넌트 언마운트 시 이벤트 리스너 제거
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   return (
     <Layout canGoBack title={'채팅'}>
       {/* 상단에 상품보여주기 */}
       {room && <ChatDetailTopContainer room={room} />}
       {/* 채팅 */}
-      <div className="relative">
-        <div className="py-16 pb-16 px-4 space-y-4 overflow-auto">
+      <div className="relative flex pt-14 overflow-hidden chat-container ">
+        <div className="px-4 space-y-4 overflow-scroll scroll-container w-full">
           {messages.map(_ => {
             const tUser =
               room?.sellerId === _?.userId ? room?.seller : room?.buyer;
