@@ -1,10 +1,17 @@
+import { ProductStatus } from '@/interface/ProductKind';
+import useMutation from '@/libs/client/useMutation';
 import { useRouter } from 'next/router';
-import { ForwardedRef, forwardRef } from 'react';
+import { ForwardedRef, forwardRef, useEffect } from 'react';
 
 interface MoreModalProps {
   productId?: string;
   productUserId: number;
   userId: number;
+}
+
+interface MoreModalResponse {
+  result: boolean;
+  status: ProductStatus;
 }
 
 function MoreModal(
@@ -15,6 +22,11 @@ function MoreModal(
   // 내껀가!!!
   const isMe = userId === productUserId;
 
+  // 상태 수정.
+  const [setStateToServer, { loading, data }] = useMutation<MoreModalResponse>(
+    `/api/products/${router.query.id}/status`
+  );
+
   const handleCancel = () => {
     if (ref && 'current' in ref && ref.current !== null) {
       (ref.current as HTMLDialogElement).close();
@@ -24,8 +36,25 @@ function MoreModal(
   const handleEdit = () => {
     router.push(`/products/upload?productId=${productId}`);
   };
-  const handleHide = () => {};
-  const handleDelete = () => {};
+  const handleHide = () => {
+    setStateToServer({ status: ProductStatus.HIDE }, 'PATCH');
+  };
+  const handleDelete = () => {
+    setStateToServer({ status: ProductStatus.DLTE }, 'PATCH');
+  };
+
+  useEffect(() => {
+    switch (data?.status) {
+      case ProductStatus.DLTE:
+        alert('삭제되었습니다.');
+        router.push('/');
+        break;
+      case ProductStatus.HIDE:
+        alert('숨김처리되었습니다.');
+        router.push('/');
+        break;
+    }
+  }, [data, router]);
 
   return (
     <div>

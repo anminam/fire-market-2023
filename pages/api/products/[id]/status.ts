@@ -25,12 +25,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         id: +(id as string),
       },
       data: {
-        status,
+        statusCd: status,
       },
     });
   }
   //
-  res.json({ result: true });
+  res.json({ result: true, status });
 }
 
 export default withApiSession(withHandlers({ methods: ['PATCH'], handler }));
