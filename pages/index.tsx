@@ -2,11 +2,11 @@ import type { NextPage } from 'next';
 import FloatingButton from '@/components/floating-button';
 import Layout from '@/components/layout';
 import useSWR from 'swr';
-import { Product } from '@prisma/client';
 import { HiPlus } from 'react-icons/hi';
 import MainProducts from '@/components/MainProducts';
 import { getDummyProducts } from '@/libs/client/mocks/products';
 import { useRouter } from 'next/router';
+import { ProductWithCount } from '@/interface/Product';
 
 interface ProductsResponse {
   result: boolean;
@@ -14,11 +14,6 @@ interface ProductsResponse {
   error: any;
 }
 const dummyProducts = getDummyProducts();
-export interface ProductWithCount extends Product {
-  _count: {
-    Favorite: number;
-  };
-}
 
 const Home: NextPage = () => {
   const { data } = useSWR<ProductsResponse>('/api/products');

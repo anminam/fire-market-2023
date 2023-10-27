@@ -1,19 +1,13 @@
 import type { NextPage } from 'next';
 import Layout from '@/components/layout';
 import MainProducts from '@/components/MainProducts';
-import { Product } from '@prisma/client';
 import useSWR from 'swr';
 import Nothing from '@/components/Nothing';
+import { ProductWithCount } from '@/interface/Product';
 
 interface ProductsResponse {
   result: boolean;
   products: ProductWithCount[];
-}
-
-export interface ProductWithCount extends Product {
-  _count: {
-    Favorite: number;
-  };
 }
 
 function CenterContainer({ children }: { children: React.ReactNode }) {

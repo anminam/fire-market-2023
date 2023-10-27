@@ -1,6 +1,4 @@
-import useSWR from 'swr';
 import Item from './ProductItem';
-import { ProductWithCount } from '@/pages';
 import Nothing from './Nothing';
 import { Product } from '@prisma/client';
 

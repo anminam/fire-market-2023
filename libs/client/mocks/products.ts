@@ -1,5 +1,4 @@
-import { ProductWithCount } from '@/pages';
-import { Product } from '@prisma/client';
+import { ProductWithCount } from '@/interface/Product';
 
 const getDummyProductMain = (id: number): ProductWithCount => {
   return {
@@ -16,6 +15,7 @@ const getDummyProductMain = (id: number): ProductWithCount => {
     image: '',
     place: '',
     statusCd: 'SALE',
+    buyerId: 0,
   };
 };
 

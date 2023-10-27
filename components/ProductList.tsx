@@ -1,7 +1,7 @@
 import useSWR from 'swr';
 import Item from './ProductItem';
-import { ProductWithCount } from '@/pages';
 import Nothing from './Nothing';
+import { ProductWithCount } from '@/interface/Product';
 
 interface ProductListProps {
   kind: 'sales' | 'favorites' | 'purchase' | 'sales-all';

@@ -1,5 +1,5 @@
+import { ProductWithCount } from '@/interface/Product';
 import Item from './ProductItem';
-import { ProductWithCount } from '@/pages';
 
 interface IProps {
   products: ProductWithCount[];
