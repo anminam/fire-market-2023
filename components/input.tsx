@@ -45,7 +45,7 @@ export default function Input({
             className="appearance-none input input-bordered w-full placeholder-neutral-600 pl-7"
             {...register}
             {...rest}
-            maxlength="10"
+            maxLength="10"
             onChange={e => {
               // 숫자만 입력
               let value = e.target.value.replace(/[^0-9]/g, '');

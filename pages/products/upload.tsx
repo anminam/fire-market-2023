@@ -1,15 +1,15 @@
 import type { NextPage } from 'next';
-import Button from '@/components/button';
 import Input from '@/components/input';
 import Layout from '@/components/layout';
 import TextArea from '@/components/textarea';
-import { set, useForm, useWatch } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import useMutation from '@/libs/client/useMutation';
-import { use, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Product } from '@prisma/client';
 import { useRouter } from 'next/router';
 import { MdOutlineAddPhotoAlternate } from 'react-icons/md';
 import useUser from '@/libs/client/useUser';
+import { cls } from '@/libs/client/utils';
 
 interface UploadProductForm {
   name: string;
@@ -80,14 +80,13 @@ const Upload: NextPage = () => {
     place,
     photo,
   }: UploadProductForm) => {
-    if (loading) return;
-    if (loadingImage) return;
+    if (isLoading) return;
 
+    console.log('a');
     // 가격 콤마 제거.
     price = price.replace(/,/g, '');
 
     if (photoFiles && photoFiles.length > 0) {
-      debugger;
       try {
         setLoadingImage(true);
         const {
@@ -189,6 +188,9 @@ const Upload: NextPage = () => {
     reset({ photo: undefined });
   }, [addPhoto, photoFiles, photoItem, reset]);
 
+  // ! 지저분하다....
+  const isLoading = loading || loadingImage || data?.result === true;
+
   return (
     <Layout canGoBack title="내 물건 팔기">
       <form className="p-4 space-y-4" onSubmit={handleSubmit(onValid)}>
@@ -226,9 +228,12 @@ const Upload: NextPage = () => {
           label="거래 희망 장소"
           placeholder="더에셋 1층"
         />
-        <Button
-          text={loading || loadingImage ? '기다리는 중...' : '작성완료'}
-        />
+        <button
+          className={cls(`btn btn-primary`, isLoading ? 'btn-disabled' : '')}
+          type="submit"
+        >
+          {isLoading ? '업로드중...' : '작성완료'}
+        </button>
       </form>
     </Layout>
   );
