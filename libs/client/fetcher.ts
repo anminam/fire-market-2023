@@ -4,6 +4,7 @@ export function fetcher<T>(url: string): Promise<T> {
 
 export function tokenFetcher<T>([url, token]: string[]): Promise<T> {
   return fetch(url, {
+    cache: 'no-store',
     headers: {
       Authorization: `Bearer ${token}`,
     },
