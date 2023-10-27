@@ -114,10 +114,10 @@ const ItemDetail = () => {
   }, [router, chatData]);
 
   useEffect(() => {
-    if (data?.product?.statusId) {
-      updateStateName(data.product.statusId);
+    if (data?.product?.statusCd) {
+      updateStateName(data.product.statusCd);
     }
-  }, [data?.product?.statusId]);
+  }, [data?.product?.statusCd]);
 
   if (router.isFallback) {
     return <div>로딩중...</div>;
@@ -175,7 +175,7 @@ const ItemDetail = () => {
                   className="dropdown-content z-[1] menu p-2 shadow bg-neutral rounded-box w-32"
                 >
                   {statusList.map(_ => {
-                    if (_.value === data?.product?.statusId) return null;
+                    if (_.value === data?.product?.statusCd) return null;
                     return (
                       <li key={_.value}>
                         <button onClick={() => handleStateClick(_.value)}>

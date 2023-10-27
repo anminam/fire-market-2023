@@ -52,7 +52,7 @@ export default function ProductList({ kind }: ProductListProps) {
         imgSrc={_.product.image}
         comments={1}
         hearts={_.product._count.Favorite}
-        status={_.product.statusId}
+        status={_.product.statusCd}
       />
     );
   });

@@ -15,7 +15,7 @@ const getDummyProductMain = (id: number): ProductWithCount => {
     userId: 0,
     image: '',
     place: '',
-    statusId: 'SALE',
+    statusCd: 'SALE',
   };
 };
 
