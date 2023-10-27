@@ -105,8 +105,9 @@ const CommunityPostDetail: NextPage = () => {
             id={wonderData?.post?.user?.id.toString() || ''}
             avatar={wonderData?.post?.user?.avatar}
             name={wonderData?.post?.user?.name}
-            size={12}
-            isViewTextProfile
+            size={10}
+            isCommunity
+            date={wonderData?.post?.createdAt}
           />
         </div>
 

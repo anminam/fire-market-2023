@@ -1,5 +1,5 @@
 import { ProductStatus } from '@/interface/ProductKind';
-import { cls, moneyFormat } from '@/libs/client/utils';
+import { cls, communityDateFormat, moneyFormat } from '@/libs/client/utils';
 import Link from 'next/link';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { BiSolidChat } from 'react-icons/bi';
@@ -12,6 +12,7 @@ interface ItemProps {
   hearts?: number;
   imgSrc: string;
   status: ProductStatus;
+  date?: Date | string;
 }
 
 const ProductImage = ({
@@ -66,19 +67,31 @@ export default function ProductItem({
   imgSrc,
   id,
   status,
+  date,
 }: ItemProps) {
   return (
     <Link href={`/products/${id}`}>
       <div className="relative flex px-4 pt-5 cursor-pointer justify-between">
         <div className="flex space-x-4">
+          {/* 이미지 */}
           <ProductImage title={title} imgSrc={imgSrc} status={status} />
+          {/* 우측 문구들 */}
           <div className="pt-2 flex flex-col">
+            {/* 상품이름 */}
             <h3 className="text-sm font-bold">{title}</h3>
+            {/* 등록일 */}
+            {date ? (
+              <span className="text-xs mt-1 opacity-50">
+                {communityDateFormat(date)}
+              </span>
+            ) : null}
+            {/* 상품가격 */}
             {price ? (
               <span className="font-medium mt-1">{moneyFormat(price)}원</span>
             ) : null}
           </div>
         </div>
+        {/* 하단 작은 아이콘 */}
         <div className="flex space-x-2 items-end justify-end text-sm opacity-50">
           {hearts ? (
             <div className="flex items-center space-x-1">

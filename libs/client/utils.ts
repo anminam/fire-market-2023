@@ -13,6 +13,35 @@ export function dateFormat(date: Date | string): string {
   return new Date(date).toLocaleDateString('ko-KR');
 }
 
+export function communityDateFormat(date: Date | string): string {
+  const targetDate = new Date(date);
+  const now = new Date();
+
+  // 오늘인 경우 '몇 시간 전' 으로 표현
+  if (isSameDay(now, targetDate)) {
+    const hoursAgo = Math.round(
+      Math.abs(now.getTime() - targetDate.getTime()) / (60 * 60 * 1000)
+    );
+    // 1시간 이내면 '몇 분 전' 으로 표현.
+    if (hoursAgo === 0) {
+      const minutesAgo = Math.round(
+        Math.abs(now.getTime() - targetDate.getTime()) / (60 * 1000)
+      );
+      return `${minutesAgo}분 전`;
+    } else {
+      return `${hoursAgo}시간 전`;
+    }
+  }
+
+  // 오늘이 아닌 경우
+  const daysAgo = calculateDaysAgo(now, targetDate);
+  if (daysAgo === 1) {
+    return '어제';
+  } else {
+    return `${daysAgo}일 전`;
+  }
+}
+
 export function chatDateFormat(date: Date | string): string {
   const targetDate = new Date(date);
   const now = new Date();

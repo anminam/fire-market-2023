@@ -17,6 +17,7 @@ const MainProducts = ({ products }: IProps) => {
           hearts={item._count?.Favorite || 0}
           imgSrc={item.image}
           status={item.statusCd}
+          date={item.createdAt}
         />
       ))}
     </div>
