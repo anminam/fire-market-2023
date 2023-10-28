@@ -40,9 +40,14 @@ function Mini({ children }: MiniProps) {
   const { setToken, setRooms, setUserId, token } = useMiniStore();
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async user => {
+      console.log('g', 'auth.onAuthStateChanged', '시작한다');
+
       if (user) {
         const token = await user.getIdToken();
+        console.log('g', 'auth.onAuthStateChanged', '셋팅한다');
         setToken(token);
+        console.log('g', 'auth.onAuthStateChanged', token);
+        console.log('g', 'auth.onAuthStateChanged', '셋팅했다');
         const userRes = await asyncUser();
         setUserId(userRes.data.id);
       } else {
