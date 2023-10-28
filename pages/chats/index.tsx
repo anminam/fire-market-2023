@@ -17,8 +17,6 @@ const Chats: NextPage = () => {
   const user = useUser();
   const rooms = useMiniStore(_ => _.rooms);
 
-  console.log(rooms);
-
   return (
     <Layout isViewTabBar title="채팅">
       <div className="mt-4">

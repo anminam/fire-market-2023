@@ -56,8 +56,6 @@ const useChat = () => {
 
     socket?.on('connect', async () => {
       try {
-        console.log('연결');
-
         const list = await getServerChatMessage(
           initInfo.token,
           initInfo.roomName

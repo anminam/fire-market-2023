@@ -47,21 +47,42 @@ export const useMiniStore = create<MiniState>()(set => ({
     set(state => {
       const roomsReadCount = getRoomsReadCount(rooms, state.userId);
       const roomsCount = rooms.length;
-      return { ...state, rooms, roomsReadCount, roomsCount };
+
+      return { ...state, rooms: [...rooms], roomsReadCount, roomsCount };
     });
   },
   readChat: (roomName: string) => {
     set(state => {
-      const room = state.rooms.find(room => room.roomNm === roomName);
+      const room = getRoom(state.rooms, roomName);
       if (!room) {
         return state;
       }
 
+      const maxCount = Number(room.text.split('::')[0]);
+      if (state.userId === room.buyerId) {
+        room.buyerReadId = maxCount;
+      } else {
+        room.sellerReadId = maxCount;
+      }
+
       asyncReadChat(state.token, roomName, Number(room.text.split('::')[0]));
+
+      state.setRooms(state.rooms);
+
       return state;
     });
   },
 }));
+
+function getRoom(rooms: IRoom[], roomName: string): IRoom | null {
+  for (const room of rooms) {
+    if (room.roomNm === roomName) {
+      return room;
+    }
+  }
+
+  return null;
+}
 
 function getRoomsReadCount(rooms: IRoom[], userId: number) {
   const count = rooms.reduce((prev, room) => {
@@ -91,7 +112,6 @@ async function asyncReadChat(
     });
 
     const json = await res.json();
-    console.log(json);
     // return json?.rooms || [];
   } catch (err) {
     // throw new Error(err as string);
