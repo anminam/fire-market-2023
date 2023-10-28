@@ -21,6 +21,16 @@ const ChatDetail: NextPage = () => {
   const router = useRouter();
   const { user } = useUser();
   const { init, sendMessage, messages } = useChat();
+  const readChat = useMiniStore(_ => _.readChat);
+  const roomsCount = useMiniStore(_ => _.roomsCount);
+
+  useEffect(() => {
+    if (router.query.id) {
+      if (roomsCount > 0) {
+        readChat(router.query.id as string);
+      }
+    }
+  }, [router.query.id, readChat, roomsCount]);
 
   const token = useMiniStore(_ => _.token);
   const { setToken, room } = useRoom(router.query.id as string);

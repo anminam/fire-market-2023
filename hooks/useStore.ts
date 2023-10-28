@@ -1,4 +1,5 @@
 import { IRoom } from '@/interface/Chat';
+import { chatUrl } from '@/libs/client/url';
 import { create } from 'zustand';
 
 interface MiniState {
@@ -13,6 +14,7 @@ interface MiniState {
   setToken: (token: string) => void;
   setRooms: (rooms: IRoom[]) => void;
   setUserId: (userId: number) => void;
+  readChat: (roomName: string) => void;
 }
 
 async function refreshToken() {
@@ -44,7 +46,19 @@ export const useMiniStore = create<MiniState>()(set => ({
   setRooms: (rooms: IRoom[]) => {
     set(state => {
       const roomsReadCount = getRoomsReadCount(rooms, state.userId);
-      return { ...state, rooms, roomsReadCount };
+      const roomsCount = rooms.length;
+      return { ...state, rooms, roomsReadCount, roomsCount };
+    });
+  },
+  readChat: (roomName: string) => {
+    set(state => {
+      const room = state.rooms.find(room => room.roomNm === roomName);
+      if (!room) {
+        return state;
+      }
+
+      asyncReadChat(state.token, roomName, Number(room.text.split('::')[0]));
+      return state;
     });
   },
 }));
@@ -61,4 +75,25 @@ function getRoomsReadCount(rooms: IRoom[], userId: number) {
     return prev + count;
   }, 0);
   return count;
+}
+
+async function asyncReadChat(
+  token: string,
+  roomName: string,
+  readChatId: number
+): Promise<void> {
+  try {
+    const res = await fetch(`${chatUrl}/api/chat/${roomName}/${readChatId}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const json = await res.json();
+    console.log(json);
+    // return json?.rooms || [];
+  } catch (err) {
+    // throw new Error(err as string);
+  }
 }

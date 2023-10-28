@@ -47,9 +47,11 @@ export default function GroundNavBar({}: Props) {
         )}
       >
         <div className="relative">
-          <div className="absolute text-[10px] bg-secondary text-white rounded-full px-1 top-0 right-[-10px]">
-            {roomsReadCount}
-          </div>
+          {roomsReadCount > 0 ? (
+            <div className="absolute text-[10px] bg-secondary text-white rounded-full px-1 top-0 right-[-10px]">
+              {roomsReadCount}
+            </div>
+          ) : null}
           <IconChat />
         </div>
 
