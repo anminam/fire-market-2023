@@ -37,7 +37,7 @@ async function asyncUser() {
 }
 
 function Mini({ children }: MiniProps) {
-  const { setToken, setRooms, setUserId } = useMiniStore();
+  const { setToken, setRooms, setUserId, token } = useMiniStore();
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async user => {
       if (user) {
@@ -45,14 +45,22 @@ function Mini({ children }: MiniProps) {
         setToken(token);
         const userRes = await asyncUser();
         setUserId(userRes.data.id);
-        const rooms = await asyncGetRooms(token);
-        setRooms(rooms);
       } else {
         useMiniStore.setState({ token: '' });
       }
       return () => unsubscribe();
     });
   }, [setRooms, setToken, setUserId]);
+
+  useEffect(() => {
+    const intervalId = setInterval(async () => {
+      if (token === '') return;
+      const rooms = await asyncGetRooms(token);
+      setRooms(rooms);
+    }, 3000);
+
+    return () => clearInterval(intervalId);
+  }, [setRooms, token]);
 
   return <div>{children}</div>;
 }
