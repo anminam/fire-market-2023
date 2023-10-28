@@ -4,7 +4,7 @@ import { AiOutlineHeart } from 'react-icons/ai';
 import { BiSolidChat } from 'react-icons/bi';
 
 interface Props {
-  id: string;
+  id: number;
   name: string;
   createdAt: string;
   content: string;

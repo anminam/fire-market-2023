@@ -1,6 +1,6 @@
 import Item from './ProductItem';
-import Nothing from './Nothing';
 import { Product } from '@prisma/client';
+import NothingWithContainer from './NothingWithContainer';
 
 interface IProps {
   list: Product[];
@@ -14,11 +14,7 @@ function CenterContainer({ children }: { children: React.ReactNode }) {
 }
 export default function ProductByList({ list }: IProps) {
   if (!list.length) {
-    return (
-      <CenterContainer>
-        <Nothing />
-      </CenterContainer>
-    );
+    return <NothingWithContainer />;
   }
 
   return list.map(_ => {

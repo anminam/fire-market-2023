@@ -7,58 +7,30 @@ import { Product } from '@prisma/client';
 import { useEffect, useState } from 'react';
 import { cls } from '@/libs/client/utils';
 import ProductByList from '@/components/ProductByList';
-import { ProductStatus } from '@/interface/ProductKind';
+import { CommunityState } from '@/interface/Community';
+import CommunitiesByList from '@/components/CommunitiesByList';
 
-interface ProductListResponse {
+interface CommunityResponse {
   result: boolean;
-  data: Product[];
+  data: CommunityState[];
 }
-
-// interface SellItem {
-//   label: string;
-//   list: Product[];
-// }
-
-// const list: SellItem[] = [
-//   { label: '판매중', list: [] },
-//   { label: '거래완료', list: [] },
-//   { label: '숨김', list: [] },
-// ];
 
 const Community: NextPage = () => {
   const { user } = useUser();
-  const { data, isLoading } = useSWR<ProductListResponse>(`/api/product/user/`);
+  const { data, isLoading } = useSWR<CommunityResponse>(
+    user?.id ? `/api/posts/user/${user.id}` : null
+  );
 
-  const [list0, setList0] = useState<Product[]>([]);
+  const [list0, setList0] = useState<CommunityState[]>([]);
   const [list1, setList1] = useState<Product[]>([]);
   const [list2, setList2] = useState<Product[]>([]);
 
-  const [tab, setTab] = useState(0);
-
   useEffect(() => {
-    const list0: Product[] = [];
-    const list1: Product[] = [];
-    const list2: Product[] = [];
-    if (data) {
-      data.data.forEach(_ => {
-        switch (_.statusCd) {
-          case ProductStatus.SALE:
-          case ProductStatus.RSRV:
-            list0.push(_);
-            break;
-          case ProductStatus.CMPL:
-            list1.push(_);
-            break;
-          case ProductStatus.HIDE:
-            list2.push(_);
-            break;
-        }
-      });
-    }
-    setList0(list0);
-    setList1(list1);
-    setList2(list2);
+    if (!data || !data.data) return;
+    setList0(data.data);
   }, [data]);
+
+  const [tab, setTab] = useState(0);
 
   return (
     <Layout title="화재생활 활동" canGoBack>
@@ -71,7 +43,7 @@ const Community: NextPage = () => {
             )}
             onClick={() => setTab(0)}
           >
-            판매중 {list0.length ? list0.length : ''}
+            작성한 글 {list0.length ? list0.length : ''}
           </a>
           <a
             className={cls(
@@ -80,7 +52,7 @@ const Community: NextPage = () => {
             )}
             onClick={() => setTab(1)}
           >
-            거래완료 {list1.length ? list1.length : ''}
+            댓글단 글 {list1.length ? list1.length : ''}
           </a>
           <a
             className={cls(
@@ -89,10 +61,10 @@ const Community: NextPage = () => {
             )}
             onClick={() => setTab(2)}
           >
-            숨김 {list2.length ? list2.length : ''}
+            관심 글 {list2.length ? list2.length : ''}
           </a>
         </div>
-        {tab === 0 && <ProductByList list={list0} />}
+        {tab === 0 && <CommunitiesByList list={list0} />}
         {tab === 1 && <ProductByList list={list1} />}
         {tab === 2 && <ProductByList list={list2} />}
       </div>

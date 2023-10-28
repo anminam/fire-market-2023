@@ -1,5 +1,4 @@
 import type { NextPage } from 'next';
-import Button from '@/components/button';
 import Layout from '@/components/layout';
 import TextArea from '@/components/textarea';
 import { useForm } from 'react-hook-form';
@@ -38,7 +37,7 @@ const Write: NextPage = () => {
 
   useEffect(() => {
     if (data?.result) {
-      router.push(`/community/${data.data.id}`);
+      router.replace(`/community/${data.data.id}`);
     }
   }, [data, router]);
 

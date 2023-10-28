@@ -1,7 +1,8 @@
 import useSWR from 'swr';
 import Item from './ProductItem';
-import Nothing from './Nothing';
 import { ProductWithCount } from '@/interface/Product';
+import NothingWithContainer from './NothingWithContainer';
+import LoadingWithContainer from './LoadingWithContainer';
 
 interface ProductListProps {
   kind: 'sales' | 'favorites' | 'purchase' | 'sales-all';
@@ -28,18 +29,10 @@ export default function ProductList({ kind }: ProductListProps) {
   );
 
   if (isLoading) {
-    return (
-      <CenterContainer>
-        <div className="loading loading-spinner loading-lg"></div>
-      </CenterContainer>
-    );
+    return <LoadingWithContainer />;
   }
   if (!data || data.data.length === 0) {
-    return (
-      <CenterContainer>
-        <Nothing />
-      </CenterContainer>
-    );
+    return <NothingWithContainer />;
   }
 
   return data.data.map(_ => {
