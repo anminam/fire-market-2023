@@ -15,6 +15,8 @@ interface MiniState {
   setRooms: (rooms: IRoom[]) => void;
   setUserId: (userId: number) => void;
   readChat: (roomName: string) => void;
+  isApp: boolean;
+  setIsApp: (isApp: boolean) => void;
 }
 
 async function refreshToken() {
@@ -29,6 +31,7 @@ export const useMiniStore = create<MiniState>()(set => ({
   roomsReadCount: 0,
   token: '',
   userId: 0,
+  isApp: false,
   increase: by =>
     set(state => {
       return { bears: state.bears + by };
@@ -39,6 +42,7 @@ export const useMiniStore = create<MiniState>()(set => ({
     });
   },
   setToken: (token: string) => {
+    console.log('토큰바뀐다', token);
     set(state => {
       return { ...state, token };
     });
@@ -70,6 +74,11 @@ export const useMiniStore = create<MiniState>()(set => ({
       state.setRooms(state.rooms);
 
       return state;
+    });
+  },
+  setIsApp: (isApp: boolean) => {
+    set(state => {
+      return { ...state, isApp };
     });
   },
 }));
