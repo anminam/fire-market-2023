@@ -36,7 +36,8 @@
     "ts-node": "^10.9.1",
     "twilio": "^4.17.0",
     "typescript": "5.2.2",
-    "unified": "^11.0.3"
+    "unified": "^11.0.3",
+    "zustand": "^4.4.4"
   },
   "devDependencies": {
     "@prisma/client": "^5.5.0",
