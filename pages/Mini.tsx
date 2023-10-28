@@ -49,6 +49,7 @@ function Mini({ children }: MiniProps) {
         console.log('g', 'auth.onAuthStateChanged', token);
         console.log('g', 'auth.onAuthStateChanged', '셋팅했다');
         const userRes = await asyncUser();
+        if (!userRes.data) return;
         setUserId(userRes.data.id);
       } else {
         useMiniStore.setState({ token: '' });
