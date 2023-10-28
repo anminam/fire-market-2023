@@ -66,7 +66,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     await req.session.save();
 
     return res.redirect(
-      307,
       `/login/app?data=${btoa(
         JSON.stringify({
           id: user.id,
