@@ -8,10 +8,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { token } = req.query;
 
   if (typeof token === 'string') {
-
     const base64Payload = token?.split('.')[1]; //value 0 -> header, 1 -> payload, 2 -> VERIFY SIGNATURE
     const payload = Buffer.from(base64Payload, 'base64');
-    const { user_id: uid, email, name: displayName } = JSON.parse(payload.toString())
+    const {
+      user_id: uid,
+      email,
+      name: displayName,
+    } = JSON.parse(payload.toString());
     let user = await client?.user.findUnique({
       where: {
         firebaseUid: uid,
@@ -62,7 +65,15 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     // 세션 저장.
     await req.session.save();
 
-    return res.redirect(307, '/')
+    return res.redirect(
+      307,
+      `/login/app?data=${btoa(
+        JSON.stringify({
+          id: user.id,
+          token: token,
+        })
+      )}`
+    );
   }
 }
 
