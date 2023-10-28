@@ -3,10 +3,8 @@ import Layout from '@/components/layout';
 
 import useSWR from 'swr';
 import useUser from '@/libs/client/useUser';
-import { Product } from '@prisma/client';
 import { useEffect, useState } from 'react';
 import { cls } from '@/libs/client/utils';
-import ProductByList from '@/components/ProductByList';
 import { CommunityState } from '@/interface/Community';
 import CommunitiesByList from '@/components/CommunitiesByList';
 
@@ -17,18 +15,37 @@ interface CommunityResponse {
 
 const Community: NextPage = () => {
   const { user } = useUser();
+
   const { data, isLoading } = useSWR<CommunityResponse>(
     user?.id ? `/api/posts/user/${user.id}` : null
   );
 
+  const { data: commentsData } = useSWR<CommunityResponse>(
+    `/api/users/my/posts/comments/`
+  );
+
+  const { data: interestData } = useSWR<CommunityResponse>(
+    `/api/users/my/posts/interest/`
+  );
+
   const [list0, setList0] = useState<CommunityState[]>([]);
-  const [list1, setList1] = useState<Product[]>([]);
-  const [list2, setList2] = useState<Product[]>([]);
+  const [list1, setList1] = useState<CommunityState[]>([]);
+  const [list2, setList2] = useState<CommunityState[]>([]);
 
   useEffect(() => {
     if (!data || !data.data) return;
     setList0(data.data);
   }, [data]);
+
+  useEffect(() => {
+    if (!commentsData || !commentsData.data) return;
+    setList1(commentsData.data);
+  }, [commentsData]);
+
+  useEffect(() => {
+    if (!interestData || !interestData.data) return;
+    setList2(interestData.data);
+  }, [interestData]);
 
   const [tab, setTab] = useState(0);
 
@@ -65,8 +82,8 @@ const Community: NextPage = () => {
           </a>
         </div>
         {tab === 0 && <CommunitiesByList list={list0} />}
-        {tab === 1 && <ProductByList list={list1} />}
-        {tab === 2 && <ProductByList list={list2} />}
+        {tab === 1 && <CommunitiesByList list={list1} />}
+        {tab === 2 && <CommunitiesByList list={list2} />}
       </div>
       <div></div>
     </Layout>

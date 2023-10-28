@@ -4,6 +4,6 @@ export interface CommunityState extends Post {
   user: User;
   _count: {
     Answers: number;
-    Wonderings: number;
+    Interests: number;
   };
 }

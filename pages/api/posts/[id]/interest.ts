@@ -9,7 +9,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     session: { user },
   } = req;
 
-  const alreadyWonder = await client.wondering.findFirst({
+  const alreadyWonder = await client.interest.findFirst({
     where: {
       userId: user?.id,
       postId: +(id as string),
@@ -17,13 +17,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   });
 
   if (alreadyWonder) {
-    await client.wondering.delete({
+    await client.interest.delete({
       where: {
         id: alreadyWonder.id,
       },
     });
   } else {
-    await client.wondering.create({
+    await client.interest.create({
       data: {
         user: {
           connect: {

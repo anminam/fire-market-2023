@@ -28,7 +28,7 @@ function CommunitiesByListItem({ list }: IProps) {
           createdAt={_.createdAt.toString()}
           name={_.user.name}
           answer={_._count?.Answers}
-          wondering={_._count?.Wonderings}
+          wondering={_._count?.Interests}
         />
       </div>
     );

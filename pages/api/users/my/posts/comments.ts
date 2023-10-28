@@ -6,9 +6,9 @@ import { NextApiRequest, NextApiResponse } from 'next';
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const {
     session: { user },
-    query: { id },
   } = req;
 
+  const id = user?.id;
   // id 가없으면 에러
   if (!id) {
     res.status(400).json({
@@ -25,7 +25,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       },
     ],
     where: {
-      userId: +id?.toString(),
+      Answers: {
+        some: {
+          userId: id,
+        },
+      },
     },
     include: {
       user: {

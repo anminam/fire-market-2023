@@ -4,8 +4,8 @@ import { useRouter } from 'next/router';
 import { ForwardedRef, forwardRef, useEffect } from 'react';
 
 interface MoreModalProps {
-  productId?: string;
-  productUserId: number;
+  postId?: number;
+  postUserId: number;
   userId: number;
 }
 
@@ -14,13 +14,13 @@ interface MoreModalResponse {
   status: ProductStatus;
 }
 
-function MoreModal(
-  { productId, productUserId, userId }: MoreModalProps,
+function PostMoreModal(
+  { postId, postUserId, userId }: MoreModalProps,
   ref: ForwardedRef<HTMLDialogElement>
 ) {
   const router = useRouter();
   // 내껀가!!!
-  const isMe = userId === productUserId;
+  const isMe = userId === postUserId;
 
   // 상태 수정.
   const [setStateToServer, { loading, data }] = useMutation<MoreModalResponse>(
@@ -34,7 +34,7 @@ function MoreModal(
   };
 
   const handleEdit = () => {
-    router.push(`/products/upload?productId=${productId}`);
+    router.push(`/products/upload?productId=${postId}`);
   };
   const handleHide = () => {
     setStateToServer({ status: ProductStatus.HIDE }, 'PATCH');
@@ -87,4 +87,4 @@ function MoreModal(
   );
 }
 
-export default forwardRef<HTMLDialogElement, MoreModalProps>(MoreModal);
+export default forwardRef<HTMLDialogElement, MoreModalProps>(PostMoreModal);

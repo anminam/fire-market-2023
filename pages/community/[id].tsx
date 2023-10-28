@@ -8,9 +8,11 @@ import { Answer, Post, User } from '@prisma/client';
 import PostAnswer from '@/components/PostAnswer';
 import useMutation from '@/libs/client/useMutation';
 import { cls } from '@/libs/client/utils';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import UserProfileContainer from '@/components/UserProfileContainer';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
+import PostMoreModal from '@/components/PostMoreModal';
+import useUser from '@/libs/client/useUser';
 
 interface AnswerWithUser extends Answer {
   user: User;
@@ -19,7 +21,7 @@ interface PostWithUser extends Post {
   user: User;
   _count: {
     Answers: number;
-    Wonderings: number;
+    Interests: number;
   };
   Answers: AnswerWithUser[];
 }
@@ -46,34 +48,38 @@ const CommunityPostDetail: NextPage = () => {
     formState: { errors },
   } = useForm<AnswerForm>();
 
-  const { data: wonderData, mutate } = useSWR<PostsResponse>(
+  const { user } = useUser();
+
+  const { data, mutate } = useSWR<PostsResponse>(
     router.query.id ? `/api/posts/${router.query.id}` : null
   );
 
+  if (data) {
+  }
+
   const [wonder, { loading: wonderLoading }] = useMutation(
-    `/api/posts/${router.query.id}/wonder`
+    `/api/posts/${router.query.id}/interest`
   );
 
-  const [sendAnswer, { data, loading }] = useMutation<AnswerResponse>(
-    `/api/posts/${router.query.id}/answers`
-  );
+  const [sendAnswer, { data: answerData, loading }] =
+    useMutation<AnswerResponse>(`/api/posts/${router.query.id}/answers`);
 
   const onWonderClick = () => {
-    if (!wonderData) return;
+    if (!data) return;
 
     mutate(
       {
-        ...wonderData,
+        ...data,
         post: {
-          ...wonderData?.post,
+          ...data?.post,
           _count: {
-            ...wonderData?.post._count,
-            Wonderings: wonderData.isWondering
-              ? wonderData?.post._count?.Wonderings - 1
-              : wonderData?.post._count?.Wonderings + 1,
+            ...data?.post._count,
+            Interests: data.isWondering
+              ? data?.post._count?.Interests - 1
+              : data?.post._count?.Interests + 1,
           },
         },
-        isWondering: !wonderData.isWondering,
+        isWondering: !data.isWondering,
       },
       false
     );
@@ -89,25 +95,43 @@ const CommunityPostDetail: NextPage = () => {
   };
 
   useEffect(() => {
-    if (data) {
+    if (answerData) {
       reset();
       mutate();
     }
-  }, [data, reset, mutate]);
+  }, [answerData, reset, mutate]);
+
+  // 모달
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  const handleMoreClick = () => {
+    debugger;
+    if (dialogRef.current) {
+      dialogRef.current.showModal();
+    }
+  };
+
+  /* 모달 */
+  <PostMoreModal
+    ref={dialogRef}
+    postId={+(router.query.id as string)}
+    postUserId={data?.post?.userId as number}
+    userId={user?.id as number}
+  />;
 
   return (
-    <Layout canGoBack title="화재생활">
+    <Layout canGoBack title="화재생활" isMore onMoreClick={handleMoreClick}>
       <div className="mt-4">
         {/* 프로필 */}
         <div className="px-4">
           <div className="badge badge-sm badge-neutral">질문</div>
           <UserProfileContainer
-            id={wonderData?.post?.user?.id.toString() || ''}
-            avatar={wonderData?.post?.user?.avatar}
-            name={wonderData?.post?.user?.name}
+            id={data?.post?.user?.id.toString() || ''}
+            avatar={data?.post?.user?.avatar}
+            name={data?.post?.user?.name}
             size={10}
             isCommunity
-            date={wonderData?.post?.createdAt}
+            date={data?.post?.createdAt}
           />
         </div>
 
@@ -116,18 +140,18 @@ const CommunityPostDetail: NextPage = () => {
         {/* 내용 */}
         <div className="px-4">
           <div>
-            <div className="font-bold">{wonderData?.post?.question}</div>
+            <div className="font-bold">{data?.post?.question}</div>
           </div>
           <div className="flex space-x-5 mt-4 w-full">
             <button
               onClick={onWonderClick}
               className={cls(
                 `flex space-x-2 items-center text-sm`,
-                wonderData?.isWondering ? 'text-blue-500' : 'opacity-50'
+                data?.isWondering ? 'text-blue-500' : 'opacity-50'
               )}
             >
               <AiOutlineCheckCircle size="20" />
-              <span>관심 {wonderData?.post?._count.Wonderings}</span>
+              <span>관심 {data?.post?._count.Interests}</span>
             </button>
           </div>
         </div>
@@ -136,9 +160,9 @@ const CommunityPostDetail: NextPage = () => {
 
         {/* 답변 */}
         <div className="px-4">
-          <div>댓글 {wonderData?.post?._count.Answers}</div>
+          <div>댓글 {data?.post?._count.Answers}</div>
           <div className="my-5 space-y-5">
-            {wonderData?.post?.Answers.map(
+            {data?.post?.Answers.map(
               ({ id, answer, createdAt, user: { name, avatar } }) => {
                 return (
                   <PostAnswer

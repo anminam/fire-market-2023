@@ -40,14 +40,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       _count: {
         select: {
           Answers: true,
-          Wonderings: true,
+          Interests: true,
         },
       },
     },
   });
 
   const isWondering = Boolean(
-    await client.wondering.findFirst({
+    await client.interest.findFirst({
       where: {
         postId: +(id as string),
         userId: user?.id,

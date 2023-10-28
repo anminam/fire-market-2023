@@ -41,7 +41,7 @@ model User {
   buyerProducts   Product[]       @relation(name: "buyerProduct")
   Posts           Post[]
   Answers         Answer[]
-  Wonderings      Wondering[]
+  Interests       Interest[]
   writtenReviews  Review[]        @relation(name: "writtenReviews")
   receivedRevices Review[]        @relation(name: "receivedRevices")
   sellerChatRooms chatroom[]      @relation(name: "sellerChatRooms")
@@ -105,7 +105,7 @@ model Post {
   latitude   Float?
   longitude  Float?
   Answers    Answer[]
-  Wonderings Wondering[]
+  Interests  Interest[]
 
   @@index([userId])
 }
@@ -124,7 +124,7 @@ model Answer {
   @@index([postId])
 }
 
-model Wondering {
+model Interest {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
