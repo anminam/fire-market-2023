@@ -8,7 +8,6 @@ import MyProfileImage from '@/components/MyProfileImage';
 import { useRouter } from 'next/router';
 import { Suspense } from 'react';
 import { AiOutlineFire } from 'react-icons/ai';
-import { useMiniStore } from '@/hooks/useStore';
 
 // 나의 거래
 const MyBusiness = () => {
@@ -131,11 +130,8 @@ const MiniProfile = () => {
  * 나의 화재
  */
 const Myfire: NextPage = () => {
-  const a = useMiniStore(state => state.roomsCount);
-
   return (
     <Layout isViewTabBar title="나의 화재">
-      {a}
       <div className="">
         <div className="px-4">
           <Suspense fallback={<div>loading...</div>}>
