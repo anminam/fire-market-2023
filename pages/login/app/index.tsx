@@ -7,13 +7,7 @@ const AppLoginPage = () => {
   const { setToken, setUserId, setIsApp } = useMiniStore();
 
   useEffect(() => {
-    console.log('g', 'query.data', 's', '----------------');
-    console.log('g', router.query.data);
-    console.log('g', 'query.data', 'n', '----------------');
     const data = JSON.parse(atob(router.query.data as string));
-    console.log('g', 'data', 's', '----------------');
-    console.log('g', data.id);
-    console.log('g', 'data', 'n', '----------------');
     setIsApp(true);
     setToken(data.token);
     setUserId(data.id);

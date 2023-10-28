@@ -9,6 +9,7 @@ interface MiniProps {
 }
 
 async function asyncGetRooms(token: string): Promise<IRoom[]> {
+  console.log('g', 'asyncGetRooms', '시작');
   try {
     const res = await fetch(`${chatUrl}/api/rooms`, {
       headers: {
@@ -19,6 +20,9 @@ async function asyncGetRooms(token: string): Promise<IRoom[]> {
     const json = await res.json();
     return json?.rooms || [];
   } catch (err) {
+    console.log('---------');
+    console.log(err);
+    console.log('---------');
     return [];
     // throw new Error(err as string);
   }
@@ -55,7 +59,7 @@ function Mini({ children }: MiniProps) {
       }
       return () => unsubscribe();
     });
-  }, [setRooms, setToken, setUserId]);
+  }, [isApp, setRooms, setToken, setUserId]);
 
   useEffect(() => {
     const intervalId = setInterval(async () => {
