@@ -7,12 +7,14 @@ const AppLoginPage = () => {
   const { setToken, setUserId, setIsApp } = useMiniStore();
 
   useEffect(() => {
+    if (!router.isReady) return;
+
     const data = JSON.parse(atob(router.query.data as string));
     setIsApp(true);
     setToken(data.token);
     setUserId(data.id);
     router.replace('/');
-  }, [router, setIsApp, setToken, setUserId]);
+  }, [router.isReady, setIsApp, setToken, setUserId]);
 
   return <div>로그인 중입니다...</div>;
 };
