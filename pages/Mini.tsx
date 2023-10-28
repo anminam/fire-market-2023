@@ -37,11 +37,10 @@ async function asyncUser() {
 }
 
 function Mini({ children }: MiniProps) {
-  const { setToken, setRooms, setUserId, token } = useMiniStore();
+  const { setToken, setRooms, setUserId, token, isApp } = useMiniStore();
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async user => {
-      console.log('g', 'auth.onAuthStateChanged', '시작한다');
-
+      if (isApp) return;
       if (user) {
         const token = await user.getIdToken();
         console.log('g', 'auth.onAuthStateChanged', '셋팅한다');
