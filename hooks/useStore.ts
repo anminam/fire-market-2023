@@ -90,7 +90,9 @@ function getRoomsReadCount(rooms: IRoom[], userId: number) {
     const readCount =
       userId === room.buyerId ? room.buyerReadId : room.sellerReadId;
 
-    const count = maxCount - readCount;
+    // const count = maxCount - readCount;
+    // !TODO: 일단은 카운트 무조건 0으로
+    const count = maxCount - readCount > 0 ? 1 : 0;
     room.readCount = count;
 
     return prev + count;
