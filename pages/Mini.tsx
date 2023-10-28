@@ -63,6 +63,7 @@ function Mini({ children }: MiniProps) {
 
   useEffect(() => {
     const intervalId = setInterval(async () => {
+      console.log('토큰맨', token);
       if (token === '') return;
       const rooms = await asyncGetRooms(token);
       setRooms(rooms);
