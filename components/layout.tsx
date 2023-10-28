@@ -8,6 +8,7 @@ import Head from 'next/head';
 
 import { AiOutlineHome, AiOutlineMore } from 'react-icons/ai';
 import { FaChevronLeft } from 'react-icons/fa';
+import { useMiniStore } from '@/hooks/useStore';
 
 interface LayoutProps {
   title?: string;

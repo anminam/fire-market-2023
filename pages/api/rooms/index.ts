@@ -16,11 +16,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   });
   const json = await serverRes.json();
 
-  console.log('----------');
-  console.log(user?.token);
-  console.log('----------');
-  console.log(json, process.env.URL_CHAT);
-
   const data = await client.chatroom.findMany({
     take: 20,
     skip: 0,

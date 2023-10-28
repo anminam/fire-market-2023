@@ -28,7 +28,7 @@ const Home: NextPage = () => {
 
   return (
     <Layout title="장터보기" isViewTabBar>
-      <div className="flex flex-col space-y-5 divide-y divide-neutral">
+      <div className="flex flex-col">
         <MainProducts products={products} />
 
         <FloatingButton href="/products/upload">

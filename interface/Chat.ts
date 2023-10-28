@@ -74,4 +74,5 @@ export interface IRoom {
   product: Product;
   seller: User;
   buyer: User;
+  readCount?: number;
 }

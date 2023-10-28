@@ -1,18 +1,17 @@
 import 'firebase/auth';
 import { useEffect, useState } from 'react';
-import { User, getAuth } from 'firebase/auth';
-import { app } from '@/libs/client/firebase';
-const auth = getAuth(app);
+import { User } from 'firebase/auth';
+import { auth } from '@/libs/client/firebase';
 
 const useFirebaseUser = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [token, setToken] = useState<string>('');
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
         setCurrentUser(user);
-        user.getIdTokenResult().then((result) => {
+        user.getIdTokenResult().then(result => {
           setToken(result.token);
         });
       } else {

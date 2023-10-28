@@ -2,44 +2,13 @@ import type { NextPage } from 'next';
 import Link from 'next/link';
 import Layout from '@/components/layout';
 import useUser from '@/libs/client/useUser';
-import useSWR, { SWRConfig } from 'swr';
-import { Review, User } from '@prisma/client';
-import EvaluationItem from '@/components/EvaluationItem';
 import PageContentsContainer from '@/components/PageContentsContainer';
 import { BiHeart, BiLogOut, BiReceipt, BiShoppingBag } from 'react-icons/bi';
 import MyProfileImage from '@/components/MyProfileImage';
 import { useRouter } from 'next/router';
 import { Suspense } from 'react';
 import { AiOutlineFire } from 'react-icons/ai';
-
-interface ReviewWithUser extends Review {
-  createdBy: User;
-}
-interface ReviewResponse {
-  result: boolean;
-  data: ReviewWithUser[];
-}
-
-// const Reviews: NextPage = () => {
-//   const { data } = useSWR<ReviewResponse>('/api/users/my/reviews');
-//   return (
-//     <PageContentsContainer title="사람들에게 받은 평가">
-//       <ul>
-//         {data?.data?.map(_ => {
-//           return (
-//             <EvaluationItem
-//               key={_.id}
-//               comment={_.review}
-//               id={_.createdBy.id}
-//               name={_.createdBy.name}
-//               star={_.rating}
-//             />
-//           );
-//         })}
-//       </ul>
-//     </PageContentsContainer>
-//   );
-// };
+import { useMiniStore } from '@/hooks/useStore';
 
 // 나의 거래
 const MyBusiness = () => {
@@ -125,6 +94,7 @@ const Others = () => {
     </PageContentsContainer>
   );
 };
+
 const MiniProfile = () => {
   const router = useRouter();
   const { user } = useUser();
@@ -156,12 +126,16 @@ const MiniProfile = () => {
     </Link>
   );
 };
+
 /**
  * 나의 화재
  */
-const Profile: NextPage = () => {
+const Myfire: NextPage = () => {
+  const a = useMiniStore(state => state.roomsCount);
+
   return (
     <Layout isViewTabBar title="나의 화재">
+      {a}
       <div className="">
         <div className="px-4">
           <Suspense fallback={<div>loading...</div>}>
@@ -185,12 +159,4 @@ const Profile: NextPage = () => {
   );
 };
 
-const Page: NextPage = () => {
-  return (
-    // <SWRConfig value={{ suspense: true }}>
-    <Profile />
-    // </SWRConfig>
-  );
-};
-
-export default Page;
+export default Myfire;

@@ -8,7 +8,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     session: { user },
   } = req;
 
-  console.log(user, user?.id);
   const data = await client.product.findMany({
     orderBy: [
       {

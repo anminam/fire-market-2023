@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import { AiOutlineSend } from 'react-icons/ai';
 import useChat from '@/hooks/useChat';
 import react, { useEffect, useRef } from 'react';
-import useFirebaseUser from '@/hooks/useFirebaseUser';
+
 import useUser from '@/libs/client/useUser';
 import useRoom from '@/hooks/useRoom';
 import ProductImage from '@/components/ProductImage';
@@ -15,13 +15,14 @@ import Link from 'next/link';
 import { IRoom } from '@/interface/Chat';
 import { User } from '@prisma/client';
 import ModalSellProductState from '@/components/ModalSellProductState';
+import { useMiniStore } from '@/hooks/useStore';
 
 const ChatDetail: NextPage = () => {
   const router = useRouter();
   const { user } = useUser();
   const { init, sendMessage, messages } = useChat();
 
-  const { token } = useFirebaseUser();
+  const token = useMiniStore(_ => _.token);
   const { setToken, room } = useRoom(router.query.id as string);
 
   react.useEffect(() => {
@@ -56,7 +57,7 @@ const ChatDetail: NextPage = () => {
       if (scrollContainer) {
         let height = document.documentElement.clientHeight;
         height = height - 57 - 48 - 64;
-        console.log(height);
+        // console.log(height);
         scrollContainer.style.maxHeight = `${height}px`;
       }
     }

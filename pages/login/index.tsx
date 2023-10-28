@@ -1,16 +1,9 @@
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  AuthError,
-} from "firebase/auth";
-import { app } from "@/libs/client/firebase";
-import Image from "next/image";
-import useMutation from "@/libs/client/useMutation";
-import { useRouter } from "next/router";
-import Layout from "@/components/layout";
-import { useEffect } from "react";
-import useFirebaseUser from "@/hooks/useFirebaseUser";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { app } from '@/libs/client/firebase';
+import useMutation from '@/libs/client/useMutation';
+import { useRouter } from 'next/router';
+import Layout from '@/components/layout';
+import { useEffect } from 'react';
 
 interface LoginPageResult {
   result: boolean;
@@ -19,7 +12,7 @@ interface LoginPageResult {
 const LoginPage = () => {
   const router = useRouter();
   const [saveToken, { loading, data, error: tokenError }] =
-    useMutation<LoginPageResult>("/api/firebase/firebase-user");
+    useMutation<LoginPageResult>('/api/firebase/firebase-user');
 
   // 구글 로그인
   const handleGoogleLogin = async () => {
@@ -38,13 +31,13 @@ const LoginPage = () => {
         });
       }
     } catch (error) {
-      console.error("구글 로그인 실패:", error);
+      console.error('구글 로그인 실패:', error);
     }
   };
 
   useEffect(() => {
     if (data?.result) {
-      router.replace("/");
+      router.replace('/');
     }
   }, [router, data]);
 

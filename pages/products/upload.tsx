@@ -82,7 +82,6 @@ const Upload: NextPage = () => {
   }: UploadProductForm) => {
     if (isLoading) return;
 
-    console.log('a');
     // 가격 콤마 제거.
     price = price.replace(/,/g, '');
 

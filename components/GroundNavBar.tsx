@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { cls } from '@/libs/client/utils';
 import { useRouter } from 'next/router';
+import { useMiniStore } from '@/hooks/useStore';
 
 interface Props {}
 
@@ -13,6 +14,9 @@ const getItemColor = (routerPath: string, path: string) => {
 
 export default function GroundNavBar({}: Props) {
   const router = useRouter();
+
+  const roomsReadCount = useMiniStore(_ => _.roomsReadCount);
+
   return (
     <nav className="max-w-xl bg-base-100 border-t border-t-neutral fixed bottom-0 w-full px-6 pb-3 pt-3 flex justify-between text-xs">
       <Link
@@ -42,7 +46,13 @@ export default function GroundNavBar({}: Props) {
           getItemColor(router.pathname, '/chats')
         )}
       >
-        <IconChat />
+        <div className="relative">
+          <div className="absolute text-[10px] bg-secondary text-white rounded-full px-1 top-0 right-[-10px]">
+            {roomsReadCount}
+          </div>
+          <IconChat />
+        </div>
+
         <span>채팅</span>
       </Link>
       <Link

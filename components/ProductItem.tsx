@@ -71,7 +71,7 @@ export default function ProductItem({
 }: ItemProps) {
   return (
     <Link href={`/products/${id}`}>
-      <div className="relative flex px-4 pt-5 cursor-pointer justify-between">
+      <div className="relative flex cursor-pointer justify-between py-4">
         <div className="flex space-x-4">
           {/* 이미지 */}
           <ProductImage title={title} imgSrc={imgSrc} status={status} />
