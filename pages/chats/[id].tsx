@@ -69,6 +69,7 @@ const ChatDetail: NextPage = () => {
         height = height - 57 - 48 - 64;
         // console.log(height);
         scrollContainer.style.maxHeight = `${height}px`;
+        scrollContainer.style.minHeight = `${height}px`;
       }
     }
 
@@ -90,7 +91,7 @@ const ChatDetail: NextPage = () => {
       {room && user && <ChatDetailTopContainer room={room} user={user} />}
       {/* 채팅 */}
       <div className="relative flex pt-14 overflow-hidden chat-container ">
-        <div className="px-4 space-y-4 overflow-scroll scroll-container w-full">
+        <div className="px-4 space-y-4 overflow-auto scroll-container w-full">
           {messages.map(_ => {
             const tUser =
               room?.sellerId === _?.userId ? room?.seller : room?.buyer;
