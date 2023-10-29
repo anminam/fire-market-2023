@@ -1,7 +1,7 @@
 import { IChatMessage, IChatReceivedRoomInfo, IChatReceivedServerMessage, IRoom } from '@/interface/Chat';
 import { chatUrl } from '@/libs/client/url';
-import { set } from 'react-hook-form';
 import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 
 interface MiniState {
   bears: number;
@@ -30,91 +30,93 @@ async function refreshToken() {
   // const user = await auth.
 }
 
-export const useMiniStore = create<MiniState>()((set) => ({
-  bears: 0,
-  rooms: [],
-  roomsCount: 0,
-  roomsReadCount: 0,
-  token: '',
-  userId: 0,
-  isApp: false,
-  emitMessage: null,
-  increase: (by) =>
-    set((state) => {
-      return { bears: state.bears + by };
-    }),
-  setUserId: (userId: number) => {
-    set((state) => {
-      return { ...state, userId };
-    });
-  },
-  setToken: (token: string) => {
-    console.log('토큰바뀐다', token);
-    set((state) => {
-      return { ...state, token };
-    });
-  },
-  setRooms: (rooms: IRoom[]) => {
-    set((state) => {
-      const roomsReadCount = getRoomsReadCount(rooms, state.userId);
-      const roomsCount = rooms.length;
+export const useMiniStore = create<MiniState>()(
+  devtools((set) => ({
+    bears: 0,
+    rooms: [],
+    roomsCount: 0,
+    roomsReadCount: 0,
+    token: '',
+    userId: 0,
+    isApp: false,
+    emitMessage: null,
+    increase: (by) =>
+      set((state) => {
+        return { bears: state.bears + by };
+      }),
+    setUserId: (userId: number) => {
+      set((state) => {
+        return { ...state, userId };
+      });
+    },
+    setToken: (token: string) => {
+      console.log('토큰바뀐다', token);
+      set((state) => {
+        return { ...state, token };
+      });
+    },
+    setRooms: (rooms: IRoom[]) => {
+      set((state) => {
+        const roomsReadCount = getRoomsReadCount(rooms, state.userId);
+        const roomsCount = rooms.length;
 
-      return { ...state, rooms: [...rooms], roomsReadCount, roomsCount };
-    });
-  },
-  readChat: (roomName: string) => {
-    set((state) => {
-      const room = getRoom(state.rooms, roomName);
-      if (!room) {
+        return { ...state, rooms: [...rooms], roomsReadCount, roomsCount };
+      });
+    },
+    readChat: (roomName: string) => {
+      set((state) => {
+        const room = getRoom(state.rooms, roomName);
+        if (!room) {
+          return state;
+        }
+
+        const maxCount = Number(room.text.split('::')[0]);
+        if (state.userId === room.buyerId) {
+          room.buyerReadId = maxCount;
+        } else {
+          room.sellerReadId = maxCount;
+        }
+
+        asyncReadChat(state.token, roomName, Number(room.text.split('::')[0]));
+
+        state.setRooms(state.rooms);
+
         return state;
+      });
+    },
+    setIsApp: (isApp: boolean) => {
+      set((state) => {
+        return { ...state, isApp };
+      });
+    },
+    initSendMessage: (func: (roomName: string, text: string) => void) => {
+      set((state) => {
+        return { ...state, emitMessage: func };
+      });
+    },
+    sendMessage: (roomName: string, text: string) => {
+      useMiniStore.getState().emitMessage?.(roomName, text);
+      set((state) => {
+        return state;
+      });
+    },
+    getMessage: async (roomName: string): Promise<IChatMessage[]> => {
+      const rooms = useMiniStore.getState().rooms;
+      const token = useMiniStore.getState().token;
+      const room = rooms.find((room) => room.roomNm === roomName);
+      if (!room) {
+        return [];
       }
-
-      const maxCount = Number(room.text.split('::')[0]);
-      if (state.userId === room.buyerId) {
-        room.buyerReadId = maxCount;
-      } else {
-        room.sellerReadId = maxCount;
-      }
-
-      asyncReadChat(state.token, roomName, Number(room.text.split('::')[0]));
-
-      state.setRooms(state.rooms);
-
-      return state;
-    });
-  },
-  setIsApp: (isApp: boolean) => {
-    set((state) => {
-      return { ...state, isApp };
-    });
-  },
-  initSendMessage: (func: (roomName: string, text: string) => void) => {
-    set((state) => {
-      return { ...state, emitMessage: func };
-    });
-  },
-  sendMessage: (roomName: string, text: string) => {
-    useMiniStore.getState().emitMessage?.(roomName, text);
-    set((state) => {
-      return state;
-    });
-  },
-  getMessage: async (roomName: string): Promise<IChatMessage[]> => {
-    const rooms = useMiniStore.getState().rooms;
-    const token = useMiniStore.getState().token;
-    const room = rooms.find((room) => room.roomNm === roomName);
-    if (!room) {
-      return [];
-    }
-    const info = await getServerChatMessage(token, roomName);
-    const updateMessages = info.messages.map((message) => updateMessage(message));
-    return updateMessages;
-  },
-  getRoom: (roomName: string): IRoom | null => {
-    const rooms = useMiniStore.getState().rooms;
-    return getRoom(rooms, roomName);
-  },
-}));
+      const info = await getServerChatMessage(token, roomName);
+      const updateMessages = info.messages.map((message) => updateMessage(message));
+      return updateMessages;
+    },
+    getRoom: (roomName: string): IRoom | null => {
+      const rooms = useMiniStore.getState().rooms;
+      return getRoom(rooms, roomName);
+    },
+  })),
+);
 
 function getRoom(rooms: IRoom[], roomName: string): IRoom | null {
   for (const room of rooms) {

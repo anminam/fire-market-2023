@@ -95,20 +95,6 @@ async function asyncGetRooms(token: string): Promise<IRoom[]> {
   }
 }
 
-async function getServerChatMessage(token: string, roomName: string): Promise<IChatReceivedRoomInfo> {
-  try {
-    const res = await fetch(`${URL}/api/chat/${roomName}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await res.json();
-    return data;
-  } catch (err) {
-    throw new Error(err as string);
-  }
-}
-
 // IChatReceivedServerMessage to IChatMessage change function
 function updateMessage(message: IChatReceivedServerMessage): IChatMessage {
   const date = new Date(message.createdAt);
