@@ -89,7 +89,6 @@ export const useMiniStore = create<MiniState>()((set) => ({
     });
   },
   initSendMessage: (func: (roomName: string, text: string) => void) => {
-    console.log('a');
     set((state) => {
       return { ...state, emitMessage: func };
     });
@@ -143,6 +142,7 @@ function getRoomsReadCount(rooms: IRoom[], userId: number) {
 }
 
 async function asyncReadChat(token: string, roomName: string, readChatId: number): Promise<void> {
+  console.log('anlog', 'asyncReadChat', token);
   try {
     const res = await fetch(`${chatUrl}/api/chat/${roomName}/${readChatId}`, {
       method: 'PUT',
@@ -158,6 +158,7 @@ async function asyncReadChat(token: string, roomName: string, readChatId: number
   }
 }
 async function getServerChatMessage(token: string, roomName: string): Promise<IChatReceivedRoomInfo> {
+  console.log('anlog', 'getServerChatMessage', token);
   try {
     const res = await fetch(`${chatUrl}/api/chat/${roomName}`, {
       headers: {

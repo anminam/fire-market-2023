@@ -13,6 +13,7 @@ const AppLoginPage = () => {
     setIsApp(true);
     setToken(data.token);
     setUserId(data.id);
+    console.log('anlog', 'AppLoginPage', data.token);
     router.replace('/');
   }, [router.isReady, setIsApp, setToken, setUserId]);
 
