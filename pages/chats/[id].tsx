@@ -4,15 +4,13 @@ import Message from '@/components/message';
 import { useRouter } from 'next/router';
 
 import { AiOutlineSend } from 'react-icons/ai';
-import useChat from '@/hooks/useChat';
-import react, { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import useUser from '@/libs/client/useUser';
-import useRoom from '@/hooks/useRoom';
 import ProductImage from '@/components/ProductImage';
 import { moneyFormat } from '@/libs/client/utils';
 import Link from 'next/link';
-import { IRoom } from '@/interface/Chat';
+import { IChatMessage, IRoom } from '@/interface/Chat';
 import { User } from '@prisma/client';
 import ModalSellProductState from '@/components/ModalSellProductState';
 import { useMiniStore } from '@/hooks/useStore';
@@ -20,27 +18,14 @@ import { useMiniStore } from '@/hooks/useStore';
 const ChatDetail: NextPage = () => {
   const router = useRouter();
   const { user } = useUser();
-  const { init, sendMessage, messages } = useChat();
-  const readChat = useMiniStore(_ => _.readChat);
-  const roomsCount = useMiniStore(_ => _.roomsCount);
 
-  useEffect(() => {
-    if (router.query.id) {
-      if (roomsCount > 0) {
-        readChat(router.query.id as string);
-      }
-    }
-  }, [router.query.id, readChat, roomsCount]);
+  const sendMessage = useMiniStore((_) => _.sendMessage);
+  const getMessage = useMiniStore((_) => _.getMessage);
+  const rooms = useMiniStore((_) => _.rooms);
+  const room = useMiniStore((_) => _.getRoom(router.query.id as string));
+  const [messages, setMessages] = useState<IChatMessage[]>([]);
 
-  const token = useMiniStore(_ => _.token);
-  const { setToken, room } = useRoom(router.query.id as string);
-
-  react.useEffect(() => {
-    if (!token) return;
-    setToken(token);
-    init({ token, roomName: router.query.id as string });
-  }, [token]);
-
+  // 보내기
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -49,21 +34,29 @@ const ChatDetail: NextPage = () => {
 
     if (!message) return;
     // if (!data) return;
-
-    sendMessage(message);
+    sendMessage(router.query.id as string, message);
   };
 
   useEffect(() => {
-    document
-      .querySelector<HTMLDivElement>('.scroll-container')
-      ?.scroll({ top: 999999, behavior: 'smooth' });
+    async function func() {
+      if (router.query.id) {
+        const messages = await getMessage(router.query.id as string);
+        setMessages(messages);
+      }
+    }
+
+    func();
+  }, [getMessage, router.query.id, rooms]);
+
+  useEffect(() => {
+    document.querySelector<HTMLDivElement>('.scroll-container')?.scroll({ top: 999999, behavior: 'smooth' });
   }, [messages]);
 
+  // 스크롤
   useEffect(() => {
     // 요소의 크기가 변경될 때 실행될 함수
     function handleResize() {
-      const scrollContainer =
-        document.querySelector<HTMLDivElement>('.scroll-container');
+      const scrollContainer = document.querySelector<HTMLDivElement>('.scroll-container');
       if (scrollContainer) {
         let height = document.documentElement.clientHeight;
         height = height - 57 - 48 - 64;
@@ -92,9 +85,8 @@ const ChatDetail: NextPage = () => {
       {/* 채팅 */}
       <div className="relative flex pt-14 overflow-hidden chat-container ">
         <div className="px-4 space-y-4 overflow-auto scroll-container w-full">
-          {messages.map(_ => {
-            const tUser =
-              room?.sellerId === _?.userId ? room?.seller : room?.buyer;
+          {messages.map((_) => {
+            const tUser = room?.sellerId === _?.userId ? room?.seller : room?.buyer;
             return (
               <Message
                 key={_.id}
@@ -113,19 +105,11 @@ const ChatDetail: NextPage = () => {
   );
 };
 
-const ChatDetailTopContainer = ({
-  room,
-  user,
-}: {
-  room: IRoom;
-  user: User;
-}) => {
+const ChatDetailTopContainer = ({ room, user }: { room: IRoom; user: User }) => {
   const router = useRouter();
 
   // 거래 변경클릭
-  const handleClick = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
 
     if (dialogRef.current) {
@@ -143,17 +127,10 @@ const ChatDetailTopContainer = ({
         <Link href={`/products/${room?.product.id}`}>
           <div className="flex justify-between border-b-[1px] border-neutral items-center px-4">
             <div className="py-2 flex">
-              <ProductImage
-                size={10}
-                alt={`${room?.product.name} 이미지`}
-                src={room?.product.image}
-              />
+              <ProductImage size={10} alt={`${room?.product.name} 이미지`} src={room?.product.image} />
               <div className="flex flex-col text-xs justify-center pl-4">
                 <span className="overflow-hidden">{room?.product.name}</span>
-                <span>
-                  {room?.product.price &&
-                    moneyFormat(room?.product.price) + '원'}
-                </span>
+                <span>{room?.product.price && moneyFormat(room?.product.price) + '원'}</span>
               </div>
             </div>
             {isMe && (
@@ -178,11 +155,7 @@ const ChatDetailTopContainer = ({
 };
 
 /** 하단 */
-const ChatDetailBottomContainer = ({
-  onSubmit,
-}: {
-  onSubmit: React.FormEventHandler<HTMLFormElement>;
-}) => {
+const ChatDetailBottomContainer = ({ onSubmit }: { onSubmit: React.FormEventHandler<HTMLFormElement> }) => {
   return (
     <form onSubmit={onSubmit} className="fixed left-0 bottom-0 w-full">
       <div className="w-full max-w-xl mx-auto">

@@ -19,14 +19,10 @@ export function communityDateFormat(date: Date | string): string {
 
   // 오늘인 경우 '몇 시간 전' 으로 표현
   if (isSameDay(now, targetDate)) {
-    const hoursAgo = Math.round(
-      Math.abs(now.getTime() - targetDate.getTime()) / (60 * 60 * 1000)
-    );
+    const hoursAgo = Math.round(Math.abs(now.getTime() - targetDate.getTime()) / (60 * 60 * 1000));
     // 1시간 이내면 '몇 분 전' 으로 표현.
     if (hoursAgo === 0) {
-      const minutesAgo = Math.round(
-        Math.abs(now.getTime() - targetDate.getTime()) / (60 * 1000)
-      );
+      const minutesAgo = Math.round(Math.abs(now.getTime() - targetDate.getTime()) / (60 * 1000));
       return `${minutesAgo}분 전`;
     } else {
       return `${hoursAgo}시간 전`;
@@ -74,9 +70,7 @@ function isSameDay(date1: Date, date2: Date): boolean {
 
 function calculateDaysAgo(currentDate: Date, pastDate: Date): number {
   const oneDay = 24 * 60 * 60 * 1000; // 1일의 밀리초
-  const diffDays = Math.round(
-    Math.abs((currentDate.getTime() - pastDate.getTime()) / oneDay)
-  );
+  const diffDays = Math.round(Math.abs((currentDate.getTime() - pastDate.getTime()) / oneDay));
   return diffDays;
 }
 
@@ -84,3 +78,14 @@ export function getImageSrc(src: string, isAvatar?: boolean): string {
   const avatarPath = isAvatar ? '/avatar' : '';
   return `https://imagedelivery.net/6-jfB1-8fzgOcmfBEr6cGA/${src}${avatarPath}`;
 }
+
+interface IRoomName {
+  productId: number;
+  sellerId: number;
+  buyerId: number;
+}
+
+export const makeChatRoomId = ({ productId, sellerId, buyerId }: IRoomName): string => {
+  // 상품ID-판매자ID-구매자ID
+  return `${productId}-${sellerId}-${buyerId}`;
+};

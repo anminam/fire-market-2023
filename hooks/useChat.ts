@@ -1,19 +1,10 @@
-import {
-  IChatMessage,
-  IChatReceivedRoomInfo,
-  IChatReceivedServerMessage,
-} from '@/interface/Chat';
+import { IChatMessage, IChatReceivedRoomInfo, IChatReceivedServerMessage, IRoom } from '@/interface/Chat';
 import { chatUrl } from '@/libs/client/url';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
 
 const URL = chatUrl;
 // const URL = process.env.URL_CHAT;
-
-interface IUseChatInit {
-  token: string;
-  roomName: string;
-}
 
 interface IRoomName {
   productId: number;
@@ -21,76 +12,90 @@ interface IRoomName {
   buyerId: number;
 }
 
-const useChat = () => {
-  const [currentUser, setCurrentUser] = useState<any>(null);
-  const [_socket, setSocket] = useState<Socket>();
-  const [initInfo, init] = useState<IUseChatInit>({
-    roomName: '',
-    token: '',
-  });
-  const [messages, setMessages] = useState<IChatMessage[]>([]);
+let _socket: Socket | null = null;
 
-  const makeChatRoomId = ({
-    productId,
-    sellerId,
-    buyerId,
-  }: IRoomName): string => {
-    // 상품ID-판매자ID-구매자ID
-    return `${productId}-${sellerId}-${buyerId}`;
-  };
+const useChat = (initToken: string) => {
+  const [messages, setMessages] = useState<IChatMessage[]>([]);
+  const [rooms, setRooms] = useState<IRoom[]>([]);
 
   //소켓 연결 시작.
   useEffect(() => {
     if (!URL) {
       throw new Error('URL_CHAT is undefined');
     }
-    if (_socket) return;
-    if (!initInfo?.token || !initInfo?.roomName) return;
 
-    const socket = io(URL, {
+    if (_socket) return;
+    if (!initToken) return;
+
+    _socket = io(URL, {
       auth: {
-        token: `Bearer ${initInfo?.token}`,
+        token: `Bearer ${initToken}`,
       },
       transports: ['websocket', 'polling'],
     });
 
-    socket?.on('connect', async () => {
+    _socket?.on('connect', async () => {
       try {
-        const list = await getServerChatMessage(
-          initInfo.token,
-          initInfo.roomName
-        );
-
-        setMessages(list.messages.map(updateMessage));
+        const rooms = await asyncGetRooms(initToken);
+        setRooms(rooms);
       } catch (err) {
         // console.log(err);
       }
     });
 
-    socket?.on('recMessage', (message: IChatReceivedServerMessage) => {
-      setMessages(prev => [...prev, updateMessage(message)]);
+    _socket?.on('recMessage', async (message: IChatReceivedServerMessage) => {
+      try {
+        const rooms = await asyncGetRooms(initToken);
+        setRooms(rooms);
+      } catch (err) {
+        // console.log(err);
+      }
+      setMessages((prev) => [...prev, updateMessage(message)]);
     });
 
-    setSocket(socket);
-  }, [_socket, initInfo, setMessages, setSocket]);
+    return () => {
+      if (_socket && _socket.connected) {
+        _socket?.disconnect();
+      }
+    };
+  }, [initToken]);
 
-  const sendMessage = (text: string) => {
-    _socket?.emit('sendMessage', { text, roomNm: initInfo.roomName });
-  };
+  const sendMessage = useCallback(
+    (roomName: string, text: string) => {
+      rooms;
+      if (!_socket) {
+        debugger;
+        return;
+      }
+      _socket.emit('sendMessage', { text, roomNm: roomName });
+    },
+    [rooms],
+  );
 
   return {
-    init,
-    currentUser,
+    rooms,
     sendMessage,
     messages,
-    makeChatRoomId,
   };
 };
 
-async function getServerChatMessage(
-  token: string,
-  roomName: string
-): Promise<IChatReceivedRoomInfo> {
+async function asyncGetRooms(token: string): Promise<IRoom[]> {
+  try {
+    const res = await fetch(`${chatUrl}/api/rooms`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const json = await res.json();
+    return json?.rooms || [];
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+}
+
+async function getServerChatMessage(token: string, roomName: string): Promise<IChatReceivedRoomInfo> {
   try {
     const res = await fetch(`${URL}/api/chat/${roomName}`, {
       headers: {
@@ -131,4 +136,5 @@ function updateMessage(message: IChatReceivedServerMessage): IChatMessage {
     },
   };
 }
+
 export default useChat;

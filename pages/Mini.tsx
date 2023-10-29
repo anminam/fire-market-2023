@@ -1,31 +1,10 @@
+import useChat from '@/hooks/useChat';
 import { useMiniStore } from '@/hooks/useStore';
-import { IRoom } from '@/interface/Chat';
 import { auth } from '@/libs/client/firebase';
-import { chatUrl } from '@/libs/client/url';
 import { ReactNode, useEffect } from 'react';
 
 interface MiniProps {
   children: ReactNode;
-}
-
-async function asyncGetRooms(token: string): Promise<IRoom[]> {
-  console.log('g', 'asyncGetRooms', '시작');
-  try {
-    const res = await fetch(`${chatUrl}/api/rooms`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const json = await res.json();
-    return json?.rooms || [];
-  } catch (err) {
-    console.log('---------');
-    console.log(err);
-    console.log('---------');
-    return [];
-    // throw new Error(err as string);
-  }
 }
 
 async function asyncUser() {
@@ -41,9 +20,12 @@ async function asyncUser() {
 }
 
 function Mini({ children }: MiniProps) {
-  const { setToken, setRooms, setUserId, token, isApp } = useMiniStore();
+  const { setToken, setRooms, setUserId, token, isApp, initSendMessage } = useMiniStore();
+
+  const { rooms, sendMessage } = useChat(token);
+
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async user => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (isApp) return;
       if (user) {
         const token = await user.getIdToken();
@@ -59,18 +41,14 @@ function Mini({ children }: MiniProps) {
       }
       return () => unsubscribe();
     });
-  }, [isApp, setRooms, setToken, setUserId]);
+  }, [isApp, setToken, setUserId]);
 
   useEffect(() => {
-    const intervalId = setInterval(async () => {
-      console.log('토큰맨', token);
-      if (token === '') return;
-      const rooms = await asyncGetRooms(token);
-      setRooms(rooms);
-    }, 3000);
-
-    return () => clearInterval(intervalId);
-  }, [setRooms, token]);
+    setRooms(rooms);
+  }, [rooms, setRooms]);
+  useEffect(() => {
+    initSendMessage(sendMessage);
+  }, []);
 
   return <div>{children}</div>;
 }

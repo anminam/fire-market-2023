@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { Product, User } from '@prisma/client';
 import Link from 'next/link';
 import useMutation from '@/libs/client/useMutation';
-import { cls, dateFormat, moneyFormat } from '@/libs/client/utils';
+import { cls, dateFormat, makeChatRoomId, moneyFormat } from '@/libs/client/utils';
 import Image from 'next/image';
 import useSWR from 'swr';
 import UserProfileContainer from '@/components/UserProfileContainer';
@@ -12,7 +12,6 @@ import { useEffect, useRef, useState } from 'react';
 import useUser from '@/libs/client/useUser';
 import MoreModal from '@/components/MoreModal';
 import { ProductStatus } from '@/interface/ProductKind';
-import useChat from '@/hooks/useChat';
 
 interface ProductWithUser extends Product {
   user: User;
@@ -43,30 +42,22 @@ const statusList: IStatus[] = [
 ];
 
 const ItemDetail = () => {
-  const { makeChatRoomId } = useChat();
   const router = useRouter();
   const user = useUser();
   const { data, mutate: boundMutate } = useSWR<ItemDetailResult>(
-    router.query.id ? `/api/products/${router.query.id}` : null
+    router.query.id ? `/api/products/${router.query.id}` : null,
   );
 
   const [toggleFav] = useMutation(`/api/products/${router.query.id}/favorite`);
-  const [setChat, { loading: chatLoading, data: chatData }] = useMutation(
-    `/api/chats/${router.query.id}}`
-  );
+  const [setChat, { loading: chatLoading, data: chatData }] = useMutation(`/api/chats/${router.query.id}}`);
 
   // 상태 수정.
-  const [setStateToServer] = useMutation(
-    `/api/products/${router.query.id}/status`
-  );
+  const [setStateToServer] = useMutation(`/api/products/${router.query.id}/status`);
   const [stateName, setStateName] = useState<string>('판매중');
 
   const onFavClick = () => {
     if (!data) return;
-    boundMutate(
-      (prev: any) => prev && { ...prev, isLike: !prev.isLike },
-      false
-    );
+    boundMutate((prev: any) => prev && { ...prev, isLike: !prev.isLike }, false);
     toggleFav({});
   };
 
@@ -87,7 +78,7 @@ const ItemDetail = () => {
   const handleStateClick = (status: ProductStatus) => {
     setStateToServer({ status }, 'PATCH');
     updateStateName(status);
-    setStateName(statusList.find(_ => _.value === status)?.label || '');
+    setStateName(statusList.find((_) => _.value === status)?.label || '');
     // 감추기
     const el = document.activeElement as HTMLElement;
     if (el) {
@@ -96,7 +87,7 @@ const ItemDetail = () => {
   };
 
   const updateStateName = (status: any) => {
-    setStateName(statusList.find(_ => _.value === status)?.label || '');
+    setStateName(statusList.find((_) => _.value === status)?.label || '');
   };
 
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -124,21 +115,10 @@ const ItemDetail = () => {
   }
 
   return (
-    <Layout
-      title="상품"
-      canGoBack
-      isTranslate
-      isMore
-      onMoreClick={handleMoreClick}
-    >
+    <Layout title="상품" canGoBack isTranslate isMore onMoreClick={handleMoreClick}>
       <div className="mb-32">
         {/* 이미지 */}
-        <div
-          className={cls(
-            'relative pb-80 h-96 bg-neutral',
-            data?.product?.image ? '' : 'animate-pulse'
-          )}
-        >
+        <div className={cls('relative pb-80 h-96 bg-neutral', data?.product?.image ? '' : 'animate-pulse')}>
           {data?.product?.image && (
             <img
               alt={data?.product?.name + ' 이미지'}
@@ -170,17 +150,12 @@ const ItemDetail = () => {
                 <label tabIndex={0} className="btn btn-neutral m-1">
                   {stateName}
                 </label>
-                <ul
-                  tabIndex={0}
-                  className="dropdown-content z-[1] menu p-2 shadow bg-neutral rounded-box w-32"
-                >
-                  {statusList.map(_ => {
+                <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-neutral rounded-box w-32">
+                  {statusList.map((_) => {
                     if (_.value === data?.product?.statusCd) return null;
                     return (
                       <li key={_.value}>
-                        <button onClick={() => handleStateClick(_.value)}>
-                          {_.label}
-                        </button>
+                        <button onClick={() => handleStateClick(_.value)}>{_.label}</button>
                       </li>
                     );
                   })}
@@ -196,13 +171,9 @@ const ItemDetail = () => {
               {/* 타이틀 */}
               <h1 className="text-xl font-bold">{data.product.name}</h1>
               {/* 시간 */}
-              <div className="text-xs opacity-50">
-                {data.product && dateFormat(data.product.createdAt)}
-              </div>
+              <div className="text-xs opacity-50">{data.product && dateFormat(data.product.createdAt)}</div>
               {/* 가격 */}
-              <div className="block mt-3 underline">
-                {data.product && moneyFormat(data.product.price)}원
-              </div>
+              <div className="block mt-3 underline">{data.product && moneyFormat(data.product.price)}원</div>
 
               {/* 설명 */}
               <p className="my-6">{data.product.description}</p>
@@ -269,21 +240,14 @@ const ItemDetail = () => {
                 'p-3 rounded-md flex items-center justify-center',
                 data?.isLike
                   ? 'text-red-400 hover:bg-red-100 hover:text-red-500'
-                  : 'text-gray-400 hover:bg-gray-100 hover:text-gray-500'
+                  : 'text-gray-400 hover:bg-gray-100 hover:text-gray-500',
               )}
             >
-              {data?.isLike ? (
-                <AiFillHeart size="24" />
-              ) : (
-                <AiOutlineHeart size="24" />
-              )}
+              {data?.isLike ? <AiFillHeart size="24" /> : <AiOutlineHeart size="24" />}
             </button>
             {/* 채팅버튼 */}
             <button
-              className={cls(
-                `btn btn-primary flex-1`,
-                !isMe(data?.product?.user, user.user) ? '' : 'btn-disabled'
-              )}
+              className={cls(`btn btn-primary flex-1`, !isMe(data?.product?.user, user.user) ? '' : 'btn-disabled')}
               onClick={handleChatClick}
             >
               채팅하기
