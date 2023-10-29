@@ -1,3 +1,6 @@
+/**
+ * 이메일 확인받기위해 만들었는데 현재는 사용하지 않음.
+ */
 import type { NextPage } from 'next';
 import { useEffect } from 'react';
 import Button from '../components/button';
@@ -21,17 +24,13 @@ interface JoinMutationResult {
 }
 
 const Join: NextPage = () => {
-  const [apiJoin, { loading, data, error }] =
-    useMutation<JoinMutationResult>('/api/users/join');
+  const [apiJoin, { loading, data, error }] = useMutation<JoinMutationResult>('/api/users/join');
 
-  const [
-    apiToken,
-    { loading: tokenLoading, data: tokenData, error: tokenError },
-  ] = useMutation<JoinMutationResult>('/api/users/token-confirm');
+  const [apiToken, { loading: tokenLoading, data: tokenData, error: tokenError }] =
+    useMutation<JoinMutationResult>('/api/users/token-confirm');
 
   const { register, watch, reset, handleSubmit } = useForm<JoinForm>();
-  const { register: tokenRegister, handleSubmit: tokenHandleSubmitCreate } =
-    useForm<TokenForm>();
+  const { register: tokenRegister, handleSubmit: tokenHandleSubmitCreate } = useForm<TokenForm>();
 
   // 가입하기 클릭
   const onValid = (formData: JoinForm) => {
@@ -63,10 +62,7 @@ const Join: NextPage = () => {
       <h3 className="text-3xl font-bold text-center">인증받기</h3>
       <div className="mt-12">
         {data?.result ? (
-          <form
-            className="flex flex-col mt-8 space-y-4"
-            onSubmit={tokenHandleSubmitCreate(onTokenValid)}
-          >
+          <form className="flex flex-col mt-8 space-y-4" onSubmit={tokenHandleSubmitCreate(onTokenValid)}>
             <Input
               register={tokenRegister('token', { required: true })}
               name="token"
@@ -80,16 +76,8 @@ const Join: NextPage = () => {
           </form>
         ) : (
           <>
-            <form
-              className="flex flex-col mt-8 space-y-4"
-              onSubmit={handleSubmit(onValid)}
-            >
-              <Input
-                register={register('email', { required: true })}
-                name="email"
-                label="이메일"
-                type="email"
-              />
+            <form className="flex flex-col mt-8 space-y-4" onSubmit={handleSubmit(onValid)}>
+              <Input register={register('email', { required: true })} name="email" label="이메일" type="email" />
               <Button text={loading ? '기다리는 중...' : '만들기'} />
             </form>
           </>

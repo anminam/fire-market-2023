@@ -1,3 +1,7 @@
+/**
+ * 토큰(인증번호(숫자로됨)) 가져와서 DB에있는 사용자 맞는지 확인.
+ * 이메일 검증을 위해 만들었는데 사용하지 않음.
+ */
 import withHandlers from '@/libs/server/withHandlers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -46,5 +50,5 @@ export default withApiSession(
     methods: ['POST'],
     handler,
     isPrivate: false,
-  })
+  }),
 );
