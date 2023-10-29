@@ -50,6 +50,8 @@ export const useMiniStore = create<MiniState>()(
       });
     },
     setToken: (token: string) => {
+      // 토큰이 빈 값의 경우 제외 처리
+      if (token == "") return;
       console.log('토큰바뀐다', token);
       set((state) => {
         return { ...state, token };
