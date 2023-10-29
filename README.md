@@ -1,40 +1,20 @@
 # 화재장터 - FrontEnd
 
-## 기본 실행
+# 기본 실행
+
+---
 
 ```bash
+npm install
 npm run dev
 ```
 
-# pscale
-
-- https://planetscale.com/
-
-## pscale 연결
-
-```bash
-pscale connect [fire-market]
-```
-
-## db push
-
-```bash
-npx prisma db push
-```
-
-# 참고
-
-### Deploy on Vercel
-
-- The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-- Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-### 폰트
-
-- This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- 폰트
+  - This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
 # 사용 라이브러리
+
+---
 
 ## Next.js
 
@@ -47,6 +27,24 @@ npx prisma db push
 - Performant, flexible and extensible forms with easy-to-use validation.
 - https://react-hook-form.com/
 
+## swr
+
+```bash
+npm i swr
+```
+
+# Database
+
+## pscale
+
+- https://planetscale.com/
+
+### pscale 연결
+
+```bash
+pscale connect [fire-market]
+```
+
 ## prisma
 
 - 차세대 Node.js 및 TypeScript ORM
@@ -58,14 +56,10 @@ npx prisma db push
 npx prisma studio
 ```
 
-# twilio
-
-https://www.twilio.com/
-
-# swr
+### prisma db push
 
 ```bash
-npm i swr
+npx prisma db push
 ```
 
 # icon
@@ -76,5 +70,3 @@ npm i swr
 # daisyui
 
 https://daisyui.com/components
-
-# TODO
