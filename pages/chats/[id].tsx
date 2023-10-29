@@ -21,6 +21,7 @@ const ChatDetail: NextPage = () => {
 
   const sendMessage = useMiniStore((_) => _.sendMessage);
   const getMessage = useMiniStore((_) => _.getMessage);
+  const readChat = useMiniStore((_) => _.readChat);
   const rooms = useMiniStore((_) => _.rooms);
   const room = useMiniStore((_) => _.getRoom(router.query.id as string));
   const [messages, setMessages] = useState<IChatMessage[]>([]);
@@ -47,6 +48,15 @@ const ChatDetail: NextPage = () => {
 
     func();
   }, [getMessage, router.query.id, rooms]);
+
+  useEffect(() => {
+    async function func() {
+      if (router.query.id) {
+        readChat(router.query.id as string);
+      }
+    }
+    func();
+  }, [readChat, router.query.id]);
 
   useEffect(() => {
     document.querySelector<HTMLDivElement>('.scroll-container')?.scroll({ top: 999999, behavior: 'smooth' });

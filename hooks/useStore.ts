@@ -78,7 +78,6 @@ export const useMiniStore = create<MiniState>()(
         }
 
         asyncReadChat(state.token, roomName, Number(room.text.split('::')[0]));
-
         state.setRooms(state.rooms);
 
         return state;

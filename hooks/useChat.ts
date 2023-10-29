@@ -1,16 +1,7 @@
-import { IChatMessage, IChatReceivedRoomInfo, IChatReceivedServerMessage, IRoom } from '@/interface/Chat';
+import { IChatMessage, IChatReceivedServerMessage, IRoom } from '@/interface/Chat';
 import { chatUrl } from '@/libs/client/url';
 import { useCallback, useEffect, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
-
-const URL = chatUrl;
-// const URL = process.env.URL_CHAT;
-
-interface IRoomName {
-  productId: number;
-  sellerId: number;
-  buyerId: number;
-}
 
 let _socket: Socket | null = null;
 
@@ -27,7 +18,7 @@ const useChat = (initToken: string) => {
     if (_socket) return;
     if (!initToken) return;
 
-    _socket = io(URL, {
+    _socket = io(chatUrl, {
       auth: {
         token: `Bearer ${initToken}`,
       },
