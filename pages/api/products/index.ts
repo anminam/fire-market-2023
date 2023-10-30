@@ -5,7 +5,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
-    const products = await client.product.findMany({
+    const data = await client.product.findMany({
       orderBy: [
         {
           createdAt: 'desc',
@@ -37,7 +37,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     });
     res.json({
       result: true,
-      products,
+      data,
     });
   }
   if (req.method === 'POST') {
@@ -77,7 +77,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     }
 
     // Create a new product
-    const product = await client.product.create({
+    const data = await client.product.create({
       data: {
         name,
         price: +price,
@@ -99,11 +99,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     res.json({
       result: true,
-      product,
+      data,
     });
   }
 }
 
-export default withApiSession(
-  withHandlers({ methods: ['POST', 'GET'], handler })
-);
+export default withApiSession(withHandlers({ methods: ['POST', 'GET'], handler }));

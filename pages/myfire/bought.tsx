@@ -1,12 +1,25 @@
 import type { NextPage } from 'next';
-import Item from '@/components/ProductItem';
 import Layout from '@/components/layout';
-import ProductList from '@/components/ProductList';
+import MainProducts from '@/components/MainProducts';
+import { ProductWithCount } from '@/interface/Product';
+import useSWR from 'swr';
+import LoadingWithContainer from '@/components/LoadingWithContainer';
+import NothingWithContainer from '@/components/NothingWithContainer';
+
+interface ProductsResponse {
+  result: boolean;
+  data: ProductWithCount[];
+  error: any;
+}
 
 const Bought: NextPage = () => {
+  const { data } = useSWR<ProductsResponse>('/api/users/my/products/bought');
   return (
     <Layout title="구매내역" canGoBack>
-      <ProductList kind="purchase" />
+      <div className="flex flex-col">
+        {!data && <LoadingWithContainer />}
+        {data?.data?.length === 0 ? <NothingWithContainer /> : <MainProducts products={data?.data || []} />}
+      </div>
     </Layout>
   );
 };

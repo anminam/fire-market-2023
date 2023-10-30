@@ -10,7 +10,7 @@ import { ProductWithCount } from '@/interface/Product';
 
 interface ProductsResponse {
   result: boolean;
-  products: ProductWithCount[];
+  data: ProductWithCount[];
   error: any;
 }
 const dummyProducts = getDummyProducts();
@@ -19,7 +19,7 @@ const Home: NextPage = () => {
   const { data } = useSWR<ProductsResponse>('/api/products');
   const router = useRouter();
 
-  const products = data?.products || dummyProducts;
+  const products = data?.data || dummyProducts;
   // const products = dummyProducts;
 
   if (data?.error?.code === 'P2022') {

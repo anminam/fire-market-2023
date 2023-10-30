@@ -15,36 +15,24 @@ const getItemColor = (routerPath: string, path: string) => {
 export default function GroundNavBar({}: Props) {
   const router = useRouter();
 
-  const roomsReadCount = useMiniStore(_ => _.roomsReadCount);
+  const roomsReadCount = useMiniStore((_) => _.roomsReadCount);
 
   return (
-    <nav className="max-w-xl bg-base-100 border-t border-t-neutral fixed bottom-0 w-full px-6 pb-3 pt-3 flex justify-between text-xs">
-      <Link
-        href="/"
-        className={cls(
-          'flex flex-col items-center space-y-1',
-          getItemColor(router.pathname, '/')
-        )}
-      >
+    <nav className="max-w-xl bg-base-100 border-t border-t-neutral fixed bottom-0 w-full px-4 pb-3 pt-3 flex justify-between text-xs">
+      <Link href="/" className={cls('flex flex-col items-center space-y-1', getItemColor(router.pathname, '/'))}>
         <IconHome />
         <span>장터보기</span>
       </Link>
       <Link
         href="/community"
-        className={cls(
-          'flex flex-col items-center space-y-1 ',
-          getItemColor(router.pathname, '/community')
-        )}
+        className={cls('flex flex-col items-center space-y-1 ', getItemColor(router.pathname, '/community'))}
       >
         <IconPaper />
         <span>화재생활</span>
       </Link>
       <Link
         href="/chats"
-        className={cls(
-          'flex flex-col items-center space-y-1 ',
-          getItemColor(router.pathname, '/chats')
-        )}
+        className={cls('flex flex-col items-center space-y-1 ', getItemColor(router.pathname, '/chats'))}
       >
         <div className="relative">
           {roomsReadCount > 0 ? (
@@ -59,20 +47,14 @@ export default function GroundNavBar({}: Props) {
       </Link>
       <Link
         href="/streams"
-        className={cls(
-          'flex flex-col items-center space-y-1 ',
-          getItemColor(router.pathname, '/streams')
-        )}
+        className={cls('flex flex-col items-center space-y-1 ', getItemColor(router.pathname, '/streams'))}
       >
         <IconCamera />
         <span>라이브</span>
       </Link>
       <Link
         href="/myfire"
-        className={cls(
-          'flex flex-col items-center space-y-1 ',
-          getItemColor(router.pathname, '/myfire')
-        )}
+        className={cls('flex flex-col items-center space-y-1 ', getItemColor(router.pathname, '/myfire'))}
       >
         <IconPerson />
         <span>나의 화재</span>
@@ -83,13 +65,7 @@ export default function GroundNavBar({}: Props) {
 
 function IconPerson() {
   return (
-    <svg
-      className="w-6 h-6"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -102,13 +78,7 @@ function IconPerson() {
 
 function IconCamera() {
   return (
-    <svg
-      className="w-6 h-6"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -121,13 +91,7 @@ function IconCamera() {
 
 function IconHome() {
   return (
-    <svg
-      className="w-6 h-6"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -140,13 +104,7 @@ function IconHome() {
 
 function IconChat() {
   return (
-    <svg
-      className="w-6 h-6"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -159,13 +117,7 @@ function IconChat() {
 
 function IconPaper() {
   return (
-    <svg
-      className="w-6 h-6"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
