@@ -30,6 +30,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           userId: id,
         },
       },
+      NOT: [
+        {
+          status: {
+            name: 'DLTE',
+          },
+        },
+      ],
     },
     include: {
       user: {

@@ -10,7 +10,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   } = req;
 
   if (req.method === 'POST') {
-    const post = await client.post.create({
+    const data = await client.post.create({
       data: {
         user: {
           connect: {
@@ -25,7 +25,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     res.json({
       result: true,
-      data: post,
+      data,
     });
   }
 
@@ -36,6 +36,20 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           createdAt: 'desc',
         },
       ],
+      where: {
+        NOT: [
+          {
+            status: {
+              name: 'DLTE',
+            },
+          },
+          {
+            status: {
+              name: 'HIDE',
+            },
+          },
+        ],
+      },
       include: {
         user: {
           select: {
@@ -60,6 +74,4 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
-export default withApiSession(
-  withHandlers({ methods: ['POST', 'GET'], handler })
-);
+export default withApiSession(withHandlers({ methods: ['POST', 'GET'], handler }));
