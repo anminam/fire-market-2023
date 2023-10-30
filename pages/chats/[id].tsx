@@ -137,15 +137,17 @@ const ChatDetailTopContainer = ({ room, user }: { room: IRoom; user: User }) => 
         <Link href={`/products/${room?.product.id}`}>
           <div className="flex justify-between border-b-[1px] border-neutral items-center px-4">
             <div className="py-2 flex">
-              <ProductImage size={10} alt={`${room?.product.name} 이미지`} src={room?.product.image} />
-              <div className="flex flex-col text-xs justify-center pl-4">
-                <span className="overflow-hidden">{room?.product.name}</span>
+              <div className={`w-${10}`}>
+                <ProductImage size={10} alt={`${room?.product.name} 이미지`} src={room?.product.image} />
+              </div>
+              <div className="flex flex-col text-xs justify-center px-4">
+                <span className="overflow-hidden line-clamp-1">{room?.product.name}</span>
                 <span>{room?.product.price && moneyFormat(room?.product.price) + '원'}</span>
               </div>
             </div>
             {isMe && (
               <div className="">
-                <button className="btn btn-sm" onClick={handleClick}>
+                <button className="btn btn-sm min-w-max" onClick={handleClick}>
                   거래변경
                 </button>
               </div>
