@@ -9,35 +9,51 @@ import { Post } from '@prisma/client';
 import useCoords from '@/libs/client/usecoords';
 import { cls } from '@/libs/client/utils';
 import FormErrorMessage from '@/components/FormErrorMessage';
+import useSWR from 'swr';
 
-interface WriteForm {
+interface PostEditForm {
   question: string;
 }
 
-interface WriteFormResponse {
+interface EditPostResponse {
+  result: boolean;
+  data: Post;
+}
+interface ReadPostResponse {
   result: boolean;
   data: Post;
 }
 
-const Write: NextPage = () => {
+const EditPost: NextPage = () => {
   const { lat, lng } = useCoords();
   const router = useRouter();
+  // form.
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
-  } = useForm<WriteForm>();
-  const [post, { loading, data }] = useMutation<WriteFormResponse>('/api/posts');
+  } = useForm<PostEditForm>();
+  // api - 초기 불러오기용.
+  const { data: readData, mutate } = useSWR<ReadPostResponse>(router.query.id ? `/api/posts/${router.query.id}` : null);
+  // api - 수정.
+  const [startEdit, { loading, data }] = useMutation<EditPostResponse>(`/api/posts/${router.query.id}/edit`);
 
-  const onValid = (data: WriteForm) => {
+  const onValid = (data: PostEditForm) => {
     if (loading) return;
-    post({ ...data, lat, lng });
+    startEdit({ ...data, lat, lng, id: router.query.id }, 'PATCH');
   };
 
+  // 초기 데이터 불러오기 셋팅.
   useEffect(() => {
-    if (data?.result) {
-      router.replace(`/community/${data.data.id}`);
-    }
+    if (!readData) return;
+    setValue('question', readData.data.question || '');
+  }, [readData, setValue]);
+
+  // 등록 성공시 이동.
+  useEffect(() => {
+    if (!data?.result || !data.data.id) return;
+    router.replace(`/community/${data.data.id}`);
   }, [data, router]);
 
   const isLoading = loading || data?.result;
@@ -52,7 +68,7 @@ const Write: NextPage = () => {
               value: true,
               message: '질문을 적어주세요.',
             },
-            minLength: { value: 5, message: '5글자 이상 입력해 주세요.' },
+            minLength: { value: 2, message: '2글자 이상 입력해 주세요.' },
           })}
         />
         <FormErrorMessage message={errors?.question?.message || ''} />
@@ -64,4 +80,4 @@ const Write: NextPage = () => {
   );
 };
 
-export default Write;
+export default EditPost;

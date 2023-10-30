@@ -28,8 +28,7 @@ const EditProfile: NextPage = () => {
   const { user } = useUser();
   const router = useRouter();
 
-  const [runEdit, { data, loading }] =
-    useMutation<EditProfileResponse>('/api/users/edit');
+  const [runEdit, { data, loading }] = useMutation<EditProfileResponse>('/api/users/edit');
 
   const {
     register,
@@ -112,7 +111,7 @@ const EditProfile: NextPage = () => {
 
   return (
     <Layout canGoBack title="내 정보 변경하기">
-      <form onSubmit={handleSubmit(onValid)} className="py-10 px-4 space-y-4">
+      <form onSubmit={handleSubmit(onValid)} className="py-4 px-4 space-y-4">
         <div className="flex items-center space-x-3">
           <div className="w-14 h-14 rounded-full bg-slate-500 relative overflow-hidden">
             {avatarPreview && (
@@ -127,29 +126,11 @@ const EditProfile: NextPage = () => {
           </div>
           <label htmlFor="picture" className="btn btn-sm btn-neutral">
             <div>사진변경</div>
-            <input
-              {...register('avatar')}
-              id="picture"
-              type="file"
-              className="hidden"
-              accept="image/*"
-            />
+            <input {...register('avatar')} id="picture" type="file" className="hidden" accept="image/*" />
           </label>
         </div>
-        <Input
-          register={register('name')}
-          required={false}
-          label="이름"
-          name="text"
-          type="text"
-        />
-        <Input
-          register={register('email')}
-          required={false}
-          label="이메일"
-          name="email"
-          type="email"
-        />
+        <Input register={register('name')} required={false} label="이름" name="text" type="text" />
+        <Input register={register('email')} required={false} label="이메일" name="email" type="email" />
         {/* <Input
           register={register('phone')}
           required={false}
@@ -159,9 +140,7 @@ const EditProfile: NextPage = () => {
           kind="phone"
         /> */}
         <FormErrorMessage message={errors.formErrors?.message || ''} />
-        <button className="btn btn-primary w-full">
-          {loading ? '변경 중 입니다...' : '변경하기'}{' '}
-        </button>
+        <button className="btn btn-primary w-full">{loading ? '변경 중 입니다...' : '변경하기'} </button>
       </form>
     </Layout>
   );

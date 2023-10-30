@@ -28,7 +28,7 @@ interface PostWithUser extends Post {
 
 interface PostsResponse {
   result: boolean;
-  post: PostWithUser;
+  data: PostWithUser;
   isWondering: boolean;
 }
 
@@ -39,8 +39,11 @@ interface AnswerResponse {
   result: boolean;
   answer: AnswerWithUser;
 }
+
 const CommunityPostDetail: NextPage = () => {
   const router = useRouter();
+  const { user } = useUser();
+  // form.
   const {
     register,
     handleSubmit,
@@ -48,50 +51,54 @@ const CommunityPostDetail: NextPage = () => {
     formState: { errors },
   } = useForm<AnswerForm>();
 
-  const { user } = useUser();
+  const onValid = (data: AnswerForm) => {
+    if (loading) return;
 
-  const { data, mutate } = useSWR<PostsResponse>(
-    router.query.id ? `/api/posts/${router.query.id}` : null
+    sendAnswer(data);
+  };
+
+  // ref - modal
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  // api - 초기 불러오기.
+  const { data, mutate } = useSWR<PostsResponse>(router.query.id ? `/api/posts/${router.query.id}` : null);
+
+  // api - 관심 등록.
+  const [wonder, { loading: wonderLoading }] = useMutation(`/api/posts/${router.query.id}/interest`);
+
+  // api - 답변 등록.
+  const [sendAnswer, { data: answerData, loading }] = useMutation<AnswerResponse>(
+    `/api/posts/${router.query.id}/answers`,
   );
 
-  if (data) {
-  }
-
-  const [wonder, { loading: wonderLoading }] = useMutation(
-    `/api/posts/${router.query.id}/interest`
-  );
-
-  const [sendAnswer, { data: answerData, loading }] =
-    useMutation<AnswerResponse>(`/api/posts/${router.query.id}/answers`);
-
-  const onWonderClick = () => {
+  // handle - 관심 등록.
+  const handleInterestClick = () => {
     if (!data) return;
-
-    mutate(
+    mutate<PostsResponse>(
       {
         ...data,
-        post: {
-          ...data?.post,
+        data: {
+          ...data?.data,
           _count: {
-            ...data?.post._count,
-            Interests: data.isWondering
-              ? data?.post._count?.Interests - 1
-              : data?.post._count?.Interests + 1,
+            ...data?.data._count,
+            Interests: data.isWondering ? data?.data._count?.Interests - 1 : data?.data._count?.Interests + 1,
           },
         },
         isWondering: !data.isWondering,
       },
-      false
+      false,
     );
+
     if (!wonderLoading) {
       wonder({});
     }
   };
 
-  const onValid = (data: AnswerForm) => {
-    if (loading) return;
-
-    sendAnswer(data);
+  // handle - 더보기 클릭.
+  const handleMoreClick = () => {
+    if (dialogRef.current) {
+      dialogRef.current.showModal();
+    }
   };
 
   useEffect(() => {
@@ -101,24 +108,6 @@ const CommunityPostDetail: NextPage = () => {
     }
   }, [answerData, reset, mutate]);
 
-  // 모달
-  const dialogRef = useRef<HTMLDialogElement>(null);
-
-  const handleMoreClick = () => {
-    debugger;
-    if (dialogRef.current) {
-      dialogRef.current.showModal();
-    }
-  };
-
-  /* 모달 */
-  <PostMoreModal
-    ref={dialogRef}
-    postId={+(router.query.id as string)}
-    postUserId={data?.post?.userId as number}
-    userId={user?.id as number}
-  />;
-
   return (
     <Layout canGoBack title="화재생활" isMore onMoreClick={handleMoreClick}>
       <div className="mt-4">
@@ -126,12 +115,12 @@ const CommunityPostDetail: NextPage = () => {
         <div className="px-4">
           <div className="badge badge-sm badge-neutral">질문</div>
           <UserProfileContainer
-            id={data?.post?.user?.id.toString() || ''}
-            avatar={data?.post?.user?.avatar}
-            name={data?.post?.user?.name}
+            id={data?.data?.user?.id.toString() || ''}
+            avatar={data?.data?.user?.avatar}
+            name={data?.data?.user?.name}
             size={10}
             isCommunity
-            date={data?.post?.createdAt}
+            date={data?.data?.createdAt}
           />
         </div>
 
@@ -140,41 +129,36 @@ const CommunityPostDetail: NextPage = () => {
         {/* 내용 */}
         <div className="px-4">
           <div>
-            <div className="font-bold">{data?.post?.question}</div>
+            <div className="font-bold">{data?.data?.question}</div>
           </div>
           <div className="flex space-x-5 mt-4 w-full">
             <button
-              onClick={onWonderClick}
-              className={cls(
-                `flex space-x-2 items-center text-sm`,
-                data?.isWondering ? 'text-blue-500' : 'opacity-50'
-              )}
+              onClick={handleInterestClick}
+              className={cls(`flex space-x-2 items-center text-sm`, data?.isWondering ? 'text-blue-500' : 'opacity-50')}
             >
               <AiOutlineCheckCircle size="20" />
-              <span>관심 {data?.post?._count.Interests}</span>
+              <span>관심 {data?.data?._count.Interests}</span>
             </button>
           </div>
         </div>
 
         <div className="divider" />
 
-        {/* 답변 */}
+        {/* 댓글 리스트 */}
         <div className="px-4">
-          <div>댓글 {data?.post?._count.Answers}</div>
+          <div className="text-sm">댓글 {data?.data?._count.Answers}</div>
           <div className="my-5 space-y-5">
-            {data?.post?.Answers.map(
-              ({ id, answer, createdAt, user: { name, avatar } }) => {
-                return (
-                  <PostAnswer
-                    key={id}
-                    name={name}
-                    content={answer}
-                    avatar={avatar || ''}
-                    createdAt={createdAt.toString()}
-                  />
-                );
-              }
-            )}
+            {data?.data?.Answers.map(({ id, answer, createdAt, user: { name, avatar } }) => {
+              return (
+                <PostAnswer
+                  key={id}
+                  name={name}
+                  content={answer}
+                  avatar={avatar || ''}
+                  createdAt={createdAt.toString()}
+                />
+              );
+            })}
           </div>
         </div>
 
@@ -183,7 +167,7 @@ const CommunityPostDetail: NextPage = () => {
           <TextArea
             register={register('answer', {
               required: true,
-              minLength: { value: 5, message: '5글자 이상 입력해주세요.' },
+              minLength: { value: 2, message: '2글자 이상 입력해주세요.' },
             })}
             name="description"
             placeholder="질문을 남겨주세요!"
@@ -193,11 +177,19 @@ const CommunityPostDetail: NextPage = () => {
             <span>{errors?.answer ? String(errors.answer.message) : ''}</span>
           </div>
 
-          <button className="mt-2 w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md shadow-sm text-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 focus:outline-none ">
+          <button className="btn btn-primary mt-2 w-full text-white py-2 px-4">
             {loading ? '답변 등록 중...' : '답변 등록'}
           </button>
         </form>
       </div>
+
+      {/* 더보기 */}
+      <PostMoreModal
+        ref={dialogRef}
+        postId={+(router.query.id as string)}
+        postUserId={data?.data?.userId as number}
+        userId={user?.id as number}
+      />
     </Layout>
   );
 };
