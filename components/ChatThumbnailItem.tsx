@@ -30,27 +30,21 @@ const ChatThumbnailItem = ({
         <div>
           <div className="flex items-center">
             <div className="mr-1">{name}</div>
-            {date && (
-              <div className="text-xs opacity-50">· {chatDateFormat(date)}</div>
-            )}
+            {date && <div className="text-xs opacity-50">· {chatDateFormat(date)}</div>}
             {readCount ? (
               <div className="text-[10px] bg-secondary text-white rounded-full ml-2 min-w-[1rem] flex justify-center items-center">
                 <div>{readCount}</div>
               </div>
             ) : null}
           </div>
-          <p className="opacity-50">{text}</p>
+          <p className="opacity-50 text-sm line-clamp-1	">{text}</p>
         </div>
       </div>
       {/* 우측 */}
       {productImage && (
         <div className="avatar">
           <div className="w-12 rounded">
-            <img
-              className=""
-              alt={productImageAlt}
-              src={getImageSrc(productImage, true)}
-            />
+            <img className="" alt={productImageAlt} src={getImageSrc(productImage, true)} />
           </div>
         </div>
       )}
