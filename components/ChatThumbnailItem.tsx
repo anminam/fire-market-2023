@@ -37,7 +37,7 @@ const ChatThumbnailItem = ({
               </div>
             ) : null}
           </div>
-          <p className="opacity-50 text-sm line-clamp-1">{text}</p>
+          <p className="mr-4 opacity-50 text-sm line-clamp-1">{text}</p>
         </div>
       </div>
       {/* 우측 */}

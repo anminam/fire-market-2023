@@ -12,22 +12,14 @@ interface Props {
   answer: number;
 }
 
-export default function PostItem({
-  id,
-  name,
-  createdAt,
-  content,
-  answer,
-  wondering,
-}: Props) {
+export default function PostItem({ id, name, createdAt, content, answer, wondering }: Props) {
   return (
-    <Link
-      key={id}
-      href={`/community/${id}`}
-      className="flex flex-col items-start px-4 py-5"
-    >
-      <div className="badge badge-sm badge-neutral">질문</div>
-      <div className="text-lg font-bold">{content}</div>
+    <Link key={id} href={`/community/${id}`} className="flex flex-col items-start px-4 py-5">
+      {/* 뱃지 */}
+      <div className="mb-2">
+        <div className="badge badge-sm badge-neutral">질문</div>
+      </div>
+      <div className="font-bold">{content}</div>
 
       <div className="mt-1 items-center justify-between w-full font-medium text-xs opacity-50">
         <span>{name}</span> &bull; <span>{communityDateFormat(createdAt)}</span>
