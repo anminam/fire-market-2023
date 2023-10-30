@@ -10,7 +10,7 @@ import UserProfileContainer from '@/components/UserProfileContainer';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import { useEffect, useRef, useState } from 'react';
 import useUser from '@/libs/client/useUser';
-import MoreModal from '@/components/MoreModal';
+import ProductMoreModal from '@/components/ProductMoreModal';
 import { ProductStatus } from '@/interface/ProductKind';
 
 interface ProductWithUser extends Product {
@@ -116,6 +116,7 @@ const ItemDetail = () => {
 
   return (
     <Layout title="상품" canGoBack isTranslate isMore onMoreClick={handleMoreClick}>
+      {/* style={`background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.7));`} */}
       <div className="mb-32">
         {/* 이미지 */}
         <div className={cls('relative pb-80 h-96 bg-neutral', data?.product?.image ? '' : 'animate-pulse')}>
@@ -126,6 +127,8 @@ const ItemDetail = () => {
               src={`https://imagedelivery.net/6-jfB1-8fzgOcmfBEr6cGA/${data?.product?.image}/public`}
             />
           )}
+          {/* 그림자 */}
+          <div className="absolute top-0 w-full h-12 bg-gradient-to-b opacity-40 from-black to-white-500" />
         </div>
 
         {/* 이미지 외. */}
@@ -220,7 +223,7 @@ const ItemDetail = () => {
       </div>
 
       {/* 모달 */}
-      <MoreModal
+      <ProductMoreModal
         ref={dialogRef}
         productId={router.query.id as string}
         userId={user.user?.id as number}
