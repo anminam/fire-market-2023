@@ -3,24 +3,27 @@ import useMutation from '@/libs/client/useMutation';
 import { useRouter } from 'next/router';
 import { ForwardedRef, forwardRef, useEffect } from 'react';
 
-interface MoreModalProps {
+interface ProductMoreModalProps {
   productId?: string;
   productUserId: number;
   userId: number;
 }
 
-interface MoreModalResponse {
+interface ProductMoreModalResponse {
   result: boolean;
   status: ProductStatus;
 }
 
-function MoreModal({ productId, productUserId, userId }: MoreModalProps, ref: ForwardedRef<HTMLDialogElement>) {
+function ProductMoreModal(
+  { productId, productUserId, userId }: ProductMoreModalProps,
+  ref: ForwardedRef<HTMLDialogElement>,
+) {
   const router = useRouter();
   // 내껀가!!!
   const isMe = userId === productUserId;
 
   // 상태 수정.
-  const [setStateToServer, { loading, data }] = useMutation<MoreModalResponse>(
+  const [setStateToServer, { loading, data }] = useMutation<ProductMoreModalResponse>(
     `/api/products/${router.query.id}/status`,
   );
 
@@ -84,4 +87,4 @@ function MoreModal({ productId, productUserId, userId }: MoreModalProps, ref: Fo
   );
 }
 
-export default forwardRef<HTMLDialogElement, MoreModalProps>(MoreModal);
+export default forwardRef<HTMLDialogElement, ProductMoreModalProps>(ProductMoreModal);
