@@ -14,7 +14,7 @@ const AppLoginPage = () => {
 
     // data 없으면 종료.
     if (!router.query.data) {
-      // setMessage('정보를 불러올 수 없습니다');
+      setMessage('정보를 불러올 수 없습니다');
       return;
     }
 
