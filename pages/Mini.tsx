@@ -23,7 +23,7 @@ function Mini({ children }: MiniProps) {
   const { setToken, setRooms, setUserId, token, isApp, initSendMessage } = useMiniStore();
 
   const { rooms, sendMessage } = useChat(token);
-
+  
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (isApp) return;
@@ -41,7 +41,7 @@ function Mini({ children }: MiniProps) {
       }
       return () => unsubscribe();
     });
-  }, [isApp, setToken, setUserId]);
+  }, [isApp]);
 
   useEffect(() => {
     setRooms(rooms);
