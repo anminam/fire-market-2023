@@ -18,6 +18,8 @@ model Status {
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
   Products        Product[]
+  posts           Post[]          @relation(name: "postStatus")
+  postCategory    Post[]          @relation(name: "postCategory")
 }
 
 // SALE // 판매중
@@ -106,8 +108,14 @@ model Post {
   longitude  Float?
   Answers    Answer[]
   Interests  Interest[]
+  status     Status?    @relation(name: "postStatus", fields: [statusCd], references: [name])
+  statusCd   String?
+  category   Status?    @relation(name: "postCategory", fields: [categoryCd], references: [name])
+  categoryCd String?
 
   @@index([userId])
+  @@index([statusCd])
+  @@index([categoryCd])
 }
 
 model Answer {
