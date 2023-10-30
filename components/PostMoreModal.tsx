@@ -7,6 +7,7 @@ interface PostMoreModalProps {
   postId: number;
   postUserId: number;
   userId: number;
+  statusCd?: ProductStatus;
 }
 
 interface PostMoreModalResponse {
@@ -14,7 +15,10 @@ interface PostMoreModalResponse {
   status: ProductStatus;
 }
 
-function PostMoreModal({ postId, postUserId, userId }: PostMoreModalProps, ref: ForwardedRef<HTMLDialogElement>) {
+function PostMoreModal(
+  { postId, postUserId, userId, statusCd }: PostMoreModalProps,
+  ref: ForwardedRef<HTMLDialogElement>,
+) {
   const router = useRouter();
   // 내껀가!!!
   const isMe = userId === postUserId;
@@ -40,6 +44,11 @@ function PostMoreModal({ postId, postUserId, userId }: PostMoreModalProps, ref: 
     setStateToServer({ status: ProductStatus.HIDE }, 'PATCH');
   };
 
+  // 보이기.
+  const handleShow = () => {
+    setStateToServer({ status: ProductStatus.SALE }, 'PATCH');
+  };
+
   // 삭제.
   const handleDelete = () => {
     setStateToServer({ status: ProductStatus.DLTE }, 'PATCH');
@@ -55,6 +64,10 @@ function PostMoreModal({ postId, postUserId, userId }: PostMoreModalProps, ref: 
         alert('숨김처리되었습니다.');
         router.push('/');
         break;
+      case ProductStatus.SALE:
+        alert('다시 게시됐습니다.');
+        router.push('/');
+        break;
     }
   }, [data, router]);
 
@@ -68,9 +81,16 @@ function PostMoreModal({ postId, postUserId, userId }: PostMoreModalProps, ref: 
                 <button className="btn" onClick={handleEdit}>
                   게시글 수정
                 </button>
-                <button className="btn" onClick={handleHide}>
-                  숨기기
-                </button>
+                {statusCd !== ProductStatus.HIDE && (
+                  <button className="btn" onClick={handleHide}>
+                    숨기기
+                  </button>
+                )}
+                {statusCd === ProductStatus.HIDE && (
+                  <button className="btn" onClick={handleShow}>
+                    올리기
+                  </button>
+                )}
                 <button className="btn text-red-700" onClick={handleDelete}>
                   삭제
                 </button>

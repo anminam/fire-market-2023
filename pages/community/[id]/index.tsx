@@ -4,7 +4,6 @@ import TextArea from '@/components/textarea';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import { useForm } from 'react-hook-form';
-import { Answer, Post, User } from '@prisma/client';
 import PostAnswer from '@/components/PostAnswer';
 import useMutation from '@/libs/client/useMutation';
 import { cls } from '@/libs/client/utils';
@@ -13,18 +12,7 @@ import UserProfileContainer from '@/components/UserProfileContainer';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
 import PostMoreModal from '@/components/PostMoreModal';
 import useUser from '@/libs/client/useUser';
-
-interface AnswerWithUser extends Answer {
-  user: User;
-}
-interface PostWithUser extends Post {
-  user: User;
-  _count: {
-    Answers: number;
-    Interests: number;
-  };
-  Answers: AnswerWithUser[];
-}
+import { AnswerWithUser, PostWithUser } from '@/interface/Community';
 
 interface PostsResponse {
   result: boolean;
@@ -113,7 +101,10 @@ const CommunityPostDetail: NextPage = () => {
       <div className="mt-4">
         {/* 프로필 */}
         <div className="px-4">
-          <div className="badge badge-sm badge-neutral">질문</div>
+          <div className="space-x-1">
+            <div className="badge badge-sm badge-neutral">질문</div>
+            {data?.data?.statusCd === 'HIDE' && <div className="badge badge-sm badge-neutral">숨김</div>}
+          </div>
           <UserProfileContainer
             id={data?.data?.user?.id.toString() || ''}
             avatar={data?.data?.user?.avatar}
@@ -189,6 +180,7 @@ const CommunityPostDetail: NextPage = () => {
         postId={+(router.query.id as string)}
         postUserId={data?.data?.userId as number}
         userId={user?.id as number}
+        statusCd={data?.data?.statusCd}
       />
     </Layout>
   );

@@ -3,11 +3,11 @@ import Layout from '@/components/layout';
 import { HiPencil } from 'react-icons/hi';
 import useSWR from 'swr';
 import CommunitiesByList from '@/components/CommunitiesByList';
-import { CommunityState } from '@/interface/Community';
+import { PostWithUser } from '@/interface/Community';
 
 interface CommunityResponse {
   result: boolean;
-  data: CommunityState[];
+  data: PostWithUser[];
 }
 
 const Community = () => {

@@ -5,32 +5,26 @@ import useSWR from 'swr';
 import useUser from '@/libs/client/useUser';
 import { useEffect, useState } from 'react';
 import { cls } from '@/libs/client/utils';
-import { CommunityState } from '@/interface/Community';
+import { PostWithUser } from '@/interface/Community';
 import CommunitiesByList from '@/components/CommunitiesByList';
 
 interface CommunityResponse {
   result: boolean;
-  data: CommunityState[];
+  data: PostWithUser[];
 }
 
 const Community: NextPage = () => {
   const { user } = useUser();
 
-  const { data, isLoading } = useSWR<CommunityResponse>(
-    user?.id ? `/api/posts/user/${user.id}` : null
-  );
+  const { data, isLoading } = useSWR<CommunityResponse>(user?.id ? `/api/posts/user/${user.id}` : null);
 
-  const { data: commentsData } = useSWR<CommunityResponse>(
-    `/api/users/my/posts/comments/`
-  );
+  const { data: commentsData } = useSWR<CommunityResponse>(`/api/users/my/posts/comments/`);
 
-  const { data: interestData } = useSWR<CommunityResponse>(
-    `/api/users/my/posts/interest/`
-  );
+  const { data: interestData } = useSWR<CommunityResponse>(`/api/users/my/posts/interest/`);
 
-  const [list0, setList0] = useState<CommunityState[]>([]);
-  const [list1, setList1] = useState<CommunityState[]>([]);
-  const [list2, setList2] = useState<CommunityState[]>([]);
+  const [list0, setList0] = useState<PostWithUser[]>([]);
+  const [list1, setList1] = useState<PostWithUser[]>([]);
+  const [list2, setList2] = useState<PostWithUser[]>([]);
 
   useEffect(() => {
     if (!data || !data.data) return;
@@ -54,28 +48,19 @@ const Community: NextPage = () => {
       <div className="">
         <div className="tabs flex text-sm">
           <a
-            className={cls(
-              `tab tab-bordered tab-lg flex-1 mt text-sm`,
-              tab === 0 ? 'tab-active' : ''
-            )}
+            className={cls(`tab tab-bordered tab-lg flex-1 mt text-sm`, tab === 0 ? 'tab-active' : '')}
             onClick={() => setTab(0)}
           >
             작성한 글 {list0.length ? list0.length : ''}
           </a>
           <a
-            className={cls(
-              `tab tab-bordered tab-lg flex-1 mt text-sm`,
-              tab === 1 ? 'tab-active' : ''
-            )}
+            className={cls(`tab tab-bordered tab-lg flex-1 mt text-sm`, tab === 1 ? 'tab-active' : '')}
             onClick={() => setTab(1)}
           >
             댓글단 글 {list1.length ? list1.length : ''}
           </a>
           <a
-            className={cls(
-              `tab tab-bordered tab-lg flex-1 mt text-sm`,
-              tab === 2 ? 'tab-active' : ''
-            )}
+            className={cls(`tab tab-bordered tab-lg flex-1 mt text-sm`, tab === 2 ? 'tab-active' : '')}
             onClick={() => setTab(2)}
           >
             관심 글 {list2.length ? list2.length : ''}

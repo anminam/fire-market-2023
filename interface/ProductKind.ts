@@ -9,4 +9,5 @@ export const ProductStatus = {
   QSTN: 'QSTN', // 질문
 };
 
-export type ProductStatus = (typeof ProductStatus)[keyof typeof ProductStatus];
+// export type ProductStatus = (typeof ProductStatus)[keyof typeof ProductStatus];
+export type ProductStatus = keyof typeof ProductStatus;
