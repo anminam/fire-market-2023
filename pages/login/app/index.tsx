@@ -18,7 +18,8 @@ const AppLoginPage = () => {
    */
   const login = useCallback(
     (token: string, id: number) => {
-      console.log('anlog', 'AppLoginPage', 'token: ', token, 'id: ', id);
+      if (!router.isReady) return;
+
       setIsApp(true);
       setToken(token);
       setUserId(id);
@@ -26,10 +27,11 @@ const AppLoginPage = () => {
       // 이동.
       router.replace('/');
     },
-    [router, setIsApp, setToken, setUserId],
+    [router.isReady],
   );
 
   useEffect(() => {
+    if (!router.isReady) return;
     const queryData = router.query.data as string;
 
     // data 없으면 종료.
@@ -37,13 +39,11 @@ const AppLoginPage = () => {
       setMessage('정보를 불러올 수 없습니다');
       return;
     }
-
     // 셋팅.
     const data: AppLoginData = JSON.parse(atob(queryData));
     login(data.token, data.id);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [router.isReady]);
 
   return (
     <Layout title="로그인" isViewTabBar={false} isHideTitle={false}>
