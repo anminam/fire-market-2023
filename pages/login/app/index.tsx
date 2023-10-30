@@ -1,30 +1,49 @@
 import Layout from '@/components/layout';
 import { useMiniStore } from '@/hooks/useStore';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+
+interface AppLoginData {
+  token: string;
+  id: number;
+}
 
 const AppLoginPage = () => {
   const router = useRouter();
   const { setToken, setUserId, setIsApp } = useMiniStore();
   const [message, setMessage] = useState('');
 
+  /**
+   * 로그인
+   */
+  const login = useCallback(
+    (token: string, id: number) => {
+      console.log('anlog', 'AppLoginPage', 'token: ', token, 'id: ', id);
+      setIsApp(true);
+      setToken(token);
+      setUserId(id);
+
+      // 이동.
+      router.replace('/');
+    },
+    [router, setIsApp, setToken, setUserId],
+  );
+
   useEffect(() => {
-    // 준비되지 않으면 종료.
-    if (!router.isReady) return;
+    const queryData = router.query.data as string;
 
     // data 없으면 종료.
-    if (!router.query.data) {
+    if (!queryData) {
       setMessage('정보를 불러올 수 없습니다');
       return;
     }
 
-    const data = JSON.parse(atob(router.query.data as string));
-    setIsApp(true);
-    setToken(data.token);
-    setUserId(data.id);
-    console.log('anlog', 'AppLoginPage', data.token);
-    router.replace('/');
-  }, [router.isReady]);
+    // 셋팅.
+    const data: AppLoginData = JSON.parse(atob(queryData));
+    login(data.token, data.id);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Layout title="로그인" isViewTabBar={false} isHideTitle={false}>
