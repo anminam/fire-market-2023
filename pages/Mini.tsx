@@ -23,10 +23,11 @@ function Mini({ children }: MiniProps) {
   const { setToken, setRooms, setUserId, token, isApp, initSendMessage } = useMiniStore();
 
   const { rooms, sendMessage } = useChat(token);
-  
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      if (isApp) return;
+      if (localStorage.getItem('isApp') === 'true') return;
+      debugger;
       if (user) {
         const token = await user.getIdToken();
         console.log('g', 'auth.onAuthStateChanged', '셋팅한다');
