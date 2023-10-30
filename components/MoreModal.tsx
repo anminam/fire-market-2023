@@ -14,17 +14,14 @@ interface MoreModalResponse {
   status: ProductStatus;
 }
 
-function MoreModal(
-  { productId, productUserId, userId }: MoreModalProps,
-  ref: ForwardedRef<HTMLDialogElement>
-) {
+function MoreModal({ productId, productUserId, userId }: MoreModalProps, ref: ForwardedRef<HTMLDialogElement>) {
   const router = useRouter();
   // 내껀가!!!
   const isMe = userId === productUserId;
 
   // 상태 수정.
   const [setStateToServer, { loading, data }] = useMutation<MoreModalResponse>(
-    `/api/products/${router.query.id}/status`
+    `/api/products/${router.query.id}/status`,
   );
 
   const handleCancel = () => {
@@ -64,7 +61,7 @@ function MoreModal(
             {isMe && (
               <>
                 <button className="btn" onClick={handleEdit}>
-                  계시글 수정
+                  게시글 수정
                 </button>
                 <button className="btn" onClick={handleHide}>
                   숨기기
