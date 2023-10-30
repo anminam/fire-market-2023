@@ -1,9 +1,9 @@
 import Item from './ProductItem';
-import { Product } from '@prisma/client';
 import NothingWithContainer from './NothingWithContainer';
+import { ProductWithCount } from '@/interface/Product';
 
 interface IProps {
-  list: Product[];
+  list: ProductWithCount[];
 }
 
 export default function ProductByList({ list }: IProps) {
