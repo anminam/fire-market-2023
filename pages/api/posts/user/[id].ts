@@ -26,6 +26,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     ],
     where: {
       userId: +id?.toString(),
+      NOT: [
+        {
+          status: {
+            name: 'DLTE',
+          },
+        },
+      ],
     },
     include: {
       user: {

@@ -9,7 +9,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     session: { user },
   } = req;
 
-  const post = await client.post.findUnique({
+  const data = await client.post.findUnique({
     where: {
       id: +(id as String),
     },
@@ -55,12 +55,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       select: {
         id: true,
       },
-    })
+    }),
   );
 
   res.json({
     result: true,
-    post,
+    data,
     isWondering,
   });
 }
