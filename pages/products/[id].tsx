@@ -199,7 +199,7 @@ const ItemDetail = () => {
               <div className="divider" />
               <h1 className="text-xl font-bold">비슷한 물건</h1>
               <div className=" mt-6 grid grid-cols-2 gap-4">
-                {data?.relatedProducts?.map((_: any, i: any) => {
+                {data?.relatedProducts?.map((_) => {
                   return (
                     <Link href={`/products/${_.id}`} key={_.id}>
                       <div className="w-16 h-16 rounded-full bg-slate-500 relative overflow-hidden">
@@ -212,7 +212,7 @@ const ItemDetail = () => {
                         />
                       </div>
                       <h3 className="text-sm opacity-50">{_.name}</h3>
-                      <span className="">1,260,000 원</span>
+                      <span className="">{moneyFormat(_.price)} 원</span>
                     </Link>
                   );
                 })}
