@@ -21,17 +21,15 @@ interface UploadProductForm {
 
 interface UploadProductResult {
   result: boolean;
-  product: Product;
+  data: Product;
 }
 
 const Upload: NextPage = () => {
   const MAX_PHOTO_COUNT = 3;
   const router = useRouter();
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
-  const { register, handleSubmit, watch, control, reset, setValue } =
-    useForm<UploadProductForm>();
-  const [apiUploadProduct, { loading, data }] =
-    useMutation<UploadProductResult>('/api/products');
+  const { register, handleSubmit, watch, control, reset, setValue } = useForm<UploadProductForm>();
+  const [apiUploadProduct, { loading, data }] = useMutation<UploadProductResult>('/api/products');
 
   const [loadingImage, setLoadingImage] = useState(false);
   const { user } = useUser();
@@ -73,67 +71,53 @@ const Upload: NextPage = () => {
     func();
   }, [router.query, user]);
 
-  const onValid = async ({
-    name,
-    price,
-    description,
-    place,
-    photo,
-  }: UploadProductForm) => {
+  const onValid = async ({ name, price, description, place, photo }: UploadProductForm) => {
     if (isLoading) return;
 
     // 가격 콤마 제거.
     price = price.replace(/,/g, '');
 
-    if (photoFiles && photoFiles.length > 0) {
-      try {
-        setLoadingImage(true);
-        const {
-          data: { uploadURL },
-        } = await (await fetch('/api/files')).json();
+    // 이미지 없으면 종료.
+    if (photoFiles.length <= 0) {
+      alert('사진을 등록해주세요.');
+      return;
+    }
 
-        if (!uploadURL) {
-          alert('파일 업로드에 실패했습니다.');
-          return;
-        }
-        const formData = new FormData();
-        formData.append('file', photoFiles[0], name);
+    try {
+      setLoadingImage(true);
+      const {
+        data: { uploadURL },
+      } = await (await fetch('/api/files')).json();
 
-        const res = await (
-          await fetch(uploadURL, {
-            method: 'POST',
-            body: formData,
-          })
-        ).json();
-        const photoId = res.result.id;
-        const obj = {
-          name,
-          price,
-          description,
-          place,
-          photoId,
-        };
-        if (router.query.productId) {
-          apiUploadProduct({ ...obj, id: router.query.productId });
-        } else {
-          apiUploadProduct(obj);
-        }
-      } catch (e) {
-      } finally {
-        setLoadingImage(false);
+      if (!uploadURL) {
+        alert('파일 업로드에 실패했습니다.');
+        return;
       }
-    } else {
+      const formData = new FormData();
+      formData.append('file', photoFiles[0], name);
+
+      const res = await (
+        await fetch(uploadURL, {
+          method: 'POST',
+          body: formData,
+        })
+      ).json();
+      const photoId = res.result.id;
       const obj = {
         name,
         price,
         description,
         place,
+        photoId,
       };
       if (router.query.productId) {
         apiUploadProduct({ ...obj, id: router.query.productId });
       } else {
-        apiUploadProduct({ obj });
+        apiUploadProduct(obj);
       }
+    } catch (e) {
+    } finally {
+      setLoadingImage(false);
     }
   };
 
@@ -144,21 +128,20 @@ const Upload: NextPage = () => {
 
   const onDeleteClick = useCallback(
     (file: File) => {
-      setPhotoFiles([...photoFiles.filter(_ => _.name !== file.name)]);
+      setPhotoFiles([...photoFiles.filter((_) => _.name !== file.name)]);
     },
-    [photoFiles]
+    [photoFiles],
   );
 
   useEffect(() => {
     if (data?.result) {
-      router.replace(`/products/${data.product.id}`);
-      data.product;
+      router.replace(`/products/${data.data.id}`);
     }
   }, [data, router]);
 
   const addPhoto = useCallback(
     (file: File) => {
-      const findLength = photoFiles.filter(item => {
+      const findLength = photoFiles.filter((item) => {
         return item.name === file.name;
       }).length;
 
@@ -172,9 +155,9 @@ const Upload: NextPage = () => {
         return;
       }
 
-      setPhotoFiles(list => [...list, file]);
+      setPhotoFiles((list) => [...list, file]);
     },
-    [photoFiles]
+    [photoFiles],
   );
 
   // 사진 form 등록.
@@ -195,10 +178,7 @@ const Upload: NextPage = () => {
       <form className="p-4 space-y-4" onSubmit={handleSubmit(onValid)}>
         <div className="flex space-x-2">
           <PhotoRegister register={register} />
-          <PhotoListContainer
-            photoPreviewList={photoFiles}
-            onDeleteClick={onDeleteClick}
-          />
+          <PhotoListContainer photoPreviewList={photoFiles} onDeleteClick={onDeleteClick} />
         </div>
         <Input
           register={register('name', { required: true })}
@@ -227,13 +207,7 @@ const Upload: NextPage = () => {
           label="거래 희망 장소"
           placeholder="더에셋 1층"
         />
-        <button
-          className={cls(
-            `btn btn-primary w-full`,
-            isLoading ? 'btn-disabled' : ''
-          )}
-          type="submit"
-        >
+        <button className={cls(`btn btn-primary w-full`, isLoading ? 'btn-disabled' : '')} type="submit">
           {isLoading ? '업로드중...' : '작성완료'}
         </button>
       </form>
@@ -245,12 +219,7 @@ const PhotoRegister = ({ register }: { register: any }) => {
   return (
     <label className="w-16 h-16 cursor-pointer text-gray-600 hover:border-primary hover:text-primary flex items-center justify-center border-2 border-dashed rounded-md">
       <MdOutlineAddPhotoAlternate size={40} />
-      <input
-        {...register('photo')}
-        className="hidden"
-        type="file"
-        accept="image/*"
-      />
+      <input {...register('photo')} className="hidden" type="file" accept="image/*" />
     </label>
   );
 };
@@ -270,13 +239,7 @@ const PhotoListContainer = ({
     </div>
   );
 };
-const PhotoItem = ({
-  file,
-  onDeleteClick,
-}: {
-  file: File;
-  onDeleteClick: (file: File) => void;
-}) => {
+const PhotoItem = ({ file, onDeleteClick }: { file: File; onDeleteClick: (file: File) => void }) => {
   const handleDeleteClick = (file: File) => {
     onDeleteClick(file);
   };
@@ -289,11 +252,7 @@ const PhotoItem = ({
         X{/* <AiOutlineDelete /> */}
       </button>
       <div className="w-16 h-16 rounded-md overflow-hidden">
-        <img
-          alt="photo"
-          src={URL.createObjectURL(file)}
-          className="object-contain"
-        ></img>
+        <img alt="photo" src={URL.createObjectURL(file)} className="object-contain"></img>
       </div>
     </div>
   );

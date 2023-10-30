@@ -15,21 +15,9 @@ interface ItemProps {
   date?: Date | string;
 }
 
-const ProductImage = ({
-  title,
-  imgSrc,
-  status,
-}: {
-  imgSrc: string;
-  title: string;
-  status: ProductStatus;
-}) => {
+const ProductImage = ({ title, imgSrc, status }: { imgSrc: string; title: string; status: ProductStatus }) => {
   return (
-    <div
-      className={`relative w-20 h-20 bg-gray-400 rounded-md overflow-hidden ${cls(
-        imgSrc ? '' : 'animate-pulse'
-      )}`}
-    >
+    <div className={`relative w-20 h-20 bg-gray-400 rounded-md overflow-hidden ${cls(imgSrc ? '' : 'animate-pulse')}`}>
       {status === ProductStatus.RSRV && (
         <div className="absolute flex flex-col top-0 left-0 w-full items-center bg-black bg-opacity-60 animate-bounce">
           <div className="text-sm">{'예약중'}</div>
@@ -59,37 +47,24 @@ const ProductImage = ({
   );
 };
 
-export default function ProductItem({
-  title,
-  price,
-  comments,
-  hearts,
-  imgSrc,
-  id,
-  status,
-  date,
-}: ItemProps) {
+export default function ProductItem({ title, price, comments, hearts, imgSrc, id, status, date }: ItemProps) {
   return (
     <Link href={`/products/${id}`}>
       <div className="relative flex cursor-pointer justify-between py-4">
         <div className="flex space-x-4">
           {/* 이미지 */}
-          <ProductImage title={title} imgSrc={imgSrc} status={status} />
+          <div className="basis-20">
+            <ProductImage title={title} imgSrc={imgSrc} status={status} />
+          </div>
           {/* 우측 문구들 */}
           {title ? (
             <div className="pt-2 flex flex-col">
               {/* 상품이름 */}
-              <h3 className="text-sm font-bold">{title}</h3>
+              <h3 className="text-sm font-bold line-clamp-1">{title}</h3>
               {/* 등록일 */}
-              {date ? (
-                <span className="text-xs mt-1 opacity-50">
-                  {communityDateFormat(date)}
-                </span>
-              ) : null}
+              {date ? <span className="text-xs mt-1 opacity-50">{communityDateFormat(date)}</span> : null}
               {/* 상품가격 */}
-              {price ? (
-                <span className="font-medium mt-1">{moneyFormat(price)}원</span>
-              ) : null}
+              {price ? <span className="font-medium mt-1">{moneyFormat(price)}원</span> : null}
             </div>
           ) : (
             // 스켈레톤

@@ -27,7 +27,6 @@ function Mini({ children }: MiniProps) {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (localStorage.getItem('isApp') === 'true') return;
-      debugger;
       if (user) {
         const token = await user.getIdToken();
         console.log('g', 'auth.onAuthStateChanged', '셋팅한다');
