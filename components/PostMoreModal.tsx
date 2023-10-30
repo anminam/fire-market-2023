@@ -3,28 +3,25 @@ import useMutation from '@/libs/client/useMutation';
 import { useRouter } from 'next/router';
 import { ForwardedRef, forwardRef, useEffect } from 'react';
 
-interface MoreModalProps {
-  postId?: number;
+interface PostMoreModalProps {
+  postId: number;
   postUserId: number;
   userId: number;
 }
 
-interface MoreModalResponse {
+interface PostMoreModalResponse {
   result: boolean;
   status: ProductStatus;
 }
 
-function PostMoreModal(
-  { postId, postUserId, userId }: MoreModalProps,
-  ref: ForwardedRef<HTMLDialogElement>
-) {
+function PostMoreModal({ postId, postUserId, userId }: PostMoreModalProps, ref: ForwardedRef<HTMLDialogElement>) {
   const router = useRouter();
   // 내껀가!!!
   const isMe = userId === postUserId;
 
   // 상태 수정.
-  const [setStateToServer, { loading, data }] = useMutation<MoreModalResponse>(
-    `/api/products/${router.query.id}/status`
+  const [setStateToServer, { loading, data }] = useMutation<PostMoreModalResponse>(
+    `/api/posts/${router.query.id}/status`,
   );
 
   const handleCancel = () => {
@@ -33,12 +30,17 @@ function PostMoreModal(
     }
   };
 
+  // 수정.
   const handleEdit = () => {
-    router.push(`/products/upload?productId=${postId}`);
+    router.push(`/community/${postId}/edit`);
   };
+
+  // 감추기.
   const handleHide = () => {
     setStateToServer({ status: ProductStatus.HIDE }, 'PATCH');
   };
+
+  // 삭제.
   const handleDelete = () => {
     setStateToServer({ status: ProductStatus.DLTE }, 'PATCH');
   };
@@ -64,7 +66,7 @@ function PostMoreModal(
             {isMe && (
               <>
                 <button className="btn" onClick={handleEdit}>
-                  계시글 수정
+                  게시글 수정
                 </button>
                 <button className="btn" onClick={handleHide}>
                   숨기기
@@ -87,4 +89,4 @@ function PostMoreModal(
   );
 }
 
-export default forwardRef<HTMLDialogElement, MoreModalProps>(PostMoreModal);
+export default forwardRef<HTMLDialogElement, PostMoreModalProps>(PostMoreModal);
