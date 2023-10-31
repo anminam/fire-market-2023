@@ -89,3 +89,11 @@ export const makeChatRoomId = ({ productId, sellerId, buyerId }: IRoomName): str
   // 상품ID-판매자ID-구매자ID
   return `${productId}-${sellerId}-${buyerId}`;
 };
+
+export const asyncGetFileByImage = async (imageSrc: string): Promise<File> => {
+  const src = `https://imagedelivery.net/6-jfB1-8fzgOcmfBEr6cGA/${imageSrc}/public`;
+  const res2 = await fetch(src);
+  const blob = await res2.blob();
+  const file = new File([blob], imageSrc, { type: blob.type });
+  return file;
+};

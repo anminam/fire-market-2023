@@ -19,7 +19,7 @@ interface ProductWithUser extends Product {
 
 interface ItemDetailResult {
   result: boolean;
-  product: ProductWithUser;
+  data: ProductWithUser;
   isLike: boolean;
   relatedProducts: Product[];
 }
@@ -39,9 +39,11 @@ const statusList: IStatus[] = [
 const ItemDetail = () => {
   const router = useRouter();
   const user = useUser();
-  const { data, mutate: boundMutate } = useSWR<ItemDetailResult>(
-    router.query.id ? `/api/products/${router.query.id}` : null,
-  );
+  const {
+    data,
+    mutate: boundMutate,
+    isLoading,
+  } = useSWR<ItemDetailResult>(router.query.id ? `/api/products/${router.query.id}` : null);
 
   const [toggleFav] = useMutation(`/api/products/${router.query.id}/favorite`);
 
@@ -58,8 +60,8 @@ const ItemDetail = () => {
   // 채팅하기 클릭.
   const handleChatClick = () => {
     const id = makeChatRoomId({
-      productId: data?.product?.id as number,
-      sellerId: data?.product?.userId as number,
+      productId: data?.data?.id as number,
+      sellerId: data?.data?.userId as number,
       buyerId: user.user?.id as number,
     });
 
@@ -91,10 +93,10 @@ const ItemDetail = () => {
   };
 
   useEffect(() => {
-    if (data?.product?.statusCd) {
-      updateStateName(data.product.statusCd);
+    if (data?.data?.statusCd) {
+      updateStateName(data.data.statusCd);
     }
-  }, [data?.product?.statusCd]);
+  }, [data?.data?.statusCd]);
 
   if (router.isFallback) {
     return <div>로딩중...</div>;
@@ -105,12 +107,12 @@ const ItemDetail = () => {
       {/* style={`background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.7));`} */}
       <div className="mb-32">
         {/* 이미지 */}
-        <div className={cls('relative pb-80 h-96 bg-neutral', data?.product?.image ? '' : 'animate-pulse')}>
-          {data?.product?.image && (
+        <div className={cls('relative pb-80 h-96 bg-neutral', data?.data?.image ? '' : 'animate-pulse')}>
+          {data?.data?.image && (
             <img
-              alt={data?.product?.name + ' 이미지'}
+              alt={data?.data?.name + ' 이미지'}
               className="absolute inset-0 w-full h-full object-cover"
-              src={`https://imagedelivery.net/6-jfB1-8fzgOcmfBEr6cGA/${data?.product?.image}/public`}
+              src={`https://imagedelivery.net/6-jfB1-8fzgOcmfBEr6cGA/${data?.data?.image}/public`}
             />
           )}
           {/* 그림자 */}
@@ -122,9 +124,9 @@ const ItemDetail = () => {
           {/* 프로필 */}
           <div>
             <UserProfileContainer
-              id={data?.product?.user?.id.toString() || ''}
-              avatar={data?.product?.user?.avatar}
-              name={data?.product?.user?.name}
+              id={data?.data?.user?.id.toString() || ''}
+              avatar={data?.data?.user?.avatar}
+              name={data?.data?.user?.name}
               size={12}
               isViewTextProfile
             />
@@ -133,7 +135,7 @@ const ItemDetail = () => {
           <div className="divider" />
 
           {/* 상태 */}
-          {isMe(data?.product?.user, user.user) && (
+          {isMe(data?.data?.user, user.user) && (
             <div>
               <div className="dropdown dropdown-bottom">
                 <label tabIndex={0} className="btn btn-neutral m-1">
@@ -141,7 +143,7 @@ const ItemDetail = () => {
                 </label>
                 <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-neutral rounded-box w-32">
                   {statusList.map((_) => {
-                    if (_.value === data?.product?.statusCd) return null;
+                    if (_.value === data?.data?.statusCd) return null;
                     return (
                       <li key={_.value}>
                         <button onClick={() => handleStateClick(_.value)}>{_.label}</button>
@@ -155,17 +157,17 @@ const ItemDetail = () => {
           )}
 
           {/* 상품정보 */}
-          {data?.product ? (
+          {data?.data ? (
             <div className="mt-5">
               {/* 타이틀 */}
-              <h1 className="text-xl font-bold">{data.product.name}</h1>
+              <h1 className="text-xl font-bold">{data.data.name}</h1>
               {/* 시간 */}
-              <div className="text-xs opacity-50">{data.product && dateFormat(data.product.createdAt)}</div>
+              <div className="text-xs opacity-50">{data.data && dateFormat(data.data.createdAt)}</div>
               {/* 가격 */}
-              <div className="block mt-3 underline">{data.product && moneyFormat(data.product.price)}원</div>
+              <div className="block mt-3 underline">{data.data && moneyFormat(data.data.price)}원</div>
 
               {/* 설명 */}
-              <p className="my-6">{data.product.description}</p>
+              <p className="my-6">{data.data.description}</p>
             </div>
           ) : (
             <div className="mt-5">
@@ -213,7 +215,7 @@ const ItemDetail = () => {
         ref={dialogRef}
         productId={router.query.id as string}
         userId={user.user?.id as number}
-        productUserId={data?.product?.user?.id as number}
+        productUserId={data?.data?.user?.id as number}
       />
 
       {/* 하단 고정 컨테이너 만들기 */}
@@ -235,12 +237,14 @@ const ItemDetail = () => {
               {data?.isLike ? <AiFillHeart size="24" /> : <AiOutlineHeart size="24" />}
             </button>
             {/* 채팅버튼 */}
-            <button
-              className={cls(`btn btn-primary flex-1`, !isMe(data?.product?.user, user.user) ? '' : 'btn-disabled')}
-              onClick={handleChatClick}
-            >
-              채팅하기
-            </button>
+            {isLoading ? null : (
+              <button
+                className={cls(`btn btn-primary flex-1`, !isMe(data?.data?.user, user.user) ? '' : 'btn-disabled')}
+                onClick={handleChatClick}
+              >
+                채팅하기
+              </button>
+            )}
           </div>
         </div>
       </div>

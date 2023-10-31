@@ -49,7 +49,7 @@ const CommunityPostDetail: NextPage = () => {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   // api - 초기 불러오기.
-  const { data, mutate } = useSWR<PostsResponse>(router.query.id ? `/api/posts/${router.query.id}` : null);
+  const { data, mutate, isLoading } = useSWR<PostsResponse>(router.query.id ? `/api/posts/${router.query.id}` : null);
 
   // api - 관심 등록.
   const [wonder, { loading: wonderLoading }] = useMutation(`/api/posts/${router.query.id}/interest`);
@@ -168,9 +168,12 @@ const CommunityPostDetail: NextPage = () => {
             <span>{errors?.answer ? String(errors.answer.message) : ''}</span>
           </div>
 
-          <button className="btn btn-primary mt-2 w-full text-white py-2 px-4">
-            {loading ? '답변 등록 중...' : '답변 등록'}
-          </button>
+          {/* 버튼 */}
+          {isLoading ? null : (
+            <button className="btn btn-primary mt-2 w-full text-white py-2 px-4">
+              {loading ? '답변 등록 중...' : '답변 등록'}
+            </button>
+          )}
         </form>
       </div>
 

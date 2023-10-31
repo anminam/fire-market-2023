@@ -9,11 +9,12 @@ import { Product } from '@prisma/client';
 import { useRouter } from 'next/router';
 import { MdOutlineAddPhotoAlternate } from 'react-icons/md';
 import useUser from '@/libs/client/useUser';
-import { cls } from '@/libs/client/utils';
+import { asyncGetFileByImage, cls } from '@/libs/client/utils';
+import useSWR from 'swr';
 
 interface UploadProductForm {
   name: string;
-  price: string;
+  price: string | number; // 콤마찍히면 문자로 넘어옴
   description: string;
   place: string;
   photo: FileList;
@@ -24,44 +25,50 @@ interface UploadProductResult {
   data: Product;
 }
 
+interface ProductDataResponse {
+  result: boolean;
+  data: Product;
+}
+
 const Upload: NextPage = () => {
   const MAX_PHOTO_COUNT = 3;
   const router = useRouter();
+  const { user } = useUser();
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
+
   const { register, handleSubmit, watch, control, reset, setValue } = useForm<UploadProductForm>();
+
   const [apiUploadProduct, { loading, data }] = useMutation<UploadProductResult>('/api/products');
+  const { data: productData } = useSWR<ProductDataResponse>(
+    router.query.productId ? `/api/products/${router.query.productId}` : null,
+  );
 
   const [loadingImage, setLoadingImage] = useState(false);
-  const { user } = useUser();
 
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
   // 초기화
   useEffect(() => {
+    // 수정모드일때 초기화.
     const func = async () => {
       // param id가 있으면 수정모드
-      const { productId } = router.query;
-      if (productId && user?.id) {
-        const res = await fetch(`/api/products/${productId}`);
-        const json = await res.json();
+      if (productData?.data?.userId && user?.id) {
         // 본인이 아니면 종료.
-        if (json.product.userId !== user?.id) {
+        if (productData?.data?.userId !== user?.id) {
           alert('본인의 상품만 수정할 수 있습니다.');
+          const productId = productData?.data?.id;
           router.replace(`/products/${productId}`);
           return;
         }
 
-        setValue('name', json.product.name);
-        setValue('price', json.product.price);
-        setValue('description', json.product.description);
-        setValue('place', json.product.place);
-        const imgSrc = json.product.image;
+        setValue('name', productData.data.name);
+        setValue('price', productData.data.price);
+        setValue('description', productData.data.description);
+        setValue('place', productData.data.place);
+        const imgSrc = productData.data.image;
 
         // 로드해서 파일로만들기
-        const src = `https://imagedelivery.net/6-jfB1-8fzgOcmfBEr6cGA/${imgSrc}/public`;
-        const res2 = await fetch(src);
-        const blob = await res2.blob();
-        const file = new File([blob], imgSrc, { type: blob.type });
+        const file = await asyncGetFileByImage(imgSrc);
         setPhotoFiles([file]);
 
         // 수정 모드셋팅.
@@ -69,13 +76,14 @@ const Upload: NextPage = () => {
       }
     };
     func();
-  }, [router.query, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [productData, user]);
 
   const onValid = async ({ name, price, description, place, photo }: UploadProductForm) => {
     if (isLoading) return;
 
     // 가격 콤마 제거.
-    price = price.replace(/,/g, '');
+    price = price.toString().replace(/,/g, '');
 
     // 이미지 없으면 종료.
     if (photoFiles.length <= 0) {
@@ -199,7 +207,7 @@ const Upload: NextPage = () => {
           register={register('description', { required: true })}
           name="description"
           label="자세한 설명"
-          placeholder="이쁜말 고은말"
+          placeholder="이쁜말 고운말"
         />
         <Input
           register={register('place', { required: true })}

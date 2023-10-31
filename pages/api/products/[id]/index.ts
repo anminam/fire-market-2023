@@ -6,7 +6,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { id } = req.query;
 
-  const product = await client.product.findUnique({
+  const data = await client.product.findUnique({
     where: {
       id: +(id as string),
     },
@@ -21,7 +21,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     },
   });
 
-  const terms = product?.name.split(' ').map((word) => ({
+  const terms = data?.name.split(' ').map((word) => ({
     name: {
       contains: word,
     },
@@ -32,7 +32,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       OR: terms,
       AND: {
         id: {
-          not: product?.id,
+          not: data?.id,
         },
       },
     },
@@ -52,7 +52,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   //
   res.json({
     result: true,
-    product,
+    data,
     isLike,
     relatedProducts,
   });

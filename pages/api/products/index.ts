@@ -52,7 +52,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         body: { name, price, description, place, photoId, id },
         session: { user },
       } = req;
-      const product = await client.product.update({
+      const data = await client.product.update({
         where: {
           id: +id,
         },
@@ -71,7 +71,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       });
       res.json({
         result: true,
-        product,
+        data,
       });
       return;
     }
