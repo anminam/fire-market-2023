@@ -182,24 +182,32 @@ const ItemDetail = () => {
             </div>
           )}
 
+          {/* 거래희망장소 */}
+          {data?.data ? (
+            <div>
+              <div className="divider" />
+              <div className="mt-5">
+                <h1 className="text-xl font-bold">거래희망장소</h1>
+                <p className="mt-3">{data.data.place}</p>
+              </div>
+            </div>
+          ) : null}
+
           {data?.relatedProducts?.length ? (
             <div className="mb-10">
               <div className="divider" />
               <h1 className="text-xl font-bold">비슷한 물건</h1>
-              <div className=" mt-6 grid grid-cols-2 gap-4">
+              <div className="flex mt-3 overflow-x-auto space-x-3">
                 {data?.relatedProducts?.map((_) => {
                   return (
-                    <Link href={`/products/${_.id}`} key={_.id}>
+                    <Link href={`/products/${_.id}`} key={_.id} className="w-30">
                       <div className="w-16 h-16 rounded-full bg-slate-500 relative overflow-hidden">
-                        <Image
-                          alt={''}
-                          src={`https://imagedelivery.net/6-jfB1-8fzgOcmfBEr6cGA/${_.image}/public`}
-                          fill
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          priority={true}
+                        <img
+                          alt={_.name + ' 이미지'}
+                          src={`https://imagedelivery.net/6-jfB1-8fzgOcmfBEr6cGA/${_.image}/avatar`}
                         />
                       </div>
-                      <h3 className="text-sm opacity-50">{_.name}</h3>
+                      <h3 className="text-sm opacity-50 line-clamp-1">{_.name}</h3>
                       <span className="">{moneyFormat(_.price)} 원</span>
                     </Link>
                   );
