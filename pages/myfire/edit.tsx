@@ -8,8 +8,9 @@ import { useEffect, useState } from 'react';
 import FormErrorMessage from '@/components/FormErrorMessage';
 import useMutation from '@/libs/client/useMutation';
 import Image from 'next/image';
-import { getImageSrc } from '@/libs/client/utils';
+import { cls, getImageSrc } from '@/libs/client/utils';
 import { useRouter } from 'next/router';
+import { asyncSendImageFile } from '@/libs/client/imageRegister';
 
 interface EditProfileForm {
   email?: string;
@@ -29,6 +30,8 @@ const EditProfile: NextPage = () => {
   const router = useRouter();
 
   const [runEdit, { data, loading }] = useMutation<EditProfileResponse>('/api/users/edit');
+  const [imageLoading, setImageLoading] = useState(false);
+  const isLoading = loading || imageLoading;
 
   const {
     register,
@@ -45,38 +48,35 @@ const EditProfile: NextPage = () => {
   }, [user, setValue]);
 
   const onValid = async ({ email, name, avatar }: EditProfileForm) => {
-    if (loading) return;
+    try {
+      if (isLoading) return;
 
-    if (email === '' && name === '') {
-      return setError('formErrors', {
-        message: '이메일 또는 전화번호를 입력해주세요.',
-      });
-    }
+      setImageLoading(true);
 
-    if (avatar && avatar.length > 0) {
-      const { data } = await (await fetch(`/api/files`)).json();
-      const { id, uploadURL } = data;
+      if (email === '' && name === '') {
+        return setError('formErrors', {
+          message: '이메일 또는 전화번호를 입력해주세요.',
+        });
+      }
 
-      const form = new FormData();
-      form.append('file', avatar[0], `${user?.id}_${user?.name}`);
+      if (avatar && avatar.length > 0) {
+        const result = await asyncSendImageFile(avatar, `${user?.id}_${user?.name}`);
 
-      const { result } = await (
-        await fetch(uploadURL, {
-          method: 'POST',
-          body: form,
-        })
-      ).json();
-
-      runEdit({
-        email,
-        name,
-        avatarId: result.id,
-      });
-    } else {
-      runEdit({
-        email,
-        name,
-      });
+        runEdit({
+          email,
+          name,
+          avatarId: result.id,
+        });
+      } else {
+        runEdit({
+          email,
+          name,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setImageLoading(false);
     }
   };
 
@@ -140,7 +140,9 @@ const EditProfile: NextPage = () => {
           kind="phone"
         /> */}
         <FormErrorMessage message={errors.formErrors?.message || ''} />
-        <button className="btn btn-primary w-full">{loading ? '변경 중 입니다...' : '변경하기'} </button>
+        <button className={cls(`btn btn-primary w-full`, isLoading ? 'btn-disabled' : '')}>
+          {isLoading ? '변경 중 입니다...' : '변경하기'}{' '}
+        </button>
       </form>
     </Layout>
   );
