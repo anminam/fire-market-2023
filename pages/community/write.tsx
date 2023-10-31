@@ -55,6 +55,12 @@ const Write: NextPage = () => {
             minLength: { value: 5, message: '5글자 이상 입력해 주세요.' },
           })}
         />
+        {/* 익명 체크 */}
+        {/* <div>
+          <label htmlFor="is_anonymous" className="text-sm text-neutral" />
+          <input id="is_anonymous" type="checkbox" checked={false} onChange={} className="checkbox" />
+        </div> */}
+
         <FormErrorMessage message={errors?.question?.message || ''} />
         <button className={cls(`btn btn-primary w-full`, isLoading ? 'btn-disabled' : '')} type="submit">
           {isLoading ? '업로드중...' : '글 올리기'}
