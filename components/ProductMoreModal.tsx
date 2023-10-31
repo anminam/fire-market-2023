@@ -66,9 +66,9 @@ function ProductMoreModal(
                 <button className="btn" onClick={handleEdit}>
                   게시글 수정
                 </button>
-                <button className="btn" onClick={handleHide}>
+                {/* <button className="btn" onClick={handleHide}>
                   숨기기
-                </button>
+                </button> */}
                 <button className="btn text-red-700" onClick={handleDelete}>
                   삭제
                 </button>
