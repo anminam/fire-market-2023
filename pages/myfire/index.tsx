@@ -8,6 +8,7 @@ import MyProfileImage from '@/components/MyProfileImage';
 import { useRouter } from 'next/router';
 import { Suspense } from 'react';
 import { AiOutlineFire } from 'react-icons/ai';
+import { auth } from '@/libs/client/firebase';
 
 // 나의 거래
 const MyBusiness = () => {
@@ -72,10 +73,11 @@ const Others = () => {
   const router = useRouter();
 
   const handleLogout = async () => {
+    await auth.signOut();
     await fetch('/api/users/logout', {
       method: 'POST',
     }).then(() => {
-      router.replace('/');
+      router.replace('/login');
     });
   };
   return (
@@ -114,10 +116,7 @@ const MiniProfile = () => {
           )}
         </div>
         <div className="">
-          <button
-            className="btn btn-sm btn-neutral"
-            onClick={handleProfileButtonClicked}
-          >
+          <button className="btn btn-sm btn-neutral" onClick={handleProfileButtonClicked}>
             프로필보기
           </button>
         </div>

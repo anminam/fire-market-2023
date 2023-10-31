@@ -24,11 +24,6 @@ interface ItemDetailResult {
   relatedProducts: Product[];
 }
 
-interface IProductStatusResult {
-  result: boolean;
-  data: any;
-}
-
 interface IStatus {
   value: ProductStatus;
   label: string;
@@ -49,7 +44,6 @@ const ItemDetail = () => {
   );
 
   const [toggleFav] = useMutation(`/api/products/${router.query.id}/favorite`);
-  const [setChat, { loading: chatLoading, data: chatData }] = useMutation(`/api/chats/${router.query.id}}`);
 
   // 상태 수정.
   const [setStateToServer] = useMutation(`/api/products/${router.query.id}/status`);
@@ -63,8 +57,6 @@ const ItemDetail = () => {
 
   // 채팅하기 클릭.
   const handleChatClick = () => {
-    if (chatLoading) return;
-
     const id = makeChatRoomId({
       productId: data?.product?.id as number,
       sellerId: data?.product?.userId as number,
@@ -97,12 +89,6 @@ const ItemDetail = () => {
       dialogRef.current.showModal();
     }
   };
-
-  useEffect(() => {
-    if (chatData) {
-      router.push(`/chats/${chatData.data.id}`);
-    }
-  }, [router, chatData]);
 
   useEffect(() => {
     if (data?.product?.statusCd) {

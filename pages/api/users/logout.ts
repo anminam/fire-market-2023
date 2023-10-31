@@ -6,9 +6,7 @@ import { app } from '@/libs/client/firebase';
 import { getAuth } from 'firebase/auth';
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // 세션 저장.
-  const auth = getAuth(app);
-  await auth.signOut();
+  // 세션 삭제
   await req.session.destroy();
 
   // end
@@ -22,5 +20,5 @@ export default withApiSession(
     methods: ['POST'],
     handler,
     isPrivate: false,
-  })
+  }),
 );
