@@ -12,6 +12,7 @@ import FormErrorMessage from '@/components/FormErrorMessage';
 
 interface WriteForm {
   question: string;
+  checkbox_is_anonymous: boolean;
 }
 
 interface WriteFormResponse {
@@ -22,25 +23,47 @@ interface WriteFormResponse {
 const Write: NextPage = () => {
   const { lat, lng } = useCoords();
   const router = useRouter();
+
+  // form
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<WriteForm>();
+
+  // API - 일반글 게시용.
   const [post, { loading, data }] = useMutation<WriteFormResponse>('/api/posts');
 
+  // API - 익명글 게시용.
+  const [anonymousPost, { loading: anonymousLoading, data: anonymousData }] =
+    useMutation<WriteFormResponse>('/api/posts/anonymous');
+
+  const isLoading = loading || anonymousLoading;
+
   const onValid = (data: WriteForm) => {
-    if (loading) return;
-    post({ ...data, lat, lng });
+    if (isLoading) return;
+
+    // 익명으로 남기기 체크일 경우.
+    if (getValues('checkbox_is_anonymous')) {
+      anonymousPost({ ...data });
+      // 일반글일 경우.
+    } else {
+      post({ ...data, lat, lng });
+    }
   };
 
   useEffect(() => {
     if (data?.result) {
+      alert('글이 등록되었습니다.');
       router.replace(`/community/${data.data.id}`);
     }
-  }, [data, router]);
 
-  const isLoading = loading || data?.result;
+    if (anonymousData?.result) {
+      alert('익명글이 등록되었습니다.');
+      router.replace(`/community/${anonymousData.data.id}`);
+    }
+  }, [data, router, anonymousData]);
 
   return (
     <Layout canGoBack title="화재생활 ">
@@ -56,10 +79,22 @@ const Write: NextPage = () => {
           })}
         />
         {/* 익명 체크 */}
-        {/* <div>
-          <label htmlFor="is_anonymous" className="text-sm text-neutral" />
-          <input id="is_anonymous" type="checkbox" checked={false} onChange={} className="checkbox" />
-        </div> */}
+        <div>
+          <label className="text-sm flex items-center">
+            <input
+              {...register('checkbox_is_anonymous', {
+                onChange: (e) => {
+                  if (e.target.checked) {
+                    alert('익명으로 남기기를 체크하면 사용자를 알 수 없어, 삭제할 수 없습니다.');
+                  }
+                },
+              })}
+              type="checkbox"
+              className="checkbox"
+            />
+            <span className="ml-2">익명으로 남기기</span>
+          </label>
+        </div>
 
         <FormErrorMessage message={errors?.question?.message || ''} />
         <button className={cls(`btn btn-primary w-full`, isLoading ? 'btn-disabled' : '')} type="submit">
