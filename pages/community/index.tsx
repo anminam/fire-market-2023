@@ -15,7 +15,7 @@ const Community = () => {
 
   return (
     <Layout isViewTabBar title="화재생활">
-      <CommunitiesByList list={data?.data || []} />
+      <CommunitiesByList list={data?.data} />
       <FloatingButton href="/community/write">
         <HiPencil />
       </FloatingButton>

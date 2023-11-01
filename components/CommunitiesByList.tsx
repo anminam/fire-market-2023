@@ -1,9 +1,10 @@
 import { PostWithUser } from '@/interface/Community';
 import PostItem from './PostItem';
 import NothingWithContainer from './NothingWithContainer';
+import LoadingWithContainer from './LoadingWithContainer';
 
 interface IProps {
-  list: PostWithUser[];
+  list?: PostWithUser[];
 }
 
 export default function CommunitiesByList({ list }: IProps) {
@@ -15,6 +16,9 @@ export default function CommunitiesByList({ list }: IProps) {
 }
 
 function CommunitiesByListItem({ list }: IProps) {
+  if (!list) {
+    return <LoadingWithContainer />;
+  }
   if (!list.length) {
     return <NothingWithContainer />;
   }
