@@ -11,9 +11,20 @@ import ProductImage from '@/components/ProductImage';
 import { moneyFormat } from '@/libs/client/utils';
 import Link from 'next/link';
 import { IChatMessage, IRoom } from '@/interface/Chat';
-import { User } from '@prisma/client';
+import { Product, User } from '@prisma/client';
 import ModalSellProductState from '@/components/ModalSellProductState';
 import { useMiniStore } from '@/hooks/useStore';
+import useSWR from 'swr';
+
+interface ProductDataResponse {
+  result: boolean;
+  data: Product;
+}
+
+function getProductIdByRoomId(roomId: string): string {
+  if (!roomId) return '';
+  return roomId.split('-')[0];
+}
 
 const ChatDetail: NextPage = () => {
   const router = useRouter();
@@ -25,6 +36,10 @@ const ChatDetail: NextPage = () => {
   const rooms = useMiniStore((_) => _.rooms);
   const room = useMiniStore((_) => _.getRoom(router.query.id as string));
   const [messages, setMessages] = useState<IChatMessage[]>([]);
+
+  // api - 상품 불러오기.
+  const productId = getProductIdByRoomId(router?.query?.id as string);
+  const { data: productData } = useSWR<ProductDataResponse>(productId ? `/api/products/${productId}` : null);
 
   // 보내기
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -91,7 +106,7 @@ const ChatDetail: NextPage = () => {
   return (
     <Layout canGoBack title={'채팅'}>
       {/* 상단에 상품보여주기 */}
-      {room && user && <ChatDetailTopContainer room={room} user={user} />}
+      {user && productData?.data && <ChatDetailTopContainer product={productData.data} user={user} />}
       {/* 채팅 */}
       <div className="relative flex pt-14 overflow-hidden chat-container ">
         <div className="px-4 space-y-4 overflow-auto scroll-container w-full">
@@ -115,7 +130,7 @@ const ChatDetail: NextPage = () => {
   );
 };
 
-const ChatDetailTopContainer = ({ room, user }: { room: IRoom; user: User }) => {
+const ChatDetailTopContainer = ({ user, product }: { user: User; product: Product }) => {
   const router = useRouter();
 
   // 거래 변경클릭
@@ -129,20 +144,20 @@ const ChatDetailTopContainer = ({ room, user }: { room: IRoom; user: User }) => 
 
   const dialogRef = useRef<HTMLDialogElement>(null);
 
-  const isMe = user.id === room.sellerId;
+  const isMe = user.id === product.userId;
 
   return (
     <div className="fixed z-10 left-0 w-full">
       <div className="w-full max-w-xl mx-auto bg-base-100">
-        <Link href={`/products/${room?.product.id}`}>
+        <Link href={`/products/${product.id}`}>
           <div className="flex justify-between border-b-[1px] border-neutral items-center px-4">
             <div className="py-2 flex">
               <div className={`w-${10}`}>
-                <ProductImage size={10} alt={`${room?.product.name} 이미지`} src={room?.product.image} />
+                <ProductImage size={10} alt={`${product.name} 이미지`} src={product.image} />
               </div>
               <div className="flex flex-col text-xs justify-center px-4">
-                <span className="overflow-hidden line-clamp-1">{room?.product.name}</span>
-                <span>{room?.product.price && moneyFormat(room?.product.price) + '원'}</span>
+                <span className="overflow-hidden line-clamp-1">{product.name}</span>
+                <span>{product.price && moneyFormat(product.price) + '원'}</span>
               </div>
             </div>
             {isMe && (
@@ -156,12 +171,7 @@ const ChatDetailTopContainer = ({ room, user }: { room: IRoom; user: User }) => 
         </Link>
       </div>
       {/* 모달 */}
-      <ModalSellProductState
-        ref={dialogRef}
-        productId={room.productId}
-        buyerId={room.buyerId}
-        productUserId={room.sellerId}
-      />
+      <ModalSellProductState ref={dialogRef} productId={product.id} buyerId={user.id} productUserId={product.userId} />
     </div>
   );
 };
