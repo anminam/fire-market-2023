@@ -1,4 +1,5 @@
 import Layout from '@/components/layout';
+import Sheet from 'react-modal-sheet';
 import { useRouter } from 'next/router';
 import { Product, User } from '@prisma/client';
 import Link from 'next/link';
@@ -6,7 +7,7 @@ import useMutation from '@/libs/client/useMutation';
 import { cls, dateFormat, makeChatRoomId, moneyFormat } from '@/libs/client/utils';
 import useSWR from 'swr';
 import UserProfileContainer from '@/components/UserProfileContainer';
-import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
+import { AiFillHeart, AiOutlineClose, AiOutlineHeart } from 'react-icons/ai';
 import { useEffect, useRef, useState } from 'react';
 import useUser from '@/libs/client/useUser';
 import ProductMoreModal from '@/components/ProductMoreModal';
@@ -48,6 +49,15 @@ const ItemDetail = () => {
     mutate: boundMutate,
     isLoading,
   } = useSWR<ProductResponse>(router.query.id ? `/api/products/${router.query.id}` : null);
+
+  // api - 상품의 채팅정보 가져오기.
+  const { data: chatPersonData } = useSWR<ProductResponse>(
+    router.query.id ? `/api/products/${router.query.id}/chat/users` : null,
+  );
+
+  if (chatPersonData) {
+    // debugger;
+  }
 
   // api - 하트 토글.
   const [toggleFav] = useMutation(`/api/products/${router.query.id}/favorite`);
@@ -160,6 +170,8 @@ const ItemDetail = () => {
               <div className="divider" />
             </div>
           )}
+          {/* 채팅한사람 */}
+          {/* <PersonList list={[]} /> */}
 
           {/* 상품정보 */}
           {data?.data ? (
@@ -267,6 +279,40 @@ const ItemDetail = () => {
 
 function isMe(you?: User, me?: User) {
   return you?.id === me?.id;
+}
+
+// 채팅한 사람들 가져오기.
+function PersonList({ list }: { list: string[] }) {
+  const [isOpen, setOpen] = useState(false);
+
+  return (
+    <div className="">
+      <button onClick={() => setOpen(true)}>Open sheet</button>
+
+      <Sheet isOpen={isOpen} onClose={() => setOpen(false)} className="" snapPoints={[600, 400, 100, 0]}>
+        <Sheet.Container>
+          <Sheet.Header className="bg-neutral">
+            <div className="border-b-[1px] border-neutral-400">
+              <div className="flex relative items-center justify-center px-4">
+                <button
+                  className={`btn btn-circle btn-ghost absolute left-0 bg-transparent border-0 py-3`}
+                  onClick={() => setOpen(false)}
+                >
+                  <AiOutlineClose size="24" />
+                </button>
+                <div className="text-lg p-2">채팅</div>
+              </div>
+            </div>
+            {/* <div className="flex justify-center border-b-[1px] border-neutral-400">
+              <div className="py-4 text-lg">호이요</div>
+            </div> */}
+          </Sheet.Header>
+          <Sheet.Content className="bg-neutral">{/* Your sheet content goes here */}</Sheet.Content>
+        </Sheet.Container>
+        <Sheet.Backdrop />
+      </Sheet>
+    </div>
+  );
 }
 
 export default ItemDetail;
