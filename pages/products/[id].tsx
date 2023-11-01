@@ -4,7 +4,6 @@ import { Product, User } from '@prisma/client';
 import Link from 'next/link';
 import useMutation from '@/libs/client/useMutation';
 import { cls, dateFormat, makeChatRoomId, moneyFormat } from '@/libs/client/utils';
-import Image from 'next/image';
 import useSWR from 'swr';
 import UserProfileContainer from '@/components/UserProfileContainer';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
@@ -12,12 +11,9 @@ import { useEffect, useRef, useState } from 'react';
 import useUser from '@/libs/client/useUser';
 import ProductMoreModal from '@/components/ProductMoreModal';
 import { ProductStatus } from '@/interface/ProductKind';
+import { ProductWithUser } from '@/interface/Product';
 
-interface ProductWithUser extends Product {
-  user: User;
-}
-
-interface ItemDetailResult {
+interface ProductResponse {
   result: boolean;
   data: ProductWithUser;
   isLike: boolean;
@@ -27,6 +23,11 @@ interface ItemDetailResult {
 interface IStatus {
   value: ProductStatus;
   label: string;
+}
+
+interface StateResponse {
+  result: boolean;
+  data: ProductWithUser;
 }
 
 const statusList: IStatus[] = [
@@ -39,25 +40,36 @@ const statusList: IStatus[] = [
 const ItemDetail = () => {
   const router = useRouter();
   const user = useUser();
+  const [productState, setProductState] = useState<ProductStatus>('SALE');
+
+  // api - 상품정보 가져오기.
   const {
     data,
     mutate: boundMutate,
     isLoading,
-  } = useSWR<ItemDetailResult>(router.query.id ? `/api/products/${router.query.id}` : null);
+  } = useSWR<ProductResponse>(router.query.id ? `/api/products/${router.query.id}` : null);
 
+  // api - 하트 토글.
   const [toggleFav] = useMutation(`/api/products/${router.query.id}/favorite`);
 
-  // 상태 수정.
-  const [setStateToServer] = useMutation(`/api/products/${router.query.id}/status`);
-  const [stateName, setStateName] = useState<string>('판매중');
+  // api - 상태 변경.
+  const [setStateToServer, { data: stateData }] = useMutation<StateResponse>(`/api/products/${router.query.id}/status`);
 
-  const onFavClick = () => {
+  // effect - 최초 로딩시.
+  useEffect(() => {
+    if (data) {
+      setProductState(data.data.statusCd);
+    }
+  }, [data]);
+
+  // handle - 하트 클릭.
+  const handleFavClick = () => {
     if (!data) return;
     boundMutate((prev: any) => prev && { ...prev, isLike: !prev.isLike }, false);
     toggleFav({});
   };
 
-  // 채팅하기 클릭.
+  // handle - 채팅하기 클릭.
   const handleChatClick = () => {
     const id = makeChatRoomId({
       productId: data?.data?.id as number,
@@ -68,11 +80,10 @@ const ItemDetail = () => {
     router.push(`/chats/${id}`);
   };
 
-  // 상태 변경 클릭.
+  // handle - 상태 변경 클릭.
   const handleStateClick = (status: ProductStatus) => {
     setStateToServer({ status }, 'PATCH');
-    updateStateName(status);
-    setStateName(statusList.find((_) => _.value === status)?.label || '');
+    setProductState(status);
     // 감추기
     const el = document.activeElement as HTMLElement;
     if (el) {
@@ -80,8 +91,8 @@ const ItemDetail = () => {
     }
   };
 
-  const updateStateName = (status: any) => {
-    setStateName(statusList.find((_) => _.value === status)?.label || '');
+  const updateStateName = (status: ProductStatus) => {
+    setProductState(status);
   };
 
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -91,12 +102,6 @@ const ItemDetail = () => {
       dialogRef.current.showModal();
     }
   };
-
-  useEffect(() => {
-    if (data?.data?.statusCd) {
-      updateStateName(data.data.statusCd);
-    }
-  }, [data?.data?.statusCd]);
 
   if (router.isFallback) {
     return <div>로딩중...</div>;
@@ -139,11 +144,11 @@ const ItemDetail = () => {
             <div>
               <div className="dropdown dropdown-bottom">
                 <label tabIndex={0} className="btn btn-neutral m-1">
-                  {stateName}
+                  {statusList.find((_) => _.value === productState)?.label}
                 </label>
                 <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-neutral rounded-box w-32">
                   {statusList.map((_) => {
-                    if (_.value === data?.data?.statusCd) return null;
+                    if (_.value === productState) return null;
                     return (
                       <li key={_.value}>
                         <button onClick={() => handleStateClick(_.value)}>{_.label}</button>
@@ -234,7 +239,7 @@ const ItemDetail = () => {
           <div className="flex items-center justify-between space-x-2">
             {/* 하트버튼 */}
             <button
-              onClick={onFavClick}
+              onClick={handleFavClick}
               className={cls(
                 'p-3 rounded-md flex items-center justify-center',
                 data?.isLike
