@@ -1,5 +1,6 @@
 import { IChatMessage, IChatReceivedServerMessage, IRoom } from '@/interface/Chat';
 import { chatUrl } from '@/libs/client/url';
+import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
 
@@ -8,6 +9,7 @@ let _socket: Socket | null = null;
 const useChat = (initToken: string) => {
   const [messages, setMessages] = useState<IChatMessage[]>([]);
   const [rooms, setRooms] = useState<IRoom[]>([]);
+  const router = useRouter();
 
   //소켓 연결 시작.
   useEffect(() => {
@@ -30,7 +32,11 @@ const useChat = (initToken: string) => {
         const rooms = await asyncGetRooms(initToken);
         setRooms(rooms);
       } catch (err) {
-        // console.log(err);
+        if (err instanceof Error) {
+          if (err.message === '403') {
+            router.push('/login');
+          }
+        }
       }
     });
 
@@ -39,7 +45,11 @@ const useChat = (initToken: string) => {
         const rooms = await asyncGetRooms(initToken);
         setRooms(rooms);
       } catch (err) {
-        // console.log(err);
+        if (err instanceof Error) {
+          if (err.message === '403') {
+            router.push('/login');
+          }
+        }
       }
       setMessages((prev) => [...prev, updateMessage(message)]);
     });
@@ -71,20 +81,19 @@ const useChat = (initToken: string) => {
 };
 
 async function asyncGetRooms(token: string): Promise<IRoom[]> {
-  try {
-    const res = await fetch(`${chatUrl}/api/rooms`, {
-      cache: 'no-store',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  const res = await fetch(`${chatUrl}/api/rooms`, {
+    cache: 'no-store',
+    headers: {
+      Authorization: `Bearer ${token}1`,
+    },
+  });
 
-    const json = await res.json();
-    return json?.rooms || [];
-  } catch (err) {
-    console.log(err);
-    return [];
+  if (res.status === 403) {
+    throw new Error(res.status.toString());
   }
+
+  const json = await res.json();
+  return json?.rooms || [];
 }
 
 // IChatReceivedServerMessage to IChatMessage change function
