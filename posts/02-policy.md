@@ -1,3 +1,9 @@
+---
+title: policy
+date: 2023.11.01
+category:
+---
+
 # 개인정보처리방침
 
 ## 공지사항
