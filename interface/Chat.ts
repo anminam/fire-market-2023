@@ -1,4 +1,4 @@
-import { Product, User } from '@prisma/client';
+import { Product, User, chatroom } from '@prisma/client';
 import { IUser } from './User';
 
 export interface IChatServerManager {
@@ -75,4 +75,8 @@ export interface IRoom {
   seller: User;
   buyer: User;
   readCount?: number;
+}
+
+export interface IChatRoom extends chatroom {
+  buyer: User;
 }

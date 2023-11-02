@@ -1,5 +1,4 @@
 import Layout from '@/components/layout';
-import Sheet from 'react-modal-sheet';
 import { useRouter } from 'next/router';
 import { Product, User } from '@prisma/client';
 import Link from 'next/link';
@@ -7,13 +6,14 @@ import useMutation from '@/libs/client/useMutation';
 import { cls, dateFormat, makeChatRoomId, moneyFormat } from '@/libs/client/utils';
 import useSWR from 'swr';
 import UserProfileContainer from '@/components/UserProfileContainer';
-import { AiFillHeart, AiOutlineClose, AiOutlineHeart } from 'react-icons/ai';
+import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import { useEffect, useRef, useState } from 'react';
 import useUser from '@/libs/client/useUser';
 import ProductMoreModal from '@/components/ProductMoreModal';
 import { ProductStatus } from '@/interface/ProductKind';
 import { ProductWithUser } from '@/interface/Product';
 import ChatPersonSelect from '@/components/ChatPersonSelect';
+import { IChatRoom } from '@/interface/Chat';
 
 interface ProductResponse {
   result: boolean;
@@ -32,6 +32,11 @@ interface StateResponse {
   data: ProductWithUser;
 }
 
+interface IChatRoomResponse {
+  result: boolean;
+  data: IChatRoom[];
+}
+
 const statusList: IStatus[] = [
   { value: 'SALE', label: '판매중' },
   { value: 'RSRV', label: '예약중' },
@@ -43,7 +48,8 @@ const ItemDetail = () => {
   const router = useRouter();
   const user = useUser();
   const [productState, setProductState] = useState<ProductStatus>('SALE');
-  const [isProductUsersOpen, setIsProductUsersOpen] = useState(false);
+  const [isReservationUsersOpen, setIsReservationUsersOpen] = useState(false);
+  const [isCompleteUsersOpen, setIsCompleteUsersOpen] = useState(false);
 
   // api - 상품정보 가져오기.
   const {
@@ -53,13 +59,9 @@ const ItemDetail = () => {
   } = useSWR<ProductResponse>(router.query.id ? `/api/products/${router.query.id}` : null);
 
   // api - 상품의 채팅정보 가져오기.
-  const { data: chatPersonData } = useSWR<ProductResponse>(
+  const { data: chatPersonData } = useSWR<IChatRoomResponse>(
     router.query.id ? `/api/products/${router.query.id}/chat/users` : null,
   );
-
-  if (chatPersonData) {
-    debugger;
-  }
 
   // api - 하트 토글.
   const [toggleFav] = useMutation(`/api/products/${router.query.id}/favorite`);
@@ -95,7 +97,10 @@ const ItemDetail = () => {
   // handle - 상태 변경 클릭.
   const handleStateClick = (status: ProductStatus) => {
     if (status === 'RSRV') {
-      setIsProductUsersOpen(true);
+      setIsReservationUsersOpen(true);
+      return;
+    } else if (status === 'CMPL') {
+      setIsCompleteUsersOpen(true);
       return;
     }
 
@@ -111,8 +116,16 @@ const ItemDetail = () => {
     }
   };
 
-  const handleStartChangeWithPerson = (id: number) => {
-    debugger;
+  const handleStatusUserSelected = (id: number, status: ProductStatus) => {
+    // 서버 상태 변경.
+    setStateToServer({ status, buyerId: id }, 'PATCH');
+    // UI 상태 변경.
+    setProductState(status);
+    // 모달 감추기.
+    setIsReservationUsersOpen(false);
+    setIsCompleteUsersOpen(false);
+    // 모달 감추기.
+    hideModal();
   };
 
   // 모달 감추기
@@ -259,14 +272,29 @@ const ItemDetail = () => {
         productUserId={data?.data?.user?.id as number}
       />
 
-      {/* 상태변경 모달 */}
+      {/* 상태변경 모달(예약) */}
       {chatPersonData && chatPersonData.data && (
         <ChatPersonSelect
-          title={'선택'}
-          list={[]}
-          onSelected={handleStartChangeWithPerson}
-          isOpen={isProductUsersOpen}
-          onClose={() => setIsProductUsersOpen(false)}
+          title={'예약자 선택'}
+          list={chatPersonData?.data.map((_) => {
+            return _.buyer;
+          })}
+          onSelected={(id) => handleStatusUserSelected(id, 'RSRV')}
+          isOpen={isReservationUsersOpen}
+          onClose={() => setIsReservationUsersOpen(false)}
+        />
+      )}
+
+      {/* 상태변경 모달(판매완료) */}
+      {chatPersonData && chatPersonData.data && (
+        <ChatPersonSelect
+          title={'구매자 선택'}
+          list={chatPersonData?.data.map((_) => {
+            return _.buyer;
+          })}
+          onSelected={(id) => handleStatusUserSelected(id, 'CMPL')}
+          isOpen={isCompleteUsersOpen}
+          onClose={() => setIsCompleteUsersOpen(false)}
         />
       )}
 
