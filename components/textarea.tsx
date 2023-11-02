@@ -1,4 +1,4 @@
-import { UseFormRegisterReturn } from "react-hook-form";
+import { UseFormRegisterReturn } from 'react-hook-form';
 
 interface TextAreaProps {
   label?: string;
@@ -7,12 +7,7 @@ interface TextAreaProps {
   [key: string]: any;
 }
 
-export default function TextArea({
-  label,
-  name,
-  register,
-  ...rest
-}: TextAreaProps) {
+export default function TextArea({ label, name, register, ...rest }: TextAreaProps) {
   return (
     <div className="space-y-2">
       {label ? (
@@ -23,7 +18,7 @@ export default function TextArea({
       <textarea
         id={name}
         {...register}
-        className="textarea textarea-bordered h-24 py-1 w-full placeholder-neutral-600"
+        className="textarea textarea-bordered h-24 py-1 w-full placeholder-neutral-600 text-base"
         rows={4}
         {...rest}
       />
