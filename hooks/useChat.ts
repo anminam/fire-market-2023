@@ -84,7 +84,7 @@ async function asyncGetRooms(token: string): Promise<IRoom[]> {
   const res = await fetch(`${chatUrl}/api/rooms`, {
     cache: 'no-store',
     headers: {
-      Authorization: `Bearer ${token}1`,
+      Authorization: `Bearer ${token}`,
     },
   });
 
