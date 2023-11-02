@@ -10,11 +10,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (typeof token === 'string') {
     const base64Payload = token?.split('.')[1]; //value 0 -> header, 1 -> payload, 2 -> VERIFY SIGNATURE
     const payload = Buffer.from(base64Payload, 'base64');
-    const {
-      user_id: uid,
-      email,
-      name: displayName,
-    } = JSON.parse(payload.toString());
+    const { user_id: uid, email } = JSON.parse(payload.toString());
     let user = await client?.user.findUnique({
       where: {
         firebaseUid: uid,
@@ -34,7 +30,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         user = await client?.user.create({
           data: {
             firebaseUid: uid,
-            name: displayName,
+            name: `anonymous_${Math.random().toString(36).substr(2, 11)}`,
             email,
           },
         });
@@ -70,8 +66,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         JSON.stringify({
           id: user.id,
           token: token,
-        })
-      )}`
+        }),
+      )}`,
     );
   }
 }
@@ -81,5 +77,5 @@ export default withApiSession(
     methods: ['GET'],
     handler,
     isPrivate: false,
-  })
+  }),
 );

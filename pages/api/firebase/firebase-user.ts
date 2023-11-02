@@ -5,7 +5,7 @@ import { withApiSession } from '@/libs/server/withSession';
 import client from '@/libs/server/client';
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { displayName, email, uid, token } = req.body;
+  const { email, uid, token } = req.body;
 
   let user = await client?.user.findUnique({
     where: {
@@ -26,7 +26,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       user = await client?.user.create({
         data: {
           firebaseUid: uid,
-          name: displayName,
+          name: `anonymous_${Math.random().toString(36).substr(2, 11)}`,
           email,
         },
       });
@@ -68,5 +68,5 @@ export default withApiSession(
     methods: ['POST'],
     handler,
     isPrivate: false,
-  })
+  }),
 );
