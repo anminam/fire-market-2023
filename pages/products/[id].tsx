@@ -13,6 +13,7 @@ import useUser from '@/libs/client/useUser';
 import ProductMoreModal from '@/components/ProductMoreModal';
 import { ProductStatus } from '@/interface/ProductKind';
 import { ProductWithUser } from '@/interface/Product';
+import ChatPersonSelect from '@/components/ChatPersonSelect';
 
 interface ProductResponse {
   result: boolean;
@@ -92,17 +93,35 @@ const ItemDetail = () => {
 
   // handle - 상태 변경 클릭.
   const handleStateClick = (status: ProductStatus) => {
-    setStateToServer({ status }, 'PATCH');
-    setProductState(status);
-    // 감추기
+    // if (status === 'RSRV') {
+    //   handleStartChangeWithPerson(status);
+    //   return;
+    // }
+
+    start();
+
+    function start() {
+      // 서버 상태 변경.
+      setStateToServer({ status }, 'PATCH');
+      // UI 상태 변경.
+      setProductState(status);
+      // 모달 감추기.
+      hideModal();
+    }
+  };
+
+  const handleStartChangeWithPerson = (status: ProductStatus) => {
+    if (status === 'RSRV') {
+    } else {
+    }
+  };
+
+  // 모달 감추기
+  const hideModal = () => {
     const el = document.activeElement as HTMLElement;
     if (el) {
       el?.blur();
     }
-  };
-
-  const updateStateName = (status: ProductStatus) => {
-    setProductState(status);
   };
 
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -170,8 +189,6 @@ const ItemDetail = () => {
               <div className="divider" />
             </div>
           )}
-          {/* 채팅한사람 */}
-          {/* <PersonList list={[]} /> */}
 
           {/* 상품정보 */}
           {data?.data ? (
@@ -235,13 +252,18 @@ const ItemDetail = () => {
         </div>
       </div>
 
-      {/* 모달 */}
+      {/* 메인 메뉴 모달 */}
       <ProductMoreModal
         ref={dialogRef}
         productId={router.query.id as string}
         userId={user.user?.id as number}
         productUserId={data?.data?.user?.id as number}
       />
+
+      {/* 상태변경 모달 */}
+      {/* {chatPersonData && chatPersonData.data && (
+        <ChatPersonSelect title={'선택'} list={[]} onSelected={handleStartChangeWithPerson} />
+      )} */}
 
       {/* 하단 고정 컨테이너 만들기 */}
       {/* 하단 */}
@@ -279,40 +301,6 @@ const ItemDetail = () => {
 
 function isMe(you?: User, me?: User) {
   return you?.id === me?.id;
-}
-
-// 채팅한 사람들 가져오기.
-function PersonList({ list }: { list: string[] }) {
-  const [isOpen, setOpen] = useState(false);
-
-  return (
-    <div className="">
-      <button onClick={() => setOpen(true)}>Open sheet</button>
-
-      <Sheet isOpen={isOpen} onClose={() => setOpen(false)} className="" snapPoints={[600, 400, 100, 0]}>
-        <Sheet.Container>
-          <Sheet.Header className="bg-neutral">
-            <div className="border-b-[1px] border-neutral-400">
-              <div className="flex relative items-center justify-center px-4">
-                <button
-                  className={`btn btn-circle btn-ghost absolute left-0 bg-transparent border-0 py-3`}
-                  onClick={() => setOpen(false)}
-                >
-                  <AiOutlineClose size="24" />
-                </button>
-                <div className="text-lg p-2">채팅</div>
-              </div>
-            </div>
-            {/* <div className="flex justify-center border-b-[1px] border-neutral-400">
-              <div className="py-4 text-lg">호이요</div>
-            </div> */}
-          </Sheet.Header>
-          <Sheet.Content className="bg-neutral">{/* Your sheet content goes here */}</Sheet.Content>
-        </Sheet.Container>
-        <Sheet.Backdrop />
-      </Sheet>
-    </div>
-  );
 }
 
 export default ItemDetail;
