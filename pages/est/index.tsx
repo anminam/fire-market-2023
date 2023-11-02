@@ -1,4 +1,5 @@
 import ChatPersonSelect from '@/components/ChatPersonSelect';
+import { User } from '@prisma/client';
 import { useState } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import Sheet from 'react-modal-sheet';
@@ -10,10 +11,16 @@ interface IPersonListProps {
 }
 
 // 예시용 리스트 가져오기.
-function getList(): IPersonListProps[] {
+function getList(): User[] {
   return [...Array.from(Array(2).keys())].map((_) => ({
+    avatar: '',
+    createdAt: new Date(),
+    email: '',
+    firebaseUid: '',
     id: _,
-    name: _.toString(),
+    name: `이름${_}`,
+    updatedAt: new Date(),
+    phone: '',
   }));
 }
 export default function Example() {
