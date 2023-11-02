@@ -43,6 +43,7 @@ const ItemDetail = () => {
   const router = useRouter();
   const user = useUser();
   const [productState, setProductState] = useState<ProductStatus>('SALE');
+  const [isProductUsersOpen, setIsProductUsersOpen] = useState(false);
 
   // api - 상품정보 가져오기.
   const {
@@ -57,7 +58,7 @@ const ItemDetail = () => {
   );
 
   if (chatPersonData) {
-    // debugger;
+    debugger;
   }
 
   // api - 하트 토글.
@@ -93,10 +94,10 @@ const ItemDetail = () => {
 
   // handle - 상태 변경 클릭.
   const handleStateClick = (status: ProductStatus) => {
-    // if (status === 'RSRV') {
-    //   handleStartChangeWithPerson(status);
-    //   return;
-    // }
+    if (status === 'RSRV') {
+      setIsProductUsersOpen(true);
+      return;
+    }
 
     start();
 
@@ -110,10 +111,8 @@ const ItemDetail = () => {
     }
   };
 
-  const handleStartChangeWithPerson = (status: ProductStatus) => {
-    if (status === 'RSRV') {
-    } else {
-    }
+  const handleStartChangeWithPerson = (id: number) => {
+    debugger;
   };
 
   // 모달 감추기
@@ -261,9 +260,15 @@ const ItemDetail = () => {
       />
 
       {/* 상태변경 모달 */}
-      {/* {chatPersonData && chatPersonData.data && (
-        <ChatPersonSelect title={'선택'} list={[]} onSelected={handleStartChangeWithPerson} />
-      )} */}
+      {chatPersonData && chatPersonData.data && (
+        <ChatPersonSelect
+          title={'선택'}
+          list={[]}
+          onSelected={handleStartChangeWithPerson}
+          isOpen={isProductUsersOpen}
+          onClose={() => setIsProductUsersOpen(false)}
+        />
+      )}
 
       {/* 하단 고정 컨테이너 만들기 */}
       {/* 하단 */}

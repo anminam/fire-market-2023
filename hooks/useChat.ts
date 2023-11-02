@@ -73,6 +73,7 @@ const useChat = (initToken: string) => {
 async function asyncGetRooms(token: string): Promise<IRoom[]> {
   try {
     const res = await fetch(`${chatUrl}/api/rooms`, {
+      cache: 'no-store',
       headers: {
         Authorization: `Bearer ${token}`,
       },
