@@ -1,5 +1,5 @@
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { app } from '@/libs/client/firebase';
+import { app, auth } from '@/libs/client/firebase';
 import useMutation from '@/libs/client/useMutation';
 import { useRouter } from 'next/router';
 import Layout from '@/components/layout';
@@ -12,6 +12,7 @@ interface LoginPageResult {
 const LoginPage = () => {
   const router = useRouter();
   const [saveToken, { loading, data, error: tokenError }] = useMutation<LoginPageResult>('/api/firebase/firebase-user');
+  const [logout] = useMutation<LoginPageResult>('/api/users/logout');
 
   // 구글 로그인
   const handleGoogleLogin = async () => {
@@ -39,6 +40,19 @@ const LoginPage = () => {
       router.replace('/');
     }
   }, [router, data]);
+
+  const initPage = async () => {
+    await auth.signOut();
+    logout(null);
+  };
+
+  // effect - 최초진입
+  useEffect(() => {
+    // 일단 로그아웃 때리고 시작
+    initPage();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Layout title="로그인" isViewTabBar={false} isHideTitle={false}>
