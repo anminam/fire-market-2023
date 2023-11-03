@@ -60,6 +60,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   // end
   res.json({
     result: true,
+    data: req.session.user,
   });
 }
 

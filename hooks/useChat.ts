@@ -65,7 +65,6 @@ const useChat = (initToken: string) => {
     (roomName: string, text: string) => {
       rooms;
       if (!_socket) {
-        debugger;
         return;
       }
       _socket.emit('sendMessage', { text, roomNm: roomName });
@@ -82,7 +81,6 @@ const useChat = (initToken: string) => {
 
 async function asyncGetRooms(token: string): Promise<IRoom[]> {
   const res = await fetch(`${chatUrl}/api/rooms`, {
-    cache: 'no-store',
     headers: {
       Authorization: `Bearer ${token}`,
     },

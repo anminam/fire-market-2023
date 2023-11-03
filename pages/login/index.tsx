@@ -1,9 +1,10 @@
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { app, auth } from '@/libs/client/firebase';
+import { app, auth, normalLogin } from '@/libs/client/firebase';
 import useMutation from '@/libs/client/useMutation';
 import { useRouter } from 'next/router';
 import Layout from '@/components/layout';
 import { useEffect } from 'react';
+import { useMiniStore } from '@/hooks/useStore';
 
 interface LoginPageResult {
   result: boolean;
@@ -11,39 +12,18 @@ interface LoginPageResult {
 
 const LoginPage = () => {
   const router = useRouter();
-  const [saveToken, { loading, data, error: tokenError }] = useMutation<LoginPageResult>('/api/firebase/firebase-user');
   const [logout] = useMutation<LoginPageResult>('/api/users/logout');
+  const { setToken } = useMiniStore();
 
   // 구글 로그인
   const handleGoogleLogin = async () => {
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-      if (auth.currentUser) {
-        const { displayName, email, uid } = auth.currentUser;
-        const token = await auth.currentUser.getIdToken();
-        saveToken({
-          displayName,
-          email,
-          uid,
-          token,
-        });
-      }
-    } catch (error) {
-      console.error('구글 로그인 실패:', error);
-    }
+    await normalLogin();
   };
-
-  useEffect(() => {
-    if (data?.result) {
-      router.replace('/');
-    }
-  }, [router, data]);
 
   const initPage = async () => {
     await auth.signOut();
     logout(null);
+    setToken('');
   };
 
   // effect - 최초진입
@@ -65,7 +45,7 @@ const LoginPage = () => {
           </div>
           {/* 버튼 */}
           <div className="mt-20 flex items-center">
-            {loading ? (
+            {false ? (
               <div className="loading loading-spinner loading-lg"></div>
             ) : (
               <button
