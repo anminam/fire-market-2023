@@ -8,17 +8,40 @@ import { useMiniStore } from '@/hooks/useStore';
 
 interface LoginPageResult {
   result: boolean;
+  data: {
+    id: number;
+    token: string;
+  };
 }
 
 const LoginPage = () => {
   const router = useRouter();
   const [logout] = useMutation<LoginPageResult>('/api/users/logout');
-  const { setToken } = useMiniStore();
+  const { setToken, setRooms, setUserId, token, isApp, initSendMessage } = useMiniStore();
+
+  const [startFirebaseLogin, { loading, data, error: tokenError }] =
+    useMutation<LoginPageResult>('/api/firebase/firebase-user');
 
   // 구글 로그인
   const handleGoogleLogin = async () => {
-    await normalLogin();
+    const res = await normalLogin();
+    if (res?.token) {
+      setToken(res.token);
+      startFirebaseLogin({
+        email: res.email,
+        uid: res.uid,
+        token: res.token,
+      });
+    }
   };
+
+  useEffect(() => {
+    if (data && data.result) {
+      setToken(data.data.token);
+      setUserId(data.data.id);
+      router.replace('/');
+    }
+  }, [data]);
 
   const initPage = async () => {
     await auth.signOut();
@@ -33,6 +56,10 @@ const LoginPage = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (localStorage.getItem('isApp') === 'true') {
+    window.Logout();
+  }
 
   return (
     <Layout title="로그인" isViewTabBar={false} isHideTitle={false}>

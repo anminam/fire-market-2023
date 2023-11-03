@@ -39,23 +39,21 @@ function Mini({ children }: MiniProps) {
 
   useEffect(() => {
     initSendMessage(sendMessage);
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      if (localStorage.getItem('isApp') === 'true') return;
-      if (user) {
-        const token = await user.getIdToken();
-        startFirebaseLogin({
-          email: user.email,
-          uid: user.uid,
-          token,
-        });
-      } else {
-        setToken('');
-      }
-      return () => unsubscribe();
-    });
+    // const unsubscribe = auth.onAuthStateChanged(async (user) => {
+    //   if (localStorage.getItem('isApp') === 'true') return;
+    //   if (user) {
+    //     const token = await user.getIdToken();
+    //     startFirebaseLogin({
+    //       email: user.email,
+    //       uid: user.uid,
+    //       token,
+    //     });
+    //   } else {
+    //     setToken('');
+    //   }
+    //   return () => unsubscribe();
+    // });
   }, []);
-
-  useEffect(() => {}, []);
 
   useEffect(() => {
     setRooms(rooms);

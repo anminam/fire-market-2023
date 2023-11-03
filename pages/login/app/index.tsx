@@ -21,6 +21,7 @@ const AppLoginPage = () => {
       if (!router.isReady) return;
 
       localStorage.setItem('isApp', 'true');
+      setIsApp(true);
       setToken(token);
       setUserId(id);
 
