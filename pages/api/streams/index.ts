@@ -34,9 +34,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     console.log(response);
     const json = await response.json();
 
-    console.log(json);
-
-    const { uid, rtmps } = response.result;
+    const { uid, rtmps } = json.result;
 
     const data = await client.stream.create({
       data: {
@@ -58,7 +56,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       result: true,
       data: {
         id: data.id,
-        ...response.result,
+        ...json.result,
       },
     });
   }
