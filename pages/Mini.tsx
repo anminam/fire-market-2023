@@ -65,7 +65,6 @@ function Mini({ children }: MiniProps) {
 
   useEffect(() => {
     if (data && data.result) {
-      if (isMounted) return;
       setIsMounted(true);
       setToken(data.data.token);
       setUserId(data.data.id);
