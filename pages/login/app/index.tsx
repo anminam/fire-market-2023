@@ -13,25 +13,8 @@ const AppLoginPage = () => {
   const { setToken, setUserId, setIsApp } = useMiniStore();
   const [message, setMessage] = useState('');
 
-  /**
-   * 로그인
-   */
-  const login = useCallback(
-    (token: string, id: number) => {
-      if (!router.isReady) return;
-
-      localStorage.setItem('isApp', 'true');
-      setIsApp(true);
-      setToken(token);
-      setUserId(id);
-
-      // 이동.
-      router.replace('/');
-    },
-    [router.isReady],
-  );
-
   useEffect(() => {
+    localStorage.setItem('isApp', 'true');
     if (!router.isReady) return;
     const queryData = router.query.data as string;
 
@@ -42,7 +25,13 @@ const AppLoginPage = () => {
     }
     // 셋팅.
     const data: AppLoginData = JSON.parse(atob(queryData));
-    login(data.token, data.id);
+    
+    setIsApp(true);
+    setToken(data.token);
+    setUserId(data.id);
+
+    // 이동.
+    router.replace('/');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.isReady]);
 
