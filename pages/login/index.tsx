@@ -54,12 +54,12 @@ const LoginPage = () => {
     // 일단 로그아웃 때리고 시작
     initPage();
 
+    if (localStorage.getItem('isApp') === 'true') {
+      window.Logout();
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  if (localStorage.getItem('isApp') === 'true') {
-    window.Logout();
-  }
 
   return (
     <Layout title="로그인" isViewTabBar={false} isHideTitle={false}>
