@@ -8,6 +8,7 @@ import useMutation from '@/libs/client/useMutation';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { Stream } from '@prisma/client';
+import { cls } from '@/libs/client/utils';
 
 interface LiveForm {
   name: string;
@@ -22,8 +23,7 @@ interface CreateResponse {
 
 const Create: NextPage = () => {
   const router = useRouter();
-  const [createStream, { loading, data }] =
-    useMutation<CreateResponse>('/api/streams');
+  const [createStream, { loading, data }] = useMutation<CreateResponse>('/api/streams');
   const { register, handleSubmit } = useForm<LiveForm>();
 
   const onValid = async (form: LiveForm) => {
@@ -33,19 +33,14 @@ const Create: NextPage = () => {
 
   useEffect(() => {
     if (data && data.result) {
-      router.push(`/streams/${data.data.id}`);
+      router.replace(`/streams/${data.data.id}`);
     }
   }, [data, router]);
 
   return (
     <Layout canGoBack title="라이브">
       <form onSubmit={handleSubmit(onValid)} className=" space-y-4 py-10 px-4">
-        <Input
-          register={register('name', { required: true })}
-          label="이름"
-          name="name"
-          type="text"
-        />
+        <Input register={register('name', { required: true })} label="이름" name="name" type="text" />
         <Input
           register={register('price', { required: true, valueAsNumber: true })}
           label="금액"
@@ -54,12 +49,10 @@ const Create: NextPage = () => {
           type="text"
           kind="price"
         />
-        <TextArea
-          register={register('description', { required: true })}
-          name="description"
-          label="설명 "
-        />
-        <Button text={loading ? '로딩중 ...' : '라이브 시작 '} />
+        <TextArea register={register('description', { required: true })} name="description" label="설명 " />
+        <button className={cls(`btn btn-primary w-full`, loading ? 'btn-disabled' : '')}>
+          {loading ? '라이브 생성중 ...' : '라이브 시작'}
+        </button>
       </form>
     </Layout>
   );
