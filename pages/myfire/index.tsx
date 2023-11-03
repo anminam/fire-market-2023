@@ -83,9 +83,9 @@ const Others = () => {
     });
   };
 
-  const handleAppLogout = async () => {
+  const handleAppLogout = () => {
     // @ts-ignore
-    Logout.postMessage();
+    Logout.postMessage({});
   };
 
   return (
