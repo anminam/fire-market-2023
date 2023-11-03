@@ -4,28 +4,31 @@ import { auth } from '@/libs/client/firebase';
 import useMutation from '@/libs/client/useMutation';
 import { useRouter } from 'next/router';
 import { ReactNode, use, useEffect, useState } from 'react';
+import useSWR from 'swr';
 
 interface MiniProps {
   children: ReactNode;
 }
 
-async function asyncUser() {
-  try {
-    const res = await fetch('/api/users/my');
-
-    const json = await res.json();
-    return json;
-  } catch (err) {
-    return [];
-    // throw new Error(err as string);
-  }
-}
 interface LoginPageResult {
   result: boolean;
   data: {
     id: number;
     token: string;
   };
+}
+
+async function asyncGetSession<T>(): Promise<T | null> {
+  try {
+    const res = await fetch(`/api/sessions`);
+
+    const json = await res.json();
+    return json;
+    // return json?.rooms || [];
+  } catch (err) {
+    // throw new Error(err as string);
+  }
+  return null;
 }
 
 function Mini({ children }: MiniProps) {
@@ -36,6 +39,9 @@ function Mini({ children }: MiniProps) {
 
   const [startFirebaseLogin, { loading, data, error: tokenError }] =
     useMutation<LoginPageResult>('/api/firebase/firebase-user');
+
+  // 이거 왜 안되지??
+  // const { data: sessionData } = useSWR<LoginPageResult>(isInit ? `/api/session/` : null);
 
   useEffect(() => {
     initSendMessage(sendMessage);
@@ -53,21 +59,30 @@ function Mini({ children }: MiniProps) {
     //   }
     //   return () => unsubscribe();
     // });
+
+    async function fun() {
+      const data = await asyncGetSession<LoginPageResult>();
+      if (data?.data) {
+        setToken(data.data.token);
+        setUserId(data.data.id);
+      }
+    }
+
+    fun();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     setRooms(rooms);
   }, [rooms, setRooms]);
 
-  const [isMounted, setIsMounted] = useState(false);
-
   useEffect(() => {
     if (data && data.result) {
-      setIsMounted(true);
       setToken(data.data.token);
       setUserId(data.data.id);
       router.replace('/');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   return <div>{children}</div>;
