@@ -9,6 +9,8 @@ import { moneyFormat } from '@/libs/client/utils';
 import Layout from '@/components/layout';
 import Message from '@/components/message';
 import UserProfileContainer from '@/components/UserProfileContainer';
+import { AiOutlineSend } from 'react-icons/ai';
+import { useEffect } from 'react';
 
 interface IStreamMessage {
   id: number;
@@ -33,25 +35,34 @@ interface StreamResponse {
 interface MessageForm {
   message: string;
 }
+
+const scrollDown = () => {
+  document.querySelector<HTMLDivElement>('.scroll-container')?.scroll({ top: 999999, behavior: 'smooth' });
+};
+
 const StreamPage: NextPage = () => {
   const router = useRouter();
   const { user } = useUser();
 
-  const { register, handleSubmit, reset } = useForm<MessageForm>();
+  // const { register, handleSubmit, reset } = useForm<MessageForm>();
 
-  const [sendMessage, { loading, data: sendMessageData }] =
-    useMutation<StreamResponse>(`/api/streams/${router.query.id}/messages`);
-
-  const { data, mutate } = useSWR<StreamResponse>(
-    router.query.id ? `/api/streams/${router.query.id}` : null,
-    {
-      refreshInterval: 1000,
-    }
+  const [sendMessage, { loading, data: sendMessageData }] = useMutation<StreamResponse>(
+    `/api/streams/${router.query.id}/messages`,
   );
 
-  const onValid = (form: MessageForm) => {
+  const { data, mutate } = useSWR<StreamResponse>(router.query.id ? `/api/streams/${router.query.id}` : null, {
+    refreshInterval: 1000,
+  });
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (loading) return;
-    reset();
+
+    const formData = new FormData(e.currentTarget);
+    const message = formData.get('message') as string;
+    e.currentTarget.reset();
+
+    if (!message) return;
     mutate((prev: any) => {
       return {
         ...prev,
@@ -61,7 +72,7 @@ const StreamPage: NextPage = () => {
             ...prev.data.StreamMessage,
             {
               id: Date.now(),
-              message: form.message,
+              message,
               user: {
                 ...user,
               },
@@ -71,8 +82,19 @@ const StreamPage: NextPage = () => {
       };
     }, false);
 
-    sendMessage(form);
+    scrollDown();
+
+    sendMessage({
+      message,
+    });
   };
+
+  // 데이터 챗 불러오면 스크롤 다운.
+  useEffect(() => {
+    if (data?.data) {
+      scrollDown();
+    }
+  }, [data]);
 
   return (
     <Layout canGoBack title="라이브 ">
@@ -102,14 +124,12 @@ const StreamPage: NextPage = () => {
           {/* 타이틀 */}
           <h1 className="text-3xl font-bold">{data?.data?.name}</h1>
           {/* 가격 */}
-          <span className="text-2xl block mt-3">
-            {moneyFormat(Number(data?.data?.price))} 원
-          </span>
+          <span className="text-2xl block mt-3">{moneyFormat(Number(data?.data?.price))} 원</span>
           {/* 설명 */}
           <p className="my-6">{data?.data?.description}</p>
           {/* 방송하기 */}
           {data?.data?.cloudStreamKey && (
-            <div className="bg-slate-200 rounded-xl p-4 overflow-scroll">
+            <div className="bg-base-300 rounded-xl p-4 overflow-scroll">
               <div className="font-bold">스트리밍 키(주인장)</div>
               <div>
                 <ul>
@@ -119,7 +139,7 @@ const StreamPage: NextPage = () => {
                   </li>
                   <li className="mt-3">
                     <div className="font-bold">KEY: </div>
-                    <div>{data?.data?.cloudStreamKey}</div>
+                    <div className="mr-4">{data?.data?.cloudStreamKey}</div>
                   </li>
                 </ul>
               </div>
@@ -130,23 +150,20 @@ const StreamPage: NextPage = () => {
         {/* 챗 */}
         <div>
           <h2 className="text-2xl font-bold">라이브 챗</h2>
-          <div className="py-10 pb-16 h-[50vh] overflow-y-scroll  px-4 space-y-4">
+          <div className="py-10 pb-16 h-[50vh] overflow-y-scroll  px-4 space-y-4 scroll-container">
             {data?.data?.StreamMessage?.map((_) => (
               <Message
                 key={_.id}
                 message={_.message}
                 avatar={_.user.avatar}
-                reversed={_.user.id === user?.id}
+                reversed={_.user.id !== user?.id}
                 name={_.user.name}
                 time={''}
               />
             ))}
           </div>
-          <div className="fixed py-2 bottom-0 inset-x-0">
-            <form
-              onSubmit={handleSubmit(onValid)}
-              className="flex relative max-w-md items-center  w-full mx-auto"
-            >
+          {/* <div className="fixed py-2 bottom-0 inset-x-0">
+            <form onSubmit={handleSubmit(onValid)} className="flex relative max-w-md items-center  w-full mx-auto">
               <input
                 {...register('message', { required: true })}
                 type="text"
@@ -158,10 +175,35 @@ const StreamPage: NextPage = () => {
                 </button>
               </div>
             </form>
+          </div> */}
+        </div>
+      </div>
+      <ChatDetailBottomContainer onSubmit={handleSubmit} />
+    </Layout>
+  );
+};
+
+/** 하단 */
+const ChatDetailBottomContainer = ({ onSubmit }: { onSubmit: React.FormEventHandler<HTMLFormElement> }) => {
+  return (
+    <form onSubmit={onSubmit} className="fixed left-0 bottom-0 w-full">
+      <div className="w-full max-w-xl mx-auto">
+        <div className="bg-base-100 left-0 p-2">
+          <div className="flex items-center space-x-2">
+            <input
+              type="text"
+              name="message"
+              className="w-full input bg-base-200"
+              placeholder="메시지 보내기..."
+              autoComplete="off"
+            />
+            <button className="btn bg-base-100 border-base-100">
+              <AiOutlineSend />
+            </button>
           </div>
         </div>
       </div>
-    </Layout>
+    </form>
   );
 };
 
