@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import { Suspense } from 'react';
 import { AiOutlineFire } from 'react-icons/ai';
 import { auth } from '@/libs/client/firebase';
+import { useMiniStore } from '@/hooks/useStore';
 
 // 나의 거래
 const MyBusiness = () => {
@@ -71,6 +72,7 @@ const MyFireCommunity = () => {
  */
 const Others = () => {
   const router = useRouter();
+  const { isApp } = useMiniStore();
 
   const handleLogout = async () => {
     await auth.signOut();
@@ -80,6 +82,11 @@ const Others = () => {
       router.replace('/login');
     });
   };
+
+  const handleAppLogout = async () => {
+    window.Logout();
+  };
+
   return (
     <PageContentsContainer title="기타">
       <div>
@@ -87,7 +94,7 @@ const Others = () => {
           <li>
             <div className="flex items-center space-x-2">
               <BiLogOut size="20" />
-              <button onClick={handleLogout}>로그아웃</button>
+              <button onClick={() => (isApp ? handleAppLogout() : handleLogout())}>로그아웃</button>
             </div>
           </li>
         </ul>

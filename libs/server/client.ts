@@ -1,6 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 declare global {
   var client: PrismaClient | undefined;
+
+  interface Window {
+    Logout: () => void;
+  }
 }
 
 const client = global.client || new PrismaClient();
