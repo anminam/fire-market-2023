@@ -84,7 +84,8 @@ const Others = () => {
   };
 
   const handleAppLogout = async () => {
-    window.Logout();
+    // @ts-ignore
+    Logout.postMessage();
   };
 
   return (
