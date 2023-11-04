@@ -1,6 +1,3 @@
-export interface IUser {
-  id: number;
-  name: string;
-  email: string | null;
-  avatar: string | null;
-}
+import { User } from '@prisma/client';
+
+export type IUser = Omit<User, 'firebaseUid' | 'createdAt' | 'updatedAt'>;

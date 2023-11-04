@@ -1,15 +1,15 @@
 import useConfirm from '@/hooks/useConfirm';
+import { PostWithUser } from '@/interface/Community';
 import { ProductStatus } from '@/interface/ProductKind';
+import { IUser } from '@/interface/User';
 import useMutation from '@/libs/client/useMutation';
 import { useRouter } from 'next/router';
 import { ForwardedRef, forwardRef, useEffect } from 'react';
 import { AiOutlineAlert } from 'react-icons/ai';
 
 interface PostMoreModalProps {
-  postId: number;
-  postUserId: number;
-  userId: number;
-  statusCd?: ProductStatus;
+  post: PostWithUser;
+  user: IUser;
 }
 
 interface PostMoreModalResponse {
@@ -17,13 +17,11 @@ interface PostMoreModalResponse {
   status: ProductStatus;
 }
 
-function PostMoreModal(
-  { postId, postUserId, userId, statusCd }: PostMoreModalProps,
-  ref: ForwardedRef<HTMLDialogElement>,
-) {
+function PostMoreModal({ post, user }: PostMoreModalProps, ref: ForwardedRef<HTMLDialogElement>) {
   const router = useRouter();
+
   // 내껀가!!!
-  const isMe = userId === postUserId;
+  const isMe = user.id === post.user.id;
 
   // api - 상태 수정.
   const [setStateToServer, { loading, data }] = useMutation<PostMoreModalResponse>(
@@ -41,7 +39,7 @@ function PostMoreModal(
 
   // 수정.
   const handleEdit = () => {
-    router.push(`/community/${postId}/edit`);
+    router.push(`/community/${post.id}/edit`);
   };
 
   // 감추기.
@@ -100,17 +98,18 @@ function PostMoreModal(
       <dialog id="modal_more_product" className="modal" ref={ref}>
         <div className="modal-box w-52 p-0">
           <div className="btn-group btn-group-vertical w-52">
+            {/* 본인 것 */}
             {isMe && (
               <>
                 <button className="btn" onClick={handleEdit}>
                   게시글 수정
                 </button>
-                {statusCd !== ProductStatus.HIDE && (
+                {post.statusCd !== ProductStatus.HIDE && (
                   <button className="btn" onClick={handleHide}>
                     숨기기
                   </button>
                 )}
-                {statusCd === ProductStatus.HIDE && (
+                {post.statusCd === ProductStatus.HIDE && (
                   <button className="btn" onClick={handleShow}>
                     올리기
                   </button>
@@ -120,12 +119,18 @@ function PostMoreModal(
                 </button>
               </>
             )}
-            <button className="btn" onClick={handleClaim}>
-              <div className="flex items-center text-red-700 space-x-1">
-                <AiOutlineAlert size={13} />
-                <div>신고</div>
-              </div>
-            </button>
+            {/* 타인 것 */}
+            {!isMe && (
+              <>
+                <button className="btn" onClick={handleClaim}>
+                  <div className="flex items-center text-red-700 space-x-1">
+                    <AiOutlineAlert size={13} />
+                    <div>신고</div>
+                  </div>
+                </button>
+              </>
+            )}
+            {/* 공통 */}
             <button className="btn" onClick={handleCancel}>
               취소
             </button>

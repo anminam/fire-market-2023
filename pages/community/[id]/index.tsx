@@ -178,13 +178,7 @@ const CommunityPostDetail: NextPage = () => {
       </div>
 
       {/* 더보기 */}
-      <PostMoreModal
-        ref={dialogRef}
-        postId={+(router.query.id as string)}
-        postUserId={data?.data?.userId as number}
-        userId={user?.id as number}
-        statusCd={data?.data?.statusCd}
-      />
+      {data?.data && user && <PostMoreModal ref={dialogRef} post={data?.data} user={user} />}
     </Layout>
   );
 };
