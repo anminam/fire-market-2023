@@ -4,6 +4,7 @@ import { useMiniStore } from '@/hooks/useStore';
 import useMutation from '@/libs/client/useMutation';
 import { useRouter } from 'next/router';
 import { ReactNode, useEffect } from 'react';
+import ThemeProvider from './ThemeProvider';
 
 interface MiniProps {
   children: ReactNode;
@@ -87,8 +88,10 @@ function Mini({ children }: MiniProps) {
 
   return (
     <div>
-      {children}
-      <ImageModal />
+      <ThemeProvider>
+        {children}
+        <ImageModal />
+      </ThemeProvider>
     </div>
   );
 }

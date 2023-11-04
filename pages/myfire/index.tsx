@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Layout from '@/components/layout';
 import useUser from '@/libs/client/useUser';
 import PageContentsContainer from '@/components/PageContentsContainer';
-import { BiHeart, BiLogOut, BiReceipt, BiShoppingBag } from 'react-icons/bi';
+import { BiHeart, BiLogOut, BiPalette, BiReceipt, BiShoppingBag, BiSolidPalette } from 'react-icons/bi';
 import MyProfileImage from '@/components/MyProfileImage';
 import { useRouter } from 'next/router';
 import { Suspense } from 'react';
@@ -92,6 +92,14 @@ const Others = () => {
     <PageContentsContainer title="기타">
       <div>
         <ul className="space-y-6">
+          <li>
+            <Link href="/myfire/theme">
+              <div className="flex items-center space-x-2">
+                <BiPalette size="20" />
+                <div>테마</div>
+              </div>
+            </Link>
+          </li>
           <li>
             <div className="flex items-center space-x-2">
               <BiLogOut size="20" />

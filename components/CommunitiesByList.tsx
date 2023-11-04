@@ -9,7 +9,7 @@ interface IProps {
 
 export default function CommunitiesByList({ list }: IProps) {
   return (
-    <div className="divide-y-2 divide-neutral">
+    <div className="divide-y divide-neutral">
       <CommunitiesByListItem list={list} />
     </div>
   );

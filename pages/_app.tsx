@@ -3,7 +3,7 @@ import type { AppProps } from 'next/app';
 import Script from 'next/script';
 import { SWRConfig } from 'swr';
 import { fetcher } from '@/libs/client/fetcher';
-import Mini from './Mini';
+import Mini from '../components/provider/Mini';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

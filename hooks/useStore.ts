@@ -1,4 +1,5 @@
 import { IChatMessage, IChatReceivedRoomInfo, IChatReceivedServerMessage, IRoom } from '@/interface/Chat';
+import { ITheme } from '@/interface/Theme';
 import { chatUrl } from '@/libs/client/url';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
@@ -27,6 +28,8 @@ interface MiniState {
   emitMessage: ((roomName: string, text: string) => void) | null;
   setImageModalSrc: (src: string) => void;
   closeImageModal: () => void;
+  theme: ITheme;
+  setTheme: (theme: ITheme) => void;
 }
 
 async function refreshToken() {
@@ -46,6 +49,7 @@ export const useMiniStore = create<MiniState>()(
     emitMessage: null,
     isImageModal: false,
     imageModalSrc: '',
+    theme: 'light',
     increase: (by) =>
       set((state) => {
         return { bears: state.bears + by };
@@ -130,6 +134,11 @@ export const useMiniStore = create<MiniState>()(
     setImageModalSrc: (src: string) => {
       set((state) => {
         return { ...state, isImageModal: true, imageModalSrc: src };
+      });
+    },
+    setTheme: (theme: ITheme) => {
+      set((state) => {
+        return { ...state, theme };
       });
     },
   })),

@@ -8,7 +8,6 @@ import Head from 'next/head';
 
 import { AiOutlineHome, AiOutlineMore } from 'react-icons/ai';
 import { FaChevronLeft } from 'react-icons/fa';
-import { useMiniStore } from '@/hooks/useStore';
 
 interface LayoutProps {
   title?: string;
@@ -55,53 +54,30 @@ export default function Layout({
       {isHideTitle && (
         <div
           className={`w-full h-12 max-w-xl justify-center fixed top-0 flex items-center z-10 ${
-            isTranslate
-              ? 'bg-transparent'
-              : 'bg-base-100 border-b border-b-neutral'
+            isTranslate ? 'bg-transparent' : 'bg-base-100 border-b border-b-neutral'
           }`}
         >
           {canGoBack ? (
             <div className="absolute flex left-2 space-x-1 items-center h-5 text-lg">
-              <button
-                onClick={onBackClick}
-                className="btn btn-circle btn-ghost"
-              >
-                <FaChevronLeft
-                  size="18"
-                  color={cls(isTranslate ? 'white' : '')}
-                />
+              <button onClick={onBackClick} className="btn btn-circle btn-ghost">
+                <FaChevronLeft size="18" color={cls(isTranslate ? 'white' : '')} />
               </button>
-              <button
-                onClick={onHomeClick}
-                className="btn btn-circle btn-ghost"
-              >
-                <AiOutlineHome
-                  size="20"
-                  color={cls(isTranslate ? 'white' : '')}
-                />
+              <button onClick={onHomeClick} className="btn btn-circle btn-ghost">
+                <AiOutlineHome size="20" color={cls(isTranslate ? 'white' : '')} />
               </button>
             </div>
           ) : null}
-          {pTitle && !isTranslate && (
-            <LayoutTitle canGoBack={canGoBack}>{pTitle}</LayoutTitle>
-          )}
+          {pTitle && !isTranslate && <LayoutTitle canGoBack={canGoBack}>{pTitle}</LayoutTitle>}
           {isMore && (
             <div className="absolute flex right-2 space-x-1 items-center h-5 text-lg">
-              <button
-                onClick={() => handleClickMore()}
-                className="btn btn-circle btn-ghost"
-              >
+              <button onClick={() => handleClickMore()} className="btn btn-circle btn-ghost">
                 <AiOutlineMore size="20" color="white" />
               </button>
             </div>
           )}
         </div>
       )}
-      <div
-        className={cls(isTranslate ? '' : 'pt-12', isViewTabBar ? 'pb-24' : '')}
-      >
-        {children}
-      </div>
+      <div className={cls(isTranslate ? '' : 'pt-12', isViewTabBar ? 'pb-24' : '')}>{children}</div>
       {isViewTabBar && <GroundNavBar />}
     </div>
   );

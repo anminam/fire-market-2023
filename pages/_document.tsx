@@ -12,7 +12,7 @@ export default function Document() {
         /> */}
       </Head>
 
-      <body data-theme="dark">
+      <body>
         <Main />
         <NextScript />
         <Analytics />
