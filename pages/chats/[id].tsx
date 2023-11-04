@@ -15,10 +15,11 @@ import { Product, User } from '@prisma/client';
 import ModalSellProductState from '@/components/ModalSellProductState';
 import { useMiniStore } from '@/hooks/useStore';
 import useSWR from 'swr';
+import { IProduct } from '@/interface/Product';
 
 interface ProductDataResponse {
   result: boolean;
-  data: Product;
+  data: IProduct;
 }
 
 function getProductIdByRoomId(roomId: string): string {
@@ -130,10 +131,12 @@ const ChatDetail: NextPage = () => {
   );
 };
 
-const ChatDetailTopContainer = ({ user, product }: { user: User; product: Product }) => {
-  const router = useRouter();
+const ChatDetailTopContainer = ({ user, product }: { user: User; product: IProduct }) => {
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
-  // 거래 변경클릭
+  const isMe = user.id === product.userId;
+
+  // handle - 거래 변경클릭.
   const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
 
@@ -142,22 +145,24 @@ const ChatDetailTopContainer = ({ user, product }: { user: User; product: Produc
     }
   };
 
-  const dialogRef = useRef<HTMLDialogElement>(null);
-
-  const isMe = user.id === product.userId;
-
   return (
     <div className="fixed z-10 left-0 w-full">
       <div className="w-full max-w-xl mx-auto bg-base-100">
         <Link href={`/products/${product.id}`}>
           <div className="flex justify-between border-b-[1px] border-neutral items-center px-4">
-            <div className="py-2 flex">
+            <div className="py-2 flex items-center">
               <div className={`w-${10}`}>
                 <ProductImage size={10} alt={`${product.name} 이미지`} src={product.image} />
               </div>
               <div className="flex flex-col text-xs justify-center px-4">
                 <span className="overflow-hidden line-clamp-1">{product.name}</span>
                 <span>{product.price && moneyFormat(product.price) + '원'}</span>
+              </div>
+              {/* 태그 */}
+              <div>
+                {product.statusCd === 'SALE' && <div className="badge badge-sm badge-outline">판매중</div>}
+                {product.statusCd === 'RSRV' && <div className="badge badge-sm badge-outline">예약중</div>}
+                {product.statusCd === 'CMPL' && <div className="badge badge-sm badge-outline">판매완료</div>}
               </div>
             </div>
             {isMe && (

@@ -44,16 +44,12 @@ const updateChatList = (list: IChatServerManager[]): IChatManager[] => {
         name: sellingUser.name,
         email: sellingUser.email,
         avatar: sellingUser.avatar,
-        createdAt: sellingUser.createdAt,
-        updatedAt: sellingUser.updatedAt,
       },
       buyingUser: {
         id: buyingUser.id,
         name: buyingUser.name,
         email: buyingUser.email,
         avatar: buyingUser.avatar,
-        createdAt: buyingUser.createdAt,
-        updatedAt: buyingUser.updatedAt,
       },
     };
   });
@@ -65,7 +61,7 @@ type UserWithId = {
 
 function removeDuplicateIds<T extends UserWithId>(items: T[]): T[] {
   const list = new Set<number>();
-  return items.filter(item => {
+  return items.filter((item) => {
     if (list.has(item.id)) return false;
     if (list.add(item.id)) return true;
   });

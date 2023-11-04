@@ -1,5 +1,6 @@
 import { Product, User, chatroom } from '@prisma/client';
 import { IUser } from './User';
+import { IProduct } from './Product';
 
 export interface IChatServerManager {
   id: number;
@@ -8,9 +9,9 @@ export interface IChatServerManager {
   productId: number;
   sellingUserId: number;
   buyingUserId: number;
-  product: Product;
-  sellingUser: User;
-  buyingUser: User;
+  product: IProduct;
+  sellingUser: IUser;
+  buyingUser: IUser;
 }
 
 export interface IChatSendMessage {
