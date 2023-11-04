@@ -50,7 +50,7 @@ const ProductImage = ({ title, imgSrc, status }: { imgSrc: string; title: string
 export default function ProductItem({ title, price, comments, hearts, imgSrc, id, status, date }: ItemProps) {
   return (
     <Link href={`/products/${id}`}>
-      <div className="relative flex cursor-pointer justify-between py-4">
+      <div className="relative flex cursor-pointer justify-between py-4 active:scale-[0.99] hover:scale-[1.02] duration-75 ease-out">
         <div className="flex space-x-4">
           {/* 이미지 */}
           <div className="basis-20">
