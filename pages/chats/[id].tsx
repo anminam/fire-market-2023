@@ -27,15 +27,24 @@ function getProductIdByRoomId(roomId: string): string {
   return roomId.split('-')[0];
 }
 
+function getRoom(rooms: IRoom[], roomName: string): IRoom | null {
+  for (const room of rooms) {
+    if (room.roomNm === roomName) {
+      return room;
+    }
+  }
+
+  return null;
+}
+
 const ChatDetail: NextPage = () => {
   const router = useRouter();
   const { user } = useUser();
 
-  const sendMessage = useMiniStore((_) => _.sendMessage);
-  const getMessage = useMiniStore((_) => _.getMessage);
-  const readChat = useMiniStore((_) => _.readChat);
-  const rooms = useMiniStore((_) => _.rooms);
-  const room = useMiniStore((_) => _.getRoom(router.query.id as string));
+  const { sendMessage, getMessage, readChat, rooms } = useMiniStore();
+
+  const room = getRoom(rooms, router.query.id as string);
+
   const [messages, setMessages] = useState<IChatMessage[]>([]);
 
   // api - 상품 불러오기.

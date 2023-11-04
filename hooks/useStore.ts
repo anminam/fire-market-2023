@@ -24,7 +24,6 @@ interface MiniState {
   initSendMessage: (func: (roomName: string, text: string) => void) => void;
   sendMessage: (roomName: string, text: string) => void;
   getMessage: (roomName: string) => Promise<IChatMessage[]>;
-  getRoom: (roomName: string) => IRoom | null;
   emitMessage: ((roomName: string, text: string) => void) | null;
   setImageModalSrc: (src: string) => void;
   closeImageModal: () => void;
@@ -90,9 +89,9 @@ export const useMiniStore = create<MiniState>()(
         }
 
         asyncReadChat(state.token, roomName, Number(room.text.split('::')[0]));
-        state.setRooms(state.rooms);
+        const roomsReadCount = getRoomsReadCount(state.rooms, state.userId);
 
-        return state;
+        return { ...state, rooms: [...state.rooms], roomsReadCount };
       });
     },
     setIsApp: (isApp: boolean) => {
@@ -122,10 +121,6 @@ export const useMiniStore = create<MiniState>()(
       const updateMessages = info.messages.map((message) => updateMessage(message));
       return updateMessages;
     },
-    getRoom: (roomName: string): IRoom | null => {
-      const rooms = useMiniStore.getState().rooms;
-      return getRoom(rooms, roomName);
-    },
     closeImageModal: () => {
       set((state) => {
         return { ...state, isImageModal: false, imageModalSrc: '' };
@@ -143,15 +138,6 @@ export const useMiniStore = create<MiniState>()(
     },
   })),
 );
-
-// function init() {
-//   useMiniStore.setState({ theme: (localStorage.getItem('sflea_theme') as ITheme) || 'dark' });
-//   useMiniStore.subscribe((state) => {
-//     localStorage.setItem('sflea_theme', state.theme);
-//   });
-// }
-
-// init();
 
 function getRoom(rooms: IRoom[], roomName: string): IRoom | null {
   for (const room of rooms) {
@@ -175,6 +161,8 @@ function getRoomsReadCount(rooms: IRoom[], userId: number) {
 
     return prev + count;
   }, 0);
+
+  console.log('count', count);
   return count;
 }
 
