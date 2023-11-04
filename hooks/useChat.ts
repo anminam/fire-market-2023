@@ -8,16 +8,13 @@ let _socket: Socket | null = null;
 
 const useChat = (initToken: string) => {
   const [messages, setMessages] = useState<IChatMessage[]>([]);
+
   const [rooms, setRooms] = useState<IRoom[]>([]);
   const router = useRouter();
 
   //소켓 연결 시작.
   useEffect(() => {
-    if (!URL) {
-      throw new Error('URL_CHAT is undefined');
-    }
-
-    if (_socket) return;
+    // if (_socket) return;
     if (!initToken) return;
 
     _socket = io(chatUrl, {
@@ -29,6 +26,7 @@ const useChat = (initToken: string) => {
 
     _socket?.on('connect', async () => {
       try {
+        repeat = 0;
         const rooms = await asyncGetRooms(initToken);
         setRooms(rooms);
       } catch (err) {
@@ -38,6 +36,21 @@ const useChat = (initToken: string) => {
           }
         }
       }
+    });
+    let repeat = 0;
+    _socket?.on('error', () => {
+      // if (repeat++ > 3) {
+      //   setTimeout(() => {
+      //     _socket = io(chatUrl, {
+      //       auth: {
+      //         token: `Bearer ${initToken}`,
+      //       },
+      //       transports: ['websocket', 'polling'],
+      //     });
+      //   }, 1000);
+      // } else {
+      //   // LOGOUT
+      // }
     });
 
     _socket?.on('recMessage', async (message: IChatReceivedServerMessage) => {
