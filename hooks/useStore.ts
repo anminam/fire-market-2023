@@ -49,7 +49,7 @@ export const useMiniStore = create<MiniState>()(
     emitMessage: null,
     isImageModal: false,
     imageModalSrc: '',
-    theme: 'light',
+    theme: '' as ITheme,
     increase: (by) =>
       set((state) => {
         return { bears: state.bears + by };
@@ -143,6 +143,15 @@ export const useMiniStore = create<MiniState>()(
     },
   })),
 );
+
+// function init() {
+//   useMiniStore.setState({ theme: (localStorage.getItem('sflea_theme') as ITheme) || 'dark' });
+//   useMiniStore.subscribe((state) => {
+//     localStorage.setItem('sflea_theme', state.theme);
+//   });
+// }
+
+// init();
 
 function getRoom(rooms: IRoom[], roomName: string): IRoom | null {
   for (const room of rooms) {

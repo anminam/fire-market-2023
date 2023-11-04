@@ -1,13 +1,23 @@
 import { useMiniStore } from '@/hooks/useStore';
-import { ReactNode, useEffect } from 'react';
+import { ITheme } from '@/interface/Theme';
+import { ReactNode, use, useEffect } from 'react';
 
 interface IThemeProps {
   children: ReactNode;
 }
 function ThemeProvider({ children }: IThemeProps) {
-  const { theme } = useMiniStore();
+  const { theme, setTheme } = useMiniStore();
 
   useEffect(() => {
+    const theme = (localStorage.getItem('sflea_theme') || 'dark') as ITheme;
+    if (theme) {
+      setTheme(theme);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!theme) return;
+    localStorage.setItem('sflea_theme', theme);
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
