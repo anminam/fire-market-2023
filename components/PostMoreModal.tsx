@@ -1,7 +1,9 @@
+import useConfirm from '@/hooks/useConfirm';
 import { ProductStatus } from '@/interface/ProductKind';
 import useMutation from '@/libs/client/useMutation';
 import { useRouter } from 'next/router';
 import { ForwardedRef, forwardRef, useEffect } from 'react';
+import { AiOutlineAlert } from 'react-icons/ai';
 
 interface PostMoreModalProps {
   postId: number;
@@ -23,10 +25,13 @@ function PostMoreModal(
   // 내껀가!!!
   const isMe = userId === postUserId;
 
-  // 상태 수정.
+  // api - 상태 수정.
   const [setStateToServer, { loading, data }] = useMutation<PostMoreModalResponse>(
     `/api/posts/${router.query.id}/status`,
   );
+
+  // api - 신고.
+  const [startClaim, { data: claimData }] = useMutation<PostMoreModalResponse>(`/api/posts/${router.query.id}/claim`);
 
   const handleCancel = () => {
     if (ref && 'current' in ref && ref.current !== null) {
@@ -53,6 +58,25 @@ function PostMoreModal(
   const handleDelete = () => {
     setStateToServer({ status: ProductStatus.DLTE }, 'PATCH');
   };
+
+  // 신고.
+  const onClaimOk = () => {
+    startClaim({});
+  };
+  // 신고 callback.
+  useEffect(() => {
+    if (claimData?.result) {
+      alert('신고되었습니다.');
+    }
+  }, [claimData]);
+  const onClaimCancel = () => {
+    alert('취소되었습니다.');
+  };
+  const handleClaim = useConfirm(
+    '무분별한 신고 시, 서비스 이용에 제한될 수 있습니다. 신고하시겠습니까?',
+    onClaimOk,
+    onClaimCancel,
+  );
 
   useEffect(() => {
     switch (data?.status) {
@@ -96,6 +120,12 @@ function PostMoreModal(
                 </button>
               </>
             )}
+            <button className="btn" onClick={handleClaim}>
+              <div className="flex items-center text-red-700 space-x-1">
+                <AiOutlineAlert size={13} />
+                <div>신고</div>
+              </div>
+            </button>
             <button className="btn" onClick={handleCancel}>
               취소
             </button>

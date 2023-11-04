@@ -98,7 +98,7 @@ const CommunityPostDetail: NextPage = () => {
 
   return (
     <Layout canGoBack title="화재생활" isMore onMoreClick={handleMoreClick}>
-      <div className="mt-4">
+      <div className="pt-4 pb-10">
         {/* 프로필 */}
         <div className="px-4">
           <div className="space-x-1">

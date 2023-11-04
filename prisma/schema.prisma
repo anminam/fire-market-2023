@@ -42,6 +42,7 @@ model User {
   Products        Product[]       @relation(name: "sellerProduct")
   buyerProducts   Product[]       @relation(name: "buyerProduct")
   Posts           Post[]
+  PostClaims      PostClaim[]
   Answers         Answer[]
   Interests       Interest[]
   writtenReviews  Review[]        @relation(name: "writtenReviews")
@@ -108,6 +109,7 @@ model Post {
   longitude  Float?
   Answers    Answer[]
   Interests  Interest[]
+  Claims     PostClaim[]
   status     Status?    @relation(name: "postStatus", fields: [statusCd], references: [name])
   statusCd   String?
   category   Status?    @relation(name: "postCategory", fields: [categoryCd], references: [name])
@@ -116,6 +118,20 @@ model Post {
   @@index([userId])
   @@index([statusCd])
   @@index([categoryCd])
+}
+
+model PostClaim {
+  id         Int         @id @default(autoincrement())
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  message    String?     @db.MediumText
+  post       Post        @relation(fields: [postId], references: [id])
+  postId     Int
+  user       User        @relation(fields: [userId], references: [id])
+  userId     Int
+
+  @@index([postId])
+  @@index([userId])
 }
 
 model Answer {
