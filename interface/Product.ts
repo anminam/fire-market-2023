@@ -8,6 +8,7 @@ export interface IProduct extends Product {
 export interface ProductWithCount extends IProduct {
   _count: {
     Favorite: number;
+    chatroom: number;
   };
 }
 

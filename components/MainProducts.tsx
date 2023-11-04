@@ -7,13 +7,13 @@ interface IProps {
 const MainProducts = ({ products }: IProps) => {
   return (
     <div className="flex flex-col px-4 divide-y divide-neutral">
-      {products.map(item => (
+      {products.map((item) => (
         <Item
           id={item.id}
           key={item.id}
           title={item.name}
           price={item.price}
-          comments={0}
+          comments={item._count?.chatroom || 0}
           hearts={item._count?.Favorite || 0}
           imgSrc={item.image}
           status={item.statusCd}
