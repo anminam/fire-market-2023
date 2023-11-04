@@ -44,21 +44,28 @@ export default function ChatPersonSelect({ list, onSelected, title = '선택', i
           </Sheet.Header>
           <Sheet.Content className="bg-neutral">
             <Sheet.Scroller>
-              <div className="flex flex-col divide-y divide-gray-700 px-4">
+              <ul className="flex flex-col divide-y justify-center divide-gray-700">
                 {list.map((_) => {
                   return (
-                    <button key={_.id} className="h-10" onClick={() => onSelected(_.id)}>
-                      <UserProfileSelectContainer
-                        id={_.id.toString() || ''}
-                        avatar={_.avatar}
-                        name={_.name}
-                        size={12}
-                        isViewTextProfile={false}
-                      ></UserProfileSelectContainer>
-                    </button>
+                    <li key={_.id} className="px-4">
+                      <button className="w-full py-2" onClick={() => onSelected(_.id)}>
+                        <UserProfileSelectContainer
+                          id={_.id.toString() || ''}
+                          avatar={_.avatar}
+                          name={_.name}
+                          size={12}
+                          isViewTextProfile={false}
+                        ></UserProfileSelectContainer>
+                      </button>
+                    </li>
                   );
                 })}
-              </div>
+                <li className="px-4">
+                  <button className="btn btn-neutral w-full" onClick={() => onSelected(0)}>
+                    <div className="">선택안함</div>
+                  </button>
+                </li>
+              </ul>
             </Sheet.Scroller>
           </Sheet.Content>
         </Sheet.Container>

@@ -14,7 +14,7 @@ interface IProps {
 
 const UserProfileSelectContainer = ({ avatar, name, id, size = 16, isViewTextProfile, isCommunity, date }: IProps) => {
   return (
-    <div className="flex space-x-4 items-center mt-5">
+    <div className="flex space-x-4 items-center">
       <ProfileImage avatar={avatar} size={size} />
       <div className="flex flex-col">
         {name ? (
