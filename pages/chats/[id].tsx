@@ -159,7 +159,7 @@ const ChatDetailTopContainer = ({ user, product }: { user: User; product: IProdu
                 <span>{product.price && moneyFormat(product.price) + '원'}</span>
               </div>
               {/* 태그 */}
-              <div>
+              <div className="w-20">
                 {product.statusCd === 'SALE' && <div className="badge badge-sm badge-outline">판매중</div>}
                 {product.statusCd === 'RSRV' && <div className="badge badge-sm badge-outline">예약중</div>}
                 {product.statusCd === 'CMPL' && <div className="badge badge-sm badge-outline">판매완료</div>}
