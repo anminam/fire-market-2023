@@ -42,7 +42,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         cloudStreamKey: rtmps.streamKey,
         cloudStreamUrl: rtmps.url,
         name,
-        price,
+        price: Number(price.replace(/,/g, '')),
         description,
         user: {
           connect: {

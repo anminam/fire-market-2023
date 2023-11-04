@@ -1,5 +1,4 @@
 import type { NextPage } from 'next';
-import Button from '@/components/button';
 import Input from '@/components/input';
 import Layout from '@/components/layout';
 import TextArea from '@/components/textarea';
@@ -28,6 +27,7 @@ const Create: NextPage = () => {
 
   const onValid = async (form: LiveForm) => {
     if (loading) return;
+
     createStream(form);
   };
 
@@ -42,7 +42,7 @@ const Create: NextPage = () => {
       <form onSubmit={handleSubmit(onValid)} className=" space-y-4 py-10 px-4">
         <Input register={register('name', { required: true })} label="이름" name="name" type="text" />
         <Input
-          register={register('price', { required: true, valueAsNumber: true })}
+          register={register('price', { required: true })}
           label="금액"
           placeholder="예) 20000"
           name="price"

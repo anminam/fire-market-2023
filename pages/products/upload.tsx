@@ -197,10 +197,10 @@ const Upload: NextPage = () => {
         />
         <Input
           register={register('price', { required: true })}
-          label="가격"
-          placeholder="가격을 입력해주세요."
+          label="금액"
+          placeholder="예) 20000"
           name="price"
-          type="number"
+          type="text"
           kind="price"
         />
         <TextArea
