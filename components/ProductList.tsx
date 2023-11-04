@@ -16,17 +16,9 @@ interface Record {
 interface ProductListResponse {
   [key: string]: Record[];
 }
-function CenterContainer({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex justify-center items-center h-full w-full mt-10">
-      {children}
-    </div>
-  );
-}
+
 export default function ProductList({ kind }: ProductListProps) {
-  const { data, isLoading } = useSWR<ProductListResponse>(
-    `/api/users/my/${kind}`
-  );
+  const { data, isLoading } = useSWR<ProductListResponse>(`/api/users/my/${kind}`);
 
   if (isLoading) {
     return <LoadingWithContainer />;
@@ -35,18 +27,20 @@ export default function ProductList({ kind }: ProductListProps) {
     return <NothingWithContainer />;
   }
 
-  return data.data.map(_ => {
-    return (
-      <Item
-        id={_.product.id}
-        key={_.product.id}
-        title={_.product.name}
-        price={_.product.price}
-        imgSrc={_.product.image}
-        comments={1}
-        hearts={_.product._count.Favorite}
-        status={_.product.statusCd}
-      />
-    );
-  });
+  return (
+    <div className="flex flex-col px-4 divide-y divide-neutral">
+      {data.data.map((_) => (
+        <Item
+          id={_.product.id}
+          key={_.product.id}
+          title={_.product.name}
+          price={_.product.price}
+          imgSrc={_.product.image}
+          comments={1}
+          hearts={_.product._count.Favorite}
+          status={_.product.statusCd}
+        />
+      ))}
+    </div>
+  );
 }
