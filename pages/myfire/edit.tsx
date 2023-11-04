@@ -7,10 +7,10 @@ import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import FormErrorMessage from '@/components/FormErrorMessage';
 import useMutation from '@/libs/client/useMutation';
-import Image from 'next/image';
 import { cls, getImageSrc } from '@/libs/client/utils';
 import { useRouter } from 'next/router';
 import { asyncSendImageFile } from '@/libs/client/imageRegister';
+import { useMiniStore } from '@/hooks/useStore';
 
 interface EditProfileForm {
   email?: string;
@@ -29,6 +29,7 @@ const EditProfile: NextPage = () => {
   const { user } = useUser();
   const router = useRouter();
 
+  const { setImageModalSrc } = useMiniStore();
   const [runEdit, { data, loading }] = useMutation<EditProfileResponse>('/api/users/edit');
   const [imageLoading, setImageLoading] = useState(false);
   const isLoading = loading || imageLoading;
@@ -109,21 +110,27 @@ const EditProfile: NextPage = () => {
     }
   }, [data, router, setError]);
 
+  const handleImageClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setImageModalSrc(avatarPreview);
+  };
+
   return (
     <Layout canGoBack title="내 정보 변경하기">
       <form onSubmit={handleSubmit(onValid)} className="py-4 px-4 space-y-4">
         <div className="flex items-center space-x-3">
-          <div className="w-14 h-14 rounded-full bg-slate-500 relative overflow-hidden">
-            {avatarPreview && (
-              <Image
-                alt={`의 프로필 사진`}
-                src={avatarPreview}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                priority={true}
-              />
-            )}
-          </div>
+          <button onClick={handleImageClick}>
+            <div className="avatar">
+              <div
+                className={cls(
+                  `w-14 h-14 rounded-full bg-neutral relative overflow-hidden`,
+                  !avatar ? 'animate-pulse' : '',
+                )}
+              >
+                {avatar && <img alt={`${user?.name}의 프로필 사진`} src={avatarPreview} />}
+              </div>
+            </div>
+          </button>
           <label htmlFor="picture" className="btn btn-sm btn-neutral">
             <div>사진변경</div>
             <input {...register('avatar')} id="picture" type="file" className="hidden" accept="image/*" />

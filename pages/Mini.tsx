@@ -1,10 +1,9 @@
+import ImageModal from '@/components/modal/ImageModal';
 import useChat from '@/hooks/useChat';
 import { useMiniStore } from '@/hooks/useStore';
-import { auth } from '@/libs/client/firebase';
 import useMutation from '@/libs/client/useMutation';
 import { useRouter } from 'next/router';
-import { ReactNode, use, useEffect, useState } from 'react';
-import useSWR from 'swr';
+import { ReactNode, useEffect } from 'react';
 
 interface MiniProps {
   children: ReactNode;
@@ -33,7 +32,8 @@ async function asyncGetSession<T>(): Promise<T | null> {
 
 function Mini({ children }: MiniProps) {
   const router = useRouter();
-  const { setToken, setRooms, setUserId, token, isApp, initSendMessage } = useMiniStore();
+  const { setToken, setRooms, setUserId, token, isApp, initSendMessage, isImageModal, closeImageModal, imageModalSrc } =
+    useMiniStore();
 
   const { rooms, sendMessage } = useChat(token);
 
@@ -85,7 +85,12 @@ function Mini({ children }: MiniProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
-  return <div>{children}</div>;
+  return (
+    <div>
+      {children}
+      <ImageModal />
+    </div>
+  );
 }
 
 export default Mini;

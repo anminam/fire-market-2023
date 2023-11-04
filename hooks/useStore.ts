@@ -10,6 +10,8 @@ interface MiniState {
   roomsReadCount: number;
   token: string;
   userId: number;
+  isImageModal: boolean;
+  imageModalSrc: string;
   increase: (by: number) => void;
   // firebaseAuth: () => void;
   setToken: (token: string) => void;
@@ -23,6 +25,8 @@ interface MiniState {
   getMessage: (roomName: string) => Promise<IChatMessage[]>;
   getRoom: (roomName: string) => IRoom | null;
   emitMessage: ((roomName: string, text: string) => void) | null;
+  setImageModalSrc: (src: string) => void;
+  closeImageModal: () => void;
 }
 
 async function refreshToken() {
@@ -40,6 +44,8 @@ export const useMiniStore = create<MiniState>()(
     userId: 0,
     isApp: false,
     emitMessage: null,
+    isImageModal: false,
+    imageModalSrc: '',
     increase: (by) =>
       set((state) => {
         return { bears: state.bears + by };
@@ -115,6 +121,16 @@ export const useMiniStore = create<MiniState>()(
     getRoom: (roomName: string): IRoom | null => {
       const rooms = useMiniStore.getState().rooms;
       return getRoom(rooms, roomName);
+    },
+    closeImageModal: () => {
+      set((state) => {
+        return { ...state, isImageModal: false, imageModalSrc: '' };
+      });
+    },
+    setImageModalSrc: (src: string) => {
+      set((state) => {
+        return { ...state, isImageModal: true, imageModalSrc: src };
+      });
     },
   })),
 );
