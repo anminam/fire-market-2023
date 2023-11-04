@@ -24,13 +24,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         },
       ],
     },
-    // include: {
-    //   _count: {
-    //     select: {
-    //       Favorite: true,
-    //     },
-    //   },
-    // },
+    include: {
+      _count: {
+        select: {
+          Favorite: true,
+          chatroom: true,
+        },
+      },
+    },
   });
 
   res.json({

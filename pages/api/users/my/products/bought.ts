@@ -29,6 +29,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ServerResponse>
       _count: {
         select: {
           Favorite: true,
+          chatroom: true,
         },
       },
     },
