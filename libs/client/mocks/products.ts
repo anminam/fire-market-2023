@@ -4,6 +4,7 @@ const getDummyProductMain = (id: number): ProductWithCount => {
   return {
     _count: {
       Favorite: 0,
+      chatroom: 0,
     },
     id,
     name: '',
