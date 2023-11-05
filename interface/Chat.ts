@@ -72,7 +72,7 @@ export interface IRoom {
   buyerReadId: number;
   updatedAt: Date;
   text: string;
-  product: Product;
+  product: IProduct;
   seller: User;
   buyer: User;
   readCount?: number;

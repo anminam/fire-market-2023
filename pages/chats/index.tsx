@@ -11,13 +11,14 @@ function CenterContainer({ children }: { children: React.ReactNode }) {
 
 const Chats: NextPage = () => {
   const user = useUser();
-  const rooms = useMiniStore((_) => _.rooms);
+  const { rooms } = useMiniStore();
 
   return (
     <Layout isViewTabBar title="채팅">
       <div className="divide-y divide-[hsl(var(--bc)/20%)]">
         {/* 받았는데 리스트가 존재하지 않으면 */}
         {rooms && !rooms.length && <CenterContainer>아직 채팅이 없네요</CenterContainer>}
+        {/* 그리기 */}
         {rooms?.map((_) => {
           let tUser = _.seller;
 
@@ -31,15 +32,7 @@ const Chats: NextPage = () => {
           return (
             <div key={_.roomNm} className="space-x-3 py-4">
               <Link href={`/chats/${_.roomNm}`}>
-                <ChatThumbnailItem
-                  avatar={tUser.avatar}
-                  name={tUser.name}
-                  text={textList[2]}
-                  date={_.updatedAt}
-                  productImage={_.product.image}
-                  productImageAlt={_.product.name}
-                  readCount={_.readCount}
-                />
+                <ChatThumbnailItem user={tUser} me={user.user} text={textList[2]} room={_} />
               </Link>
             </div>
           );
