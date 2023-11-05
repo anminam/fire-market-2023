@@ -6,7 +6,7 @@ interface IProps {
 }
 const MainProducts = ({ products }: IProps) => {
   return (
-    <div className="flex flex-col px-4 divide-y divide-neutral">
+    <div className="flex flex-col px-4 divide-y divide-[hsl(var(--bc)/20%)]">
       {products.map((item) => (
         <Item
           id={item.id}

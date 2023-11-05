@@ -18,7 +18,7 @@ export default function GroundNavBar({}: Props) {
   const roomsReadCount = useMiniStore((_) => _.roomsReadCount);
 
   return (
-    <nav className="max-w-xl bg-base-100 border-t border-t-neutral fixed bottom-0 w-full px-4 pb-3 pt-3 flex justify-between text-xs">
+    <nav className="max-w-xl bg-base-100 border-t border-t-[hsl(var(--bc)/20%)] fixed bottom-0 w-full px-4 pb-3 pt-3 flex justify-between text-xs">
       <Link href="/" className={cls('flex flex-col items-center space-y-1', getItemColor(router.pathname, '/'))}>
         <IconHome />
         <span>장터보기</span>

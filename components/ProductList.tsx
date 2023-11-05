@@ -28,7 +28,7 @@ export default function ProductList({ kind }: ProductListProps) {
   }
 
   return (
-    <div className="flex flex-col px-4 divide-y divide-neutral">
+    <div className="flex flex-col px-4 divide-y divide-[hsl(var(--bc)/20%)]">
       {data.data.map((_) => (
         <Item
           id={_.product.id}

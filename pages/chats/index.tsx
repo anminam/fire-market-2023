@@ -15,7 +15,7 @@ const Chats: NextPage = () => {
 
   return (
     <Layout isViewTabBar title="채팅">
-      <div className="divide-y divide-neutral">
+      <div className="divide-y divide-[hsl(var(--bc)/20%)]">
         {/* 받았는데 리스트가 존재하지 않으면 */}
         {rooms && !rooms.length && <CenterContainer>아직 채팅이 없네요</CenterContainer>}
         {rooms?.map((_) => {

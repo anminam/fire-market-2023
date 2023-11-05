@@ -9,7 +9,7 @@ interface IProps {
 
 export default function CommunitiesByList({ list }: IProps) {
   return (
-    <div className="divide-y divide-neutral">
+    <div className="divide-y divide-[hsl(var(--bc)/20%)]">
       <CommunitiesByListItem list={list} />
     </div>
   );

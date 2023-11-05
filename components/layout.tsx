@@ -54,7 +54,7 @@ export default function Layout({
       {isHideTitle && (
         <div
           className={`w-full h-12 max-w-xl justify-center fixed top-0 flex items-center z-10 ${
-            isTranslate ? 'bg-transparent' : 'bg-base-100 border-b border-b-neutral'
+            isTranslate ? 'bg-transparent' : 'bg-base-100 border-b-[1px] border-b-[hsl(var(--bc)/20%)]'
           }`}
         >
           {canGoBack ? (

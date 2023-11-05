@@ -30,7 +30,7 @@ export default function ChatPersonSelect({ list, onSelected, title = '선택', i
       >
         <Sheet.Container>
           <Sheet.Header className="bg-neutral">
-            <div className="border-b-[1px] border-neutral-400">
+            <div className="border-b-[1px] divide-[hsl(var(--bc)/20%)]">
               <div className="flex relative items-center justify-center px-4">
                 <button
                   className={`btn btn-circle btn-ghost absolute left-0 bg-transparent border-0 py-3`}
@@ -44,7 +44,7 @@ export default function ChatPersonSelect({ list, onSelected, title = '선택', i
           </Sheet.Header>
           <Sheet.Content className="bg-neutral">
             <Sheet.Scroller>
-              <ul className="flex flex-col divide-y justify-center divide-gray-700">
+              <ul className="flex flex-col divide-y divide-[hsl(var(--bc)/20%)] justify-center ">
                 {list.map((_) => {
                   return (
                     <li key={_.id} className="px-4">

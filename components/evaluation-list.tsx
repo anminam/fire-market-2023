@@ -13,7 +13,7 @@ export default function EvaluationList({ list }: Props) {
   return (
     <ul>
       {list.map((item, i) => (
-        <li key={i} className="py-4 border-b">
+        <li key={i} className="py-4 border-b divide-[hsl(var(--bc)/20%)]">
           <div className="">
             <div className="flex space-x-4 items-center">
               <div className="w-12 h-12 rounded-full bg-slate-500" />
