@@ -16,6 +16,7 @@ import ModalSellProductState from '@/components/ModalSellProductState';
 import { useMiniStore } from '@/hooks/useStore';
 import useSWR from 'swr';
 import { IProduct } from '@/interface/Product';
+import StatusBadge from '@/components/StatusBadge';
 
 interface ProductDataResponse {
   result: boolean;
@@ -170,9 +171,7 @@ const ChatDetailTopContainer = ({ user, product }: { user: User; product: IProdu
               {/* 태그 - 내 상품이거나 || 바이어가 나일때   */}
               {isMyProduct || product.buyerId === user.id ? (
                 <div className="w-20">
-                  {product.statusCd === 'SALE' && <div className="badge badge-sm badge-outline">판매중</div>}
-                  {product.statusCd === 'RSRV' && <div className="badge badge-sm badge-outline">예약중</div>}
-                  {product.statusCd === 'CMPL' && <div className="badge badge-sm badge-outline">판매완료</div>}
+                  <StatusBadge status={product.statusCd} />
                 </div>
               ) : null}
             </div>

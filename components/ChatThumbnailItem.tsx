@@ -2,6 +2,7 @@ import { chatDateFormat, getImageSrc } from '@/libs/client/utils';
 import ProfileImage from './ProfileImage';
 import { IRoom } from '@/interface/Chat';
 import { User } from '@prisma/client';
+import StatusBadge from './StatusBadge';
 
 const ChatThumbnailItem = ({ user, text, room, me }: { user: User; text?: string; room: IRoom; me?: User }) => {
   // 상품이 내꺼이거나 || 거래한 사람이 나면 뱃지를 보여준다.
@@ -30,12 +31,7 @@ const ChatThumbnailItem = ({ user, text, room, me }: { user: User; text?: string
             {/* 뱃지 */}
             {isShowBadge ? (
               <>
-                {room.product.statusCd === 'RSRV' ? (
-                  <div className="badge badge-warning badge-sm mr-2">예약중</div>
-                ) : null}
-                {room.product.statusCd === 'CMPL' ? (
-                  <div className="badge badge-success badge-sm mr-2">판매완료</div>
-                ) : null}
+                <StatusBadge status={room.product.statusCd} />
               </>
             ) : null}
 
