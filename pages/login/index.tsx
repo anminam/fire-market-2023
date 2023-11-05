@@ -1,5 +1,4 @@
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { app, auth, normalLogin } from '@/libs/client/firebase';
+import { auth, normalLogin } from '@/libs/client/firebase';
 import useMutation from '@/libs/client/useMutation';
 import { useRouter } from 'next/router';
 import Layout from '@/components/layout';
@@ -17,10 +16,13 @@ interface LoginPageResult {
 const LoginPage = () => {
   const router = useRouter();
   const [logout] = useMutation<LoginPageResult>('/api/users/logout');
-  const { setToken, setRooms, setUserId, token, isApp, initSendMessage } = useMiniStore();
+  const { setToken, setUserId } = useMiniStore();
 
+  // api - 로그인.
   const [startFirebaseLogin, { loading, data, error: tokenError }] =
     useMutation<LoginPageResult>('/api/firebase/firebase-user');
+
+  const isLogin = loading || data?.result;
 
   // 구글 로그인
   const handleGoogleLogin = async () => {
@@ -41,6 +43,7 @@ const LoginPage = () => {
       setUserId(data.data.id);
       router.replace('/');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   const initPage = async () => {
@@ -71,14 +74,15 @@ const LoginPage = () => {
             <div className="text-sm text-neutral-500 animate-intro">우리들의 소소한 이야기</div>
           </div>
           {/* 버튼 */}
-          <div className="mt-20 flex items-center">
-            {false ? (
+          <div className="mt-20 flex items-center justify-center">
+            {isLogin ? (
               <div className="loading loading-spinner loading-lg"></div>
             ) : (
               <button
                 className="btn bg-white text-gray-600 border border-gray-300 py-2 px-4 flex items-center w-full"
                 onClick={handleGoogleLogin}
               >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="https://developers.google.com/identity/images/g-logo.png"
                   alt="Google 로고"

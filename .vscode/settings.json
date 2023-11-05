@@ -1,5 +1,5 @@
 {
-  "cSpell.words": ["CMPL", "CNCL", "daisyui", "DLTE", "myfire", "QSTN", "RSRV", "sflea"],
+  "cSpell.words": ["CMPL", "CNCL", "daisyui", "DLTE", "myfire", "pscale", "QSTN", "RSRV", "sflea"],
   "editor.formatOnSave": true,
 
   "editor.defaultFormatter": "esbenp.prettier-vscode",
