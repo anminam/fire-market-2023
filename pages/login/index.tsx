@@ -53,7 +53,9 @@ const LoginPage = () => {
   useEffect(() => {
     // 일단 로그아웃 때리고 시작
     if (localStorage.getItem('isApp') !== 'true') {
-      initPage();  
+      initPage();
+    } else {
+      Logout.postMessage({});
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

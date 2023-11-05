@@ -2,8 +2,8 @@ import { PrismaClient } from '@prisma/client';
 declare global {
   var client: PrismaClient | undefined;
 
-  interface Window {
-    Logout: () => void;
+  namespace Logout {
+    function postMessage(object: any): void;
   }
 }
 
