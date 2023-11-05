@@ -44,6 +44,7 @@ const ChatThumbnailItem = ({
       {productImage && (
         <div className="avatar">
           <div className="w-12 rounded">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img className="" alt={productImageAlt} src={getImageSrc(productImage, true)} />
           </div>
         </div>

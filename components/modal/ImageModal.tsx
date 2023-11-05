@@ -37,7 +37,7 @@ export default function ImageModal() {
         </div>
         {/* 컨텐츠 */}
         <div>
-          {' '}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={imageModalSrc} alt="이미지" />
         </div>
       </div>

@@ -11,9 +11,10 @@ const ProfileImage = ({ avatar, size = 16, alt = 'avatar' }: IProps) => {
       <div
         className={cls(
           `w-${size} h-${size} rounded-full bg-neutral relative overflow-hidden`,
-          !avatar ? 'animate-pulse' : ''
+          !avatar ? 'animate-pulse' : '',
         )}
       >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         {avatar && <img alt={alt} src={getImageSrc(avatar, true)} />}
       </div>
     </div>

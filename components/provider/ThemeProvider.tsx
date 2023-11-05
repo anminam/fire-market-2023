@@ -13,6 +13,8 @@ function ThemeProvider({ children }: IThemeProps) {
     if (theme) {
       setTheme(theme);
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

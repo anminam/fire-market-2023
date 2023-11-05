@@ -260,6 +260,7 @@ const PhotoItem = ({ file, onDeleteClick }: { file: File; onDeleteClick: (file: 
         X{/* <AiOutlineDelete /> */}
       </button>
       <div className="w-16 h-16 rounded-md overflow-hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img alt="photo" src={URL.createObjectURL(file)} className="object-contain"></img>
       </div>
     </div>

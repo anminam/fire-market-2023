@@ -8,15 +8,10 @@ interface IProps {
 
 export default function ProductImage({ alt, src, size = 20 }: IProps) {
   return (
-    <div
-      className={`w-${size} h-${size} bg-gray-400 rounded-md overflow-hidden`}
-    >
+    <div className={`w-${size} h-${size} bg-gray-400 rounded-md overflow-hidden`}>
       {src && (
-        <img
-          alt={`${alt}`}
-          src={getImageSrc(src, true)}
-          className=" bg-slate-300 object-cover w-full h-full"
-        />
+        // eslint-disable-next-line @next/next/no-img-element
+        <img alt={`${alt}`} src={getImageSrc(src, true)} className=" bg-slate-300 object-cover w-full h-full" />
       )}
     </div>
   );

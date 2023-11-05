@@ -37,6 +37,7 @@ const ProductImage = ({ title, imgSrc, status }: { imgSrc: string; title: string
       )}
 
       {imgSrc && (
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           alt={`${title} 이미지`}
           src={`https://imagedelivery.net/6-jfB1-8fzgOcmfBEr6cGA/${imgSrc}/public`}

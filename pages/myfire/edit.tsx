@@ -127,6 +127,7 @@ const EditProfile: NextPage = () => {
                   !avatar ? 'animate-pulse' : '',
                 )}
               >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 {avatar && <img alt={`${user?.name}의 프로필 사진`} src={avatarPreview} />}
               </div>
             </div>

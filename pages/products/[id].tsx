@@ -155,6 +155,7 @@ const ItemDetail = () => {
         {/* 이미지 */}
         <div className={cls('relative pb-80 h-96 bg-neutral', data?.data?.image ? '' : 'animate-pulse')}>
           {data?.data?.image && (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               alt={data?.data?.name + ' 이미지'}
               className="absolute inset-0 w-full h-full object-cover"
@@ -248,6 +249,7 @@ const ItemDetail = () => {
                   return (
                     <Link href={`/products/${_.id}`} key={_.id} className="w-30">
                       <div className="w-16 h-16 rounded-full bg-slate-500 relative overflow-hidden">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           alt={_.name + ' 이미지'}
                           src={`https://imagedelivery.net/6-jfB1-8fzgOcmfBEr6cGA/${_.image}/avatar`}
