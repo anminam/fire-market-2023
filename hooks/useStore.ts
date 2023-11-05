@@ -162,7 +162,6 @@ function getRoomsReadCount(rooms: IRoom[], userId: number) {
     return prev + count;
   }, 0);
 
-  console.log('count', count);
   return count;
 }
 

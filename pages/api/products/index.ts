@@ -5,6 +5,10 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
+    const {
+      query: { take, page },
+    } = req;
+
     const data = await client.product.findMany({
       orderBy: [
         {
@@ -33,8 +37,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           },
         },
       },
-      take: 20,
-      skip: 0,
+      take: +(take || 20),
+      skip: +(page || 0) * +(take || 20),
     });
     res.json({
       result: true,
