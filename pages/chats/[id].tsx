@@ -158,7 +158,7 @@ const ChatDetailTopContainer = ({ user, product }: { user: User; product: IProdu
     <div className="fixed z-10 left-0 w-full">
       <div className="w-full max-w-xl mx-auto bg-base-100">
         <Link href={`/products/${product.id}`}>
-          <div className="flex justify-between border-b-[1px] border-neutral items-center px-4">
+          <div className="flex justify-between border-b-[1px] border-[hsl(var(--bc)/20%)] items-center px-4">
             <div className="py-2 flex items-center">
               <div className={`w-${10}`}>
                 <ProductImage size={10} alt={`${product.name} 이미지`} src={product.image} />

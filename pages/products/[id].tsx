@@ -303,7 +303,7 @@ const ItemDetail = () => {
       {/* 하단 고정 컨테이너 만들기 */}
       {/* 하단 */}
       <div className="relative overflow-hidden">
-        <div className="fixed bottom-0 max-w-xl w-full p-3 border-t-[1px] border-neutral-700 z-10 bg-base-100">
+        <div className="fixed bottom-0 max-w-xl w-full p-3 border-t-[1px] border-[hsl(var(--bc)/20%)] z-10 bg-base-100">
           {/* 하단 버튼부 */}
           <div className="flex items-center justify-between space-x-2">
             {/* 하트버튼 */}
