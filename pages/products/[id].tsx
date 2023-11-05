@@ -149,7 +149,7 @@ const ItemDetail = () => {
   }
 
   return (
-    <Layout title="상품" canGoBack isTranslate isMore onMoreClick={handleMoreClick}>
+    <Layout title="상품" canGoBack isProducts isMore onMoreClick={handleMoreClick}>
       {/* style={`background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.7));`} */}
       <div className="mb-32">
         {/* 이미지 */}

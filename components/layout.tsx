@@ -15,8 +15,8 @@ interface LayoutProps {
   isViewTabBar?: boolean;
   children: React.ReactNode;
   isHideTitle?: boolean;
-  isTranslate?: boolean;
   isMore?: boolean;
+  isProducts?: boolean;
   onMoreClick?: () => void;
 }
 
@@ -26,8 +26,8 @@ export default function Layout({
   isViewTabBar,
   children,
   isHideTitle = true,
-  isTranslate = false,
   isMore = false,
+  isProducts = false,
   onMoreClick,
 }: LayoutProps) {
   const router = useRouter();
@@ -46,6 +46,8 @@ export default function Layout({
 
   const title = `${pTitle ?? ''} | 화재장터`;
 
+  const topIconColor = isProducts ? 'white' : 'base-100';
+
   return (
     <div>
       <Head>
@@ -54,30 +56,30 @@ export default function Layout({
       {isHideTitle && (
         <div
           className={`w-full h-12 max-w-xl justify-center fixed top-0 flex items-center z-10 ${
-            isTranslate ? 'bg-transparent' : 'bg-base-100 border-b-[1px] border-b-[hsl(var(--bc)/20%)]'
+            isProducts ? 'bg-transparent' : 'bg-base-100 border-b-[1px] border-b-[hsl(var(--bc)/20%)]'
           }`}
         >
           {canGoBack ? (
             <div className="absolute flex left-2 space-x-1 items-center h-5 text-lg">
               <button onClick={onBackClick} className="btn btn-circle btn-ghost">
-                <FaChevronLeft size="18" color={cls(isTranslate ? 'white' : '')} />
+                <FaChevronLeft size="18" color={topIconColor} />
               </button>
               <button onClick={onHomeClick} className="btn btn-circle btn-ghost">
-                <AiOutlineHome size="20" color={cls(isTranslate ? 'white' : '')} />
+                <AiOutlineHome size="20" color={topIconColor} />
               </button>
             </div>
           ) : null}
-          {pTitle && !isTranslate && <LayoutTitle canGoBack={canGoBack}>{pTitle}</LayoutTitle>}
+          {pTitle && !isProducts && <LayoutTitle canGoBack={canGoBack}>{pTitle}</LayoutTitle>}
           {isMore && (
             <div className="absolute flex right-2 space-x-1 items-center h-5 text-lg">
               <button onClick={() => handleClickMore()} className="btn btn-circle btn-ghost">
-                <AiOutlineMore size="20" color="white" />
+                <AiOutlineMore size="20" color={topIconColor} />
               </button>
             </div>
           )}
         </div>
       )}
-      <div className={cls(isTranslate ? '' : 'pt-12', isViewTabBar ? 'pb-24' : '')}>{children}</div>
+      <div className={cls(isProducts ? '' : 'pt-12', isViewTabBar ? 'pb-24' : '')}>{children}</div>
       {isViewTabBar && <GroundNavBar />}
     </div>
   );

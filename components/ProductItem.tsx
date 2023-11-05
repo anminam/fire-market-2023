@@ -41,7 +41,7 @@ const ProductImage = ({ title, imgSrc, status }: { imgSrc: string; title: string
         <img
           alt={`${title} 이미지`}
           src={`https://imagedelivery.net/6-jfB1-8fzgOcmfBEr6cGA/${imgSrc}/public`}
-          className=" bg-slate-300 object-cover w-full h-full"
+          className=" bg-neutral object-cover w-full h-full"
         />
       )}
     </div>

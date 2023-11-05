@@ -100,13 +100,13 @@ const StreamPage: NextPage = () => {
     <Layout canGoBack title="라이브 ">
       <div className="py-10 px-4 space-y-4">
         {/* 비디오 */}
-        <div className="w-full rounded-md shadow-sm bg-slate-300 aspect-video">
+        <div className="w-full rounded-md shadow-sm bg-neutral aspect-video">
           {data?.data.cloudStreamId ? (
             <iframe
               src={`https://customer-rfd4j8o0msz4s9nx.cloudflarestream.com/${data?.data.cloudStreamId}/iframe`}
               allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
               id="stream-player"
-              className="w-full h-full rounded-md shadow-sm bg-slate-300"
+              className="w-full h-full rounded-md shadow-sm bg-neutral"
             ></iframe>
           ) : null}
         </div>

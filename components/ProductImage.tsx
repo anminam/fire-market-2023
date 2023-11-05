@@ -11,7 +11,7 @@ export default function ProductImage({ alt, src, size = 20 }: IProps) {
     <div className={`w-${size} h-${size} bg-gray-400 rounded-md overflow-hidden`}>
       {src && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img alt={`${alt}`} src={getImageSrc(src, true)} className=" bg-slate-300 object-cover w-full h-full" />
+        <img alt={`${alt}`} src={getImageSrc(src, true)} className=" bg-neutral object-cover w-full h-full" />
       )}
     </div>
   );
