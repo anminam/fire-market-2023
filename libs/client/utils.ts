@@ -4,7 +4,7 @@ export function cls(...classnames: string[]): string {
 
 export function moneyFormat(price: number): string {
   if (!price) {
-    return '';
+    return '무료나눔';
   }
   return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
