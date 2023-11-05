@@ -11,7 +11,7 @@ import ProductImage from '@/components/ProductImage';
 import { moneyFormat } from '@/libs/client/utils';
 import Link from 'next/link';
 import { IChatMessage, IRoom } from '@/interface/Chat';
-import { Product, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import ModalSellProductState from '@/components/ModalSellProductState';
 import { useMiniStore } from '@/hooks/useStore';
 import useSWR from 'swr';
@@ -143,7 +143,7 @@ const ChatDetail: NextPage = () => {
 const ChatDetailTopContainer = ({ user, product }: { user: User; product: IProduct }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
-  const isMe = user.id === product.userId;
+  const isMyProduct = user.id === product.userId;
 
   // handle - 거래 변경클릭.
   const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -167,14 +167,16 @@ const ChatDetailTopContainer = ({ user, product }: { user: User; product: IProdu
                 <span className="overflow-hidden line-clamp-1">{product.name}</span>
                 <span>{product.price && moneyFormat(product.price) + '원'}</span>
               </div>
-              {/* 태그 */}
-              <div className="w-20">
-                {product.statusCd === 'SALE' && <div className="badge badge-sm badge-outline">판매중</div>}
-                {product.statusCd === 'RSRV' && <div className="badge badge-sm badge-outline">예약중</div>}
-                {product.statusCd === 'CMPL' && <div className="badge badge-sm badge-outline">판매완료</div>}
-              </div>
+              {/* 태그 - 내 상품이거나 || 바이어가 나일때   */}
+              {isMyProduct || product.buyerId === user.id ? (
+                <div className="w-20">
+                  {product.statusCd === 'SALE' && <div className="badge badge-sm badge-outline">판매중</div>}
+                  {product.statusCd === 'RSRV' && <div className="badge badge-sm badge-outline">예약중</div>}
+                  {product.statusCd === 'CMPL' && <div className="badge badge-sm badge-outline">판매완료</div>}
+                </div>
+              ) : null}
             </div>
-            {isMe && (
+            {isMyProduct && (
               <div className="">
                 <button className="btn btn-sm min-w-max" onClick={handleClick}>
                   거래변경

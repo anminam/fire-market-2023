@@ -1,10 +1,8 @@
 import type { NextPage } from 'next';
-import Link from 'next/link';
 import FloatingButton from '@/components/floating-button';
 import Layout from '@/components/layout';
 import { Stream } from '@prisma/client';
 import useSWR from 'swr';
-import Image from 'next/image';
 import StreamsList from '@/components/StreamsList';
 import { HiVideoCamera } from 'react-icons/hi';
 

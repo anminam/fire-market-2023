@@ -1,6 +1,5 @@
 import { dateFormat } from '@/libs/client/utils';
 import { StreamsResponse } from '@/pages/streams';
-import Image from 'next/image';
 import Link from 'next/link';
 
 interface IProps {
