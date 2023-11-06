@@ -60,7 +60,11 @@ const Home: NextPage = () => {
             <div className="py-5">모든 상품을 불러왔습니다.</div>
           </div>
         ) : (
-          <div ref={lastDataRendered}>hello</div>
+          <div ref={lastDataRendered}>
+            <div className="flex justify-center">
+              <div className="py-5">상품을 불러오고 있습니다.</div>
+            </div>
+          </div>
         )}
 
         <FloatingButton href="/products/upload">
