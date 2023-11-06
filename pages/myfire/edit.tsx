@@ -54,23 +54,23 @@ const EditProfile: NextPage = () => {
 
       setImageLoading(true);
 
-      if (email === '' && name === '') {
-        return setError('formErrors', {
-          message: '이메일 또는 전화번호를 입력해주세요.',
-        });
-      }
+      // if (email === '' && name === '') {
+      //   return setError('formErrors', {
+      //     message: '이메일 또는 전화번호를 입력해주세요.',
+      //   });
+      // }
 
       if (avatar && avatar.length > 0) {
         const result = await asyncSendImageFile(avatar, `${user?.id}_${user?.name}`);
 
         runEdit({
-          email,
+          // email,
           name,
           avatarId: result.id,
         });
       } else {
         runEdit({
-          email,
+          // email,
           name,
         });
       }
@@ -138,7 +138,7 @@ const EditProfile: NextPage = () => {
           </label>
         </div>
         <Input register={register('name')} required={false} label="이름" name="text" type="text" />
-        <Input register={register('email')} required={false} label="이메일" name="email" type="email" />
+        {/* <Input register={register('email')} required={false} label="이메일" name="email" type="email" /> */}
         {/* <Input
           register={register('phone')}
           required={false}
