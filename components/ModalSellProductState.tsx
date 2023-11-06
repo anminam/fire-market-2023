@@ -1,3 +1,7 @@
+/**
+ * 판매상태 변경 모달.
+ */
+import { useMiniStore } from '@/hooks/useStore';
 import { ProductStatus } from '@/interface/ProductKind';
 import useMutation from '@/libs/client/useMutation';
 import { useRouter } from 'next/router';
@@ -16,6 +20,7 @@ interface ModalSellProductStateResponse {
 
 function ModalSellProductState({ productId, productUserId, buyerId }: IProp, ref: ForwardedRef<HTMLDialogElement>) {
   const router = useRouter();
+  const { setRoomState } = useMiniStore();
 
   // 상태 수정.
   const [setStateToServer, { data, loading }] = useMutation<ModalSellProductStateResponse>(
@@ -31,33 +36,39 @@ function ModalSellProductState({ productId, productUserId, buyerId }: IProp, ref
     setStateToServer({ status: 'RSRV' }, 'PATCH');
   };
 
-  // handle - 취소클릭.
-  const handleCancelClick = () => {
+  const closeModal = () => {
     if (ref && 'current' in ref && ref.current !== null) {
       (ref.current as HTMLDialogElement).close();
     }
   };
 
   useEffect(() => {
-    switch (data?.status) {
+    if (!productId || !data) return;
+
+    const { status } = data;
+
+    switch (status) {
       case ProductStatus.CMPL:
+        setRoomState(productId, buyerId, status);
         alert('판매완료 처리되었습니다.');
-        router.push('/');
         break;
       case ProductStatus.HIDE:
+        setRoomState(productId, buyerId, status);
         alert('숨김 처리되었습니다.');
-        router.push('/');
         break;
       case ProductStatus.RSRV:
+        setRoomState(productId, buyerId, status);
         alert('예약 처리되었습니다.');
-        router.push('/');
         break;
     }
+
+    closeModal();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, router]);
 
   return (
     <div>
-      <dialog id="modal_more_product" className="modal" ref={ref}>
+      <dialog className="modal" ref={ref}>
         <div className="modal-box w-52 p-0">
           <div className="btn-group btn-group-vertical w-52">
             <button className="btn" onClick={handleReservationClick}>
@@ -66,7 +77,7 @@ function ModalSellProductState({ productId, productUserId, buyerId }: IProp, ref
             <button className="btn" onClick={handleCompleteClick}>
               판매완료
             </button>
-            <button className="btn" onClick={handleCancelClick}>
+            <button className="btn" onClick={() => closeModal()}>
               취소
             </button>
           </div>

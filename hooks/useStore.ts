@@ -1,4 +1,5 @@
 import { IChatMessage, IChatReceivedRoomInfo, IChatReceivedServerMessage, IRoom } from '@/interface/Chat';
+import { ProductStatus } from '@/interface/ProductKind';
 import { ITheme } from '@/interface/Theme';
 import { chatUrl } from '@/libs/client/url';
 import { create } from 'zustand';
@@ -29,11 +30,7 @@ interface MiniState {
   closeImageModal: () => void;
   theme: ITheme;
   setTheme: (theme: ITheme) => void;
-}
-
-async function refreshToken() {
-  // 파이어베이스 토큰 리프레시
-  // const user = await auth.
+  setRoomState: (productId: number, buyerId: number, state: ProductStatus) => void;
 }
 
 export const useMiniStore = create<MiniState>()(
@@ -134,6 +131,23 @@ export const useMiniStore = create<MiniState>()(
     setTheme: (theme: ITheme) => {
       set((state) => {
         return { ...state, theme };
+      });
+    },
+    setRoomState: (productId: number, buyerId: number, productState: ProductStatus) => {
+      set((state) => {
+        const { rooms } = state;
+        const findRooms = rooms.filter((room) => room.productId === productId);
+        if (findRooms.length === 0) return state;
+
+        findRooms.forEach((room) => {
+          room.product = {
+            ...room.product,
+            statusCd: productState,
+            buyerId: buyerId,
+          };
+        });
+
+        return { ...state, rooms: [...rooms] };
       });
     },
   })),

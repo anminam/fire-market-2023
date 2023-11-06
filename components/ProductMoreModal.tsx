@@ -46,11 +46,11 @@ function ProductMoreModal(
   useEffect(() => {
     switch (data?.status) {
       case ProductStatus.DLTE:
-        alert('삭제되었습니다.');
+        alert('삭제 되었습니다.');
         router.push('/');
         break;
       case ProductStatus.HIDE:
-        alert('숨김처리되었습니다.');
+        alert('숨김처리 되었습니다.');
         router.push('/');
         break;
     }
