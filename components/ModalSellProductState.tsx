@@ -48,7 +48,7 @@ function ModalSellProductState({ productId, productUserId, buyerId }: IProp, ref
         alert('숨김 처리되었습니다.');
         router.push('/');
         break;
-      case ProductStatus.HIDE:
+      case ProductStatus.RSRV:
         alert('예약 처리되었습니다.');
         router.push('/');
         break;

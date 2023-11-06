@@ -11,12 +11,12 @@ import ProductImage from '@/components/ProductImage';
 import { moneyFormat } from '@/libs/client/utils';
 import Link from 'next/link';
 import { IChatMessage, IRoom } from '@/interface/Chat';
-import { User } from '@prisma/client';
 import ModalSellProductState from '@/components/ModalSellProductState';
 import { useMiniStore } from '@/hooks/useStore';
 import useSWR from 'swr';
 import { IProduct } from '@/interface/Product';
 import StatusBadge from '@/components/StatusBadge';
+import { IUser } from '@/interface/User';
 
 interface ProductDataResponse {
   result: boolean;
@@ -114,10 +114,15 @@ const ChatDetail: NextPage = () => {
     };
   }, []);
 
+  const userYours = user?.id === room?.buyerId ? room?.seller : room?.buyer;
+  const userMy = user;
+
   return (
     <Layout canGoBack title={'채팅'}>
       {/* 상단에 상품보여주기 */}
-      {user && productData?.data && <ChatDetailTopContainer product={productData.data} user={user} />}
+      {userMy && userYours && productData?.data && (
+        <ChatDetailTopContainer product={productData.data} userMy={userMy} userYours={userYours} />
+      )}
       {/* 채팅 */}
       <div className="relative flex pt-14 overflow-hidden chat-container ">
         <div className="px-4 space-y-4 overflow-auto scroll-container w-full">
@@ -141,10 +146,20 @@ const ChatDetail: NextPage = () => {
   );
 };
 
-const ChatDetailTopContainer = ({ user, product }: { user: User; product: IProduct }) => {
+const ChatDetailTopContainer = ({
+  userMy,
+  userYours,
+  product,
+}: {
+  userMy: IUser;
+  userYours: IUser;
+  product: IProduct;
+}) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
-  const isMyProduct = user.id === product.userId;
+  const buyerId = userYours?.id;
+  const isMyProduct = userMy.id === product.userId;
+  const isShowBadge = product.buyerId === buyerId;
 
   // handle - 거래 변경클릭.
   const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -168,8 +183,7 @@ const ChatDetailTopContainer = ({ user, product }: { user: User; product: IProdu
                 <span className="overflow-hidden line-clamp-1">{product.name}</span>
                 <span>{product.price && moneyFormat(product.price) + '원'}</span>
               </div>
-              {/* 태그 - 내 상품이거나 || 바이어가 나일때   */}
-              {isMyProduct || product.buyerId === user.id ? (
+              {isShowBadge ? (
                 <div className="w-20">
                   <StatusBadge status={product.statusCd} />
                 </div>
@@ -186,7 +200,7 @@ const ChatDetailTopContainer = ({ user, product }: { user: User; product: IProdu
         </Link>
       </div>
       {/* 모달 */}
-      <ModalSellProductState ref={dialogRef} productId={product.id} buyerId={user.id} productUserId={product.userId} />
+      <ModalSellProductState ref={dialogRef} productId={product.id} buyerId={buyerId} productUserId={product.userId} />
     </div>
   );
 };

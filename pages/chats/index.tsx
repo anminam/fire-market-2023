@@ -10,7 +10,7 @@ function CenterContainer({ children }: { children: React.ReactNode }) {
 }
 
 const Chats: NextPage = () => {
-  const user = useUser();
+  const { user } = useUser();
   const { rooms } = useMiniStore();
 
   return (
@@ -19,24 +19,25 @@ const Chats: NextPage = () => {
         {/* 받았는데 리스트가 존재하지 않으면 */}
         {rooms && !rooms.length && <CenterContainer>아직 채팅이 없네요</CenterContainer>}
         {/* 그리기 */}
-        {rooms?.map((_) => {
-          let tUser = _.seller;
+        {user &&
+          rooms?.map((_) => {
+            let tUser = _.seller;
 
-          // 같으면 변경.
-          if (tUser.id === user.user?.id) {
-            tUser = _.buyer;
-          }
+            // 같으면 변경.
+            if (tUser.id === user?.id) {
+              tUser = _.buyer;
+            }
 
-          const textList = _.text.split('::');
+            const textList = _.text.split('::');
 
-          return (
-            <div key={_.roomNm} className="space-x-3 py-4">
-              <Link href={`/chats/${_.roomNm}`}>
-                <ChatThumbnailItem user={tUser} me={user.user} text={textList[2]} room={_} />
-              </Link>
-            </div>
-          );
-        })}
+            return (
+              <div key={_.roomNm} className="space-x-3 py-4">
+                <Link href={`/chats/${_.roomNm}`}>
+                  <ChatThumbnailItem userMy={user} userYour={tUser} text={textList[2]} room={_} />
+                </Link>
+              </div>
+            );
+          })}
       </div>
     </Layout>
   );
