@@ -69,7 +69,7 @@ const Home: NextPage = () => {
           </div>
         )}
 
-        <FloatingButton href="/products/upload">
+        <FloatingButton href="/products/upload" title="올리기">
           <HiPlus className="text-lg" />
         </FloatingButton>
       </div>
