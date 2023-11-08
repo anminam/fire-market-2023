@@ -13,6 +13,7 @@ function getList(): User[] {
     name: `이름${_}`,
     updatedAt: new Date(),
     phone: '',
+    canStream: false,
   }));
 }
 export default function Example() {

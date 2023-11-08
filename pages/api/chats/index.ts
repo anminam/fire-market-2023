@@ -44,12 +44,14 @@ const updateChatList = (list: IChatServerManager[]): IChatManager[] => {
         name: sellingUser.name,
         email: sellingUser.email,
         avatar: sellingUser.avatar,
+        canStream: sellingUser.canStream,
       },
       buyingUser: {
         id: buyingUser.id,
         name: buyingUser.name,
         email: buyingUser.email,
         avatar: buyingUser.avatar,
+        canStream: buyingUser.canStream,
       },
     };
   });
