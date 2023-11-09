@@ -11,7 +11,7 @@ export default function StatusBadge({ status }: { status: ProductStatus }) {
 
   if (status === 'CMPL') {
     color = 'badge-success';
-    text = '판매완료';
+    text = '거래완료';
   }
 
   if (!text) {
