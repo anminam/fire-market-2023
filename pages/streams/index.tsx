@@ -20,13 +20,13 @@ const Live: NextPage = () => {
   return (
     <Layout isViewTabBar title="라이브">
       <div>
-        {user?.canStream ? (
-          <div className="py-4">
-            <StreamsList data={data} />
-          </div>
-        ) : (
+        {/* {user?.canStream ? ( */}
+        <div className="py-4">
+          <StreamsList data={data} />
+        </div>
+        {/* ) : (
           <CenterContainer>2023년 11월 10일 대공개!</CenterContainer>
-        )}
+        )} */}
         {user?.canStream && (
           <FloatingButton href="/streams/create" title="올리기">
             <HiVideoCamera />
