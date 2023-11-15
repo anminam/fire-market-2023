@@ -53,6 +53,7 @@ model User {
   Favorite        Favorite[]
   Sale            Sale[]
   Purchase        Purchase[]
+  canStream       Boolean?       @default(false)
   Stream          Stream[]
   StreamMessage   StreamMessage[]
   chatting        chatting[]

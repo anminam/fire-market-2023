@@ -30,16 +30,18 @@ const Home: NextPage = () => {
 
   const newData = useMemo(() => {
     setLoading(false);
-    if (data) {
-      const arr: ProductWithCount[] = [];
+    try {
+      if (data) {
+        const arr: ProductWithCount[] = [];
 
-      if (data[data.length - 1].data.length === 0) {
-        setIsScrollStop(true);
+        if (data[data.length - 1].data.length === 0) {
+          setIsScrollStop(true);
+        }
+
+        const newData = arr.concat(...data.map((el) => el.data));
+        return newData;
       }
-
-      const newData = arr.concat(...data.map((el) => el.data));
-      return newData;
-    }
+    } catch (error) {}
     return [];
   }, [data]);
 
@@ -67,7 +69,7 @@ const Home: NextPage = () => {
           </div>
         )}
 
-        <FloatingButton href="/products/upload">
+        <FloatingButton href="/products/upload" title="올리기">
           <HiPlus className="text-lg" />
         </FloatingButton>
       </div>

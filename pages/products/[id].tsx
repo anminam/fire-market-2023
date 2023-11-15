@@ -185,15 +185,17 @@ const ItemDetail = () => {
           {isMe(data?.data?.user, user.user) && (
             <div>
               <div className="dropdown dropdown-bottom">
-                <label tabIndex={0} className="btn btn-neutral m-1">
+                <label tabIndex={0} className="btn btn-base-300 m-1">
                   {statusList.find((_) => _.value === productState)?.label}
                 </label>
-                <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-neutral rounded-box w-32">
+                <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-32">
                   {statusList.map((_) => {
                     if (_.value === productState) return null;
                     return (
                       <li key={_.value}>
-                        <button onClick={() => handleStateClick(_.value)}>{_.label}</button>
+                        <button className="" onClick={() => handleStateClick(_.value)}>
+                          {_.label}
+                        </button>
                       </li>
                     );
                   })}

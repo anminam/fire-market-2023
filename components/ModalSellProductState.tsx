@@ -29,10 +29,12 @@ function ModalSellProductState({ productId, productUserId, buyerId }: IProp, ref
 
   // handle - 판매완료클릭.
   const handleCompleteClick = () => {
+    if (loading) false;
     setStateToServer({ status: 'CMPL' }, 'PATCH');
   };
   // handle - 예약클릭.
   const handleReservationClick = () => {
+    if (loading) false;
     setStateToServer({ status: 'RSRV' }, 'PATCH');
   };
 
