@@ -5,7 +5,7 @@ import { withApiSession } from '@/libs/server/withSession';
 import client from '@/libs/server/client';
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { token } = req.query;
+  const { token, device } = req.query;
 
   if (typeof token === 'string') {
     const base64Payload = token?.split('.')[1]; //value 0 -> header, 1 -> payload, 2 -> VERIFY SIGNATURE
@@ -53,6 +53,17 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       return res.status(404).end();
     }
 
+    // 사용자  디바이스  정보가 있을경우 update
+    if (device) {
+      await client?.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          phone: device + "",
+        },
+      });
+    }
     req.session.user = {
       id: user.id,
       token: token,
