@@ -7,6 +7,7 @@ import client from '@/libs/server/client';
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { token, device } = req.query;
 
+  console.log(device);
   if (typeof token === 'string') {
     const base64Payload = token?.split('.')[1]; //value 0 -> header, 1 -> payload, 2 -> VERIFY SIGNATURE
     const payload = Buffer.from(base64Payload, 'base64');
@@ -54,7 +55,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     }
 
     // 사용자  디바이스  정보가 있을경우 update
-    if (device) {
+    if (device && device !== 'null' && user.phone !== device) {
       await client?.user.update({
         where: {
           id: user.id,
